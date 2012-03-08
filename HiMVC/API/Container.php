@@ -26,14 +26,6 @@ interface Container
     public function getRepository();
 
     /**
-     * Get Event object
-     *
-     * @todo Remove if events are made as part of container.
-     * @return \HiMVC\Core\Base\Event
-     */
-    public function getEvent();
-
-    /**
      * Get Request object
      *
      * @return \HiMVC\Core\MVC\Request

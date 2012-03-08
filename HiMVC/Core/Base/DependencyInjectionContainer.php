@@ -110,17 +110,6 @@ class DependencyInjectionContainer implements Container
     }
 
     /**
-     * Get Event object
-     *
-     * @uses get()
-     * @return \HiMVC\Core\Base\Event
-     */
-    public function getEvent()
-    {
-        return $this->get( 'event' );
-    }
-
-    /**
      * Get Request object
      *
      * @uses get()
