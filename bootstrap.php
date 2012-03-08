@@ -1,0 +1,92 @@
+<?php
+/**
+ * File containing the bootstrapping
+ *
+ * Returns instance of (Service) Container setup with configuration service, and setups autoloader.
+ *
+ * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU General Public License v3
+ * @version //autogentag//
+ */
+
+
+use eZ\Publish\Core\Base\ClassLoader,
+    HiMVC\Core\Base\Configuration,
+    HiMVC\Core\Base\DependencyInjectionContainer as Container;
+
+// Read config.php
+if ( !( $settings = include( __DIR__ . '/config.php' ) ) )
+{
+    die( 'Could not find config.php, please copy config.php-DEVELOPMENT to config.php and customize to your needs!' );
+}
+
+// Setup autoloader(s)
+require __DIR__ . '/eZ/Publish/Core/Base/ClassLoader.php';
+$classLoader = new ClassLoader(
+    $settings['ClassLoader']['Repositories'],
+    $settings['ClassLoader']['Mode'],
+    $settings['ClassLoader']['lazyClassLoaders']
+);
+spl_autoload_register( array( $classLoader, 'load' ) );
+
+// Setup configuration
+$configuration = new Configuration(
+    'service',
+    $settings['Configuration']['Parsers'],
+    $settings['Configuration']['Paths'],
+    $settings['Configuration']['Settings']
+);
+$configuration->load();
+
+// Setup Container
+$container = new Container(
+    $configuration->getAll(),
+    array(
+        '$indexFile' => (isset( $indexFile ) ? $indexFile : 'index.php'),
+        '$classLoader' => $classLoader,
+        '$configuration' => $configuration,
+        '$cacheDirPermission' => $settings['Configuration']['Settings']['CacheDirPermission'],
+        '$cacheFilePermission' => $settings['Configuration']['Settings']['CacheFilePermission'],
+        '$useCache' => $settings['Configuration']['Settings']['UseCache'],
+    )
+);
+
+// Get Request and update configuration for access
+$accessPaths = array();
+$accessRelativePaths = array();
+$request = $container->getRequest();
+foreach ( $request->access as $accessMatch )
+{
+    $accessRelativePaths[] = $accessRelativePath = "settings/access/{$accessMatch->type}/{$accessMatch->name}/";
+    $accessPaths[] = __DIR__ . '/' . $accessRelativePath;
+}
+$configuration->setDirs( $accessPaths, 'access' );
+$configuration->reload();
+
+
+// @todo Load modules somehow now that access settings has been loaded
+
+// Setup configuration for controllers
+$modulePaths = array();
+$moduleAccessPaths = array();
+foreach ( $request->modules as $module )
+{
+    if ( $module->path[0] !== '/' )
+        $modulePath = __DIR__ . '/' . $module->path;
+    else
+        $modulePath = $module->path;
+
+    $modulePaths[] = "{$modulePath}/settings/";
+    foreach ($accessRelativePaths as $accessRelativePath )
+    {
+        $moduleAccessPaths[] = "{$modulePath}/{$accessRelativePath}";
+    }
+}
+$configuration->setDirs( $modulePaths, 'modules' );
+$configuration->setDirs( $moduleAccessPaths, 'modulesAccess' );
+$configuration->reload();
+
+// Reload settings on Container class and return
+$container->setSettings( $configuration->getAll() );
+return $container;

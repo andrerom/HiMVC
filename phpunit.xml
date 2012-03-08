@@ -1,0 +1,22 @@
+<phpunit
+  backupGlobals="false"
+  backupStaticAttributes="false"
+  bootstrap="bootstrap.php"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  >
+  <testsuites>
+    <testsuite name="HiMVC\Core\MVC">
+      <directory>HiMVC/Core/MVC/Tests</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">HiMVC</directory>
+      <exclude>
+          <directory suffix=".php">HiMVC/Core/MVC/Tests</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+</phpunit>
