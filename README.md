@@ -3,6 +3,7 @@ Hierarchical injected MVC for PHP.
 
 #Setup?
 HiMVC relies and extends classes available in ezp-next, so here is how you can setup the code to work:
+
 * Checkout HiMVC: $ git clone git://github.com/andrerom/HiMVC.git himvc
 * Checkout ezp-next: $ git clone git://github.com/ezsystems/ezp-next.git next
 * Symlink eZ: $ cd himvc && ln -s ../next/eZ eZ
@@ -17,6 +18,7 @@ The code has some parts that can be used as is, and some parts that should be gi
 
 #Todo?
 As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning of "Highly injected MVC". But some missing pices to get this part in:
+
 * Twig view handler with design aware Twig_Loader
 * PHP view handler
 * Define ways to execute view hierarchically in both view handlers
@@ -24,6 +26,7 @@ As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning o
 * Add interfaces and unit tests for code that is considered mature (ready)
 
 Things that should be reconsidered:
+
 * The properties on Request object including action vs method
 * How the RequestParser works
 * (...)
