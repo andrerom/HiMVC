@@ -21,14 +21,16 @@ As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning o
 
 * Twig view handler with design aware Twig_Loader
 * PHP view handler
-* Define ways to execute view hierarchically in both view handlers
+* Add Response (/ Result) objects, and api on Request object to get it (so parser can inject)
+* Define ways to execute view hierarchically in both view handlers, also figgure out how this should affect current Request object. Possibly createSubRequest( $uri ) which clones current object.
 * Define a way to do page layouts, basic idea is that standard view is changed to "pagelayout" which hierarchically calls full/edit/index/.. view, this is reverse of eZ Publish, but might be more understandable for new users of the system.
 * Add interfaces and unit tests for code that is considered mature (ready)
+* @todo's
 
 Things that should be reconsidered:
 
 * The properties on Request object including action vs method
-* How the RequestParser works
+* How the RequestParser works including json/xml addapters
 * (...)
 
 #History?
