@@ -48,7 +48,7 @@ register_shutdown_function(
 );
 
 $request = $container->getRequest();
-$reponse = $container->getRouter()->execute( $request );
+$reponse = $container->getRouter()->route( $request );
 
 echo $reponse . "\n";
 

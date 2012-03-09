@@ -38,7 +38,7 @@ class Router
      * @throws eZ\Publish\Core\Base\Exceptions\Httpable
      * @todo Addapt some kind of httpable exceptions which maps to http errors at least, similar to /x/
      */
-    public function execute( Request $request )
+    public function route( Request $request )
     {
         $redirectCount = 0;
 
