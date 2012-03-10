@@ -293,7 +293,7 @@ class Configuration
         }
 
         // Check modified time if dev mode
-        if ( $this->settings['CheckFileMTime'] )
+        if ( $this->settings['CheckCacheFileMTime'] )
         {
             $currentTime = time();
             foreach ( $cacheData['files'] as $inputFile )
