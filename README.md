@@ -1,6 +1,11 @@
 ##HiMVC
 Hierarchical injected MVC for PHP.
 
+* Status: Proof Of Concept(s)
+* Provided: As is
+* License: GPL3
+* Copyright: eZ Systems AS & andrerom
+
 #Setup?
 HiMVC relies and extends classes available in ezp-next, so here is how you can setup the code to work:
 
