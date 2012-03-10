@@ -50,7 +50,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test ViewDispatcher
      *
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::handle
+     * @covers \HiMVC\Core\MVC\ViewDispatcher::view
      */
     public function testNoConditions()
     {
@@ -61,7 +61,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 $this->equalTo( array() )
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array() );
-        $dispatcher->handle( 'content', 'read', 'full', array() );
+        $dispatcher->view( 'content', 'read', 'full', array() );
 
         $this->viewMock2->expects( $this->once() )
             ->method( 'render' )
@@ -70,13 +70,13 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 $this->equalTo( array() )
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'php' => array( $this->viewMock2, 'render' ) ), array() );
-        $dispatcher->handle( 'content', 'read', '', array() );
+        $dispatcher->view( 'content', 'read', '', array() );
     }
 
     /**
      * Test ViewDispatcher
      *
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::handle
+     * @covers \HiMVC\Core\MVC\ViewDispatcher::view
      * @covers \HiMVC\Core\MVC\ViewDispatcher::getMatchingConditionTarget
      */
     public function testVerySimpleCondition()
@@ -95,7 +95,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'target' => 'content/read/full_frontpage.tpl',
             )
         ) );
-        $dispatcher->handle( 'content', 'read', 'full', $params );
+        $dispatcher->view( 'content', 'read', 'full', $params );
 
         $this->viewMock2->expects( $this->once() )
             ->method( 'render' )
@@ -110,7 +110,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'identifier' => 'gallery'
             )
         ) );
-        $dispatcher->handle( 'content', 'read', '', $params );
+        $dispatcher->view( 'content', 'read', '', $params );
     }
 
     /**
@@ -118,7 +118,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
      *
      * @todo Consider if conditions should be read in reverse order / prepended on match
      *
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::handle
+     * @covers \HiMVC\Core\MVC\ViewDispatcher::view
      * @covers \HiMVC\Core\MVC\ViewDispatcher::getMatchingConditionTarget
      */
     public function testSimpleCondition()
@@ -143,7 +143,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'identifier' => 'gallery'
             ),
         ) );
-        $dispatcher->handle( 'content', 'read', 'full', $params );
+        $dispatcher->view( 'content', 'read', 'full', $params );
 
         $this->viewMock2->expects( $this->once() )
             ->method( 'render' )
@@ -163,6 +163,6 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'remoteId' => 42,
             ),
         ) );
-        $dispatcher->handle( 'content', 'read', '', $params );
+        $dispatcher->view( 'content', 'read', '', $params );
     }
 }

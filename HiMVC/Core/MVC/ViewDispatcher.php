@@ -47,20 +47,32 @@ class ViewDispatcher
     /**
      * Map view by convention and do a match against override conditions before it is executed
      *
-     * View source string convention: <$modelType>/<$action>[/<$view>]
+     * view() $source convention: '<$module>/<$action>[/<$view>]'
      *
      * If no override match is found then '.<defaultViewSuffix>' is appended where
      * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
      *
-     * @param string $modelType
+     * @uses viewSource()
+     * @param string $module Can be a sub module, but most not start or stop in slash, eg: content/rating
      * @param string $action
      * @param string $view
      * @param array $params
      * @return string
      */
-    public function handle( $modelType, $action, $view = '', array $params )
+    public function view( $module, $action, $view = '', array $params )
     {
-        $source = $modelType . '/' . $action . ( $view ? '/' . $view : '' );
+        $source = $module . '/' . $action . ( $view ? '/' . $view : '' );
+        return $this->viewBySource( $source, $params );
+    }
+
+    /**
+     * @param string $source
+     * @param array $params
+     * @return string
+     * @throws \Exception
+     */
+    protected function viewBySource( $source, array $params  )
+    {
         $target = $this->getMatchingConditionTarget( $source, $params );
         if ( $target === null )
         {
