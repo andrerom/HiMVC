@@ -88,7 +88,7 @@ class Request extends ValueObject
     /**
      * @var \HiMVC\Core\Base\AccessMatch[]
      */
-    protected $access;
+    protected $access = array();
 
     /**
      * @var \HiMVC\Core\Base\Module[]
