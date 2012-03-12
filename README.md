@@ -24,7 +24,6 @@ The code has some parts that can be used as is, and some parts that should be gi
 #Todo?
 As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning of "Highly injected MVC". But some missing pices to get this part in:
 
-* Twig view handler with design aware Twig_Loader
 * PHP view handler
 * Add Response (/ Result) objects, and api on Request object to get it (so parser can inject)
 * Define ways to execute view hierarchically in both view handlers, also figgure out how this should affect current Request object. Possibly createSubRequest( $uri ) which clones current request object.

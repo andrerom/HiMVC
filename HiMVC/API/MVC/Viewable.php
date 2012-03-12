@@ -27,9 +27,11 @@ interface Viewable
 {
     /**
      * @abstract
-     * @param string $file Absolute path to file that should be executed
+     * @param string $name The name of the template to execute (including folders if its is in any)
+     *                     Eg: content/edit.tpl
      * @param array $params Objects/values that should be available in view
-     * @todo Addapt rendering/result/reponse stuff from MvcTools / Symfony 2
+     * @return string
+     * @todo Addapt rendering/result/reponse stuff from MvcTools / Symfony 2 for return value
      */
-   public function render( $file, array $params );
+   public function render( $name, array $params );
 }

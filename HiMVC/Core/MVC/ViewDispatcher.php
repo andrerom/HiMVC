@@ -10,16 +10,11 @@
 
 namespace HiMVC\Core\MVC;
 
-use eZ\Publish\API\Repository\Values\ValueObject,
-    HiMVC\Core\MVC\Request;
-
 /**
  * ViewDispatcher
  *
- * Deals with deisigns and overrides based on conventions
- *
- * @todo Split out design implementention from view dispatcher, design handling should be done as custom Twig_Loader?
- * This means we can not do overrides by placment convention, as it needs to be handled before selectiong view (and design impl)
+ * Deals with override rules by configuration and passes execution on to view handler by those rules or alternativly to
+ * default one (first).
  */
 class ViewDispatcher
 {

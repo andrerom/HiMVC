@@ -116,8 +116,6 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test ViewDispatcher
      *
-     * @todo Consider if conditions should be read in reverse order / prepended on match
-     *
      * @covers \HiMVC\Core\MVC\ViewDispatcher::view
      * @covers \HiMVC\Core\MVC\ViewDispatcher::getMatchingConditionTarget
      */

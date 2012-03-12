@@ -8,23 +8,42 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\MVC\Controller;
+namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Restable,
     HiMVC\Core\MVC\Request,
+    HiMVC\Core\MVC\ViewDispatcher,
     eZ\Publish\API\Repository\Repository;
 
 /**
  * Example controller, does no chnages to data atm
  */
-class ContentItem implements Restable
+class Controller implements Restable
 {
+    /**
+     * @var \HiMVC\Core\MVC\Request
+     */
+    protected $request;
+
+    /**
+     * @var \eZ\Publish\API\Repository\Repository
+     */
+    protected $repository;
+
+    /**
+     * @var \HiMVC\Core\MVC\ViewDispatcher
+     */
+    protected $viewDispatcher;
+
     /**
      * @param \HiMVC\Core\MVC\Request $request
      * @param \eZ\Publish\API\Repository\Repository $reposiotry
+     * @param \HiMVC\Core\MVC\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Request $request, Repository $reposiotry  )
+    public function __construct( Request $request, Repository $reposiotry, ViewDispatcher $viewDispatcher )
     {
-
+        $this->request = $request;
+        $this->repository = $reposiotry;
+        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**
@@ -46,7 +65,11 @@ class ContentItem implements Restable
      */
     public function doRetrieve( $id, $view = 'full' )
     {
-        return __METHOD__ . "( $id, '$view' )";
+        $model = $this->repository->getContentService()->loadContent( $id );
+        return $this->viewDispatcher->view( 'content', 'read', $view, array(
+            'model' => $model,
+            'request' => $this->request,
+        ) );
     }
 
     /**
