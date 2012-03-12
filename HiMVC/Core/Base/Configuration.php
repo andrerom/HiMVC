@@ -358,12 +358,12 @@ class Configuration
         {
             throw new BadConfiguration( 'base\[Configuration]\Parsers', 'Could not parse configuration files' );
         }
-        $parsers = $this->parsers;
+
         foreach ( $configurationPaths as $scopeArray )
         {
             foreach ( $scopeArray as $settingsDir )
             {
-                foreach ( $parsers as $suffix => $parser )
+                foreach ( $this->parsers as $suffix => $parser )
                 {
                     $fileName = $settingsDir . $this->name . $suffix;
                     if ( !isset( $sourceFiles[$fileName] ) && is_file( $fileName ) )
@@ -384,10 +384,12 @@ class Configuration
         $configurationFileData = array();
         foreach ( $sourceFiles as $fileName => $suffix )
         {
-            if ( !$parsers[$suffix] instanceof Parser )
-                $parsers[$suffix] = new $parsers[$suffix]( $this->settings );
+            if ( !$this->parsers[$suffix] instanceof Parser )
+            {
+                $this->parsers[$suffix] = new $this->parsers[$suffix]( $this->settings );
+            }
 
-            $configurationFileData[$fileName] = $parsers[$suffix]->parse( $fileName, file_get_contents( $fileName ) );
+            $configurationFileData[$fileName] = $this->parsers[$suffix]->parse( $fileName, file_get_contents( $fileName ) );
         }
 
         // Post parsing actions @see recursivePostParseActions()
