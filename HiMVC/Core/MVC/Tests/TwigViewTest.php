@@ -61,22 +61,20 @@ class TwigViewTest extends PHPUnit_Framework_TestCase
      *
      * @covers \HiMVC\Core\MVC\View\TwigView::render
      */
-    public function testNoConditions()
+    public function testRender()
     {
         $name = 'content/read/full.tpl';
         $params = array( 'id' => 42 );
 
         $this->twigMock->expects( $this->once() )
             ->method( 'loadTemplate' )
-            ->with(
-                $this->equalTo( $name )
-            )->will( $this->returnValue( $this->twigTemplateMock ) );
+            ->with( $this->equalTo( $name ) )
+            ->will( $this->returnValue( $this->twigTemplateMock ) );
 
         $this->twigTemplateMock->expects( $this->once() )
-                    ->method( 'render' )
-                    ->with(
-                        $this->equalTo( $params )
-                    )->will( $this->returnValue( 'Hello world' ) );
+            ->method( 'render' )
+            ->with( $this->equalTo( $params ) )
+            ->will( $this->returnValue( 'Hello world' ) );
 
         $view = new TwigView( $this->twigMock );
         $actual = $view->render( $name, $params );
