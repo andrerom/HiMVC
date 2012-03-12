@@ -40,7 +40,6 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  * Settings are defined in service.ini like the following example:
  *
  *     [repository]
- *     public=true
  *     class=eZ\Publish\Core\Base\Repository
  *     arguments[persistence_handler]=@inmemory_persistence_handler
  *
@@ -352,12 +351,12 @@ class DependencyInjectionContainer implements Container
         {
             if ( $function !== '' )
                 return function() use ( $serviceContainer, $argument, $function ){
-                    $serviceObject = $serviceContainer->get( ltrim( $argument, '%' ), true );
+                    $serviceObject = $serviceContainer->get( ltrim( $argument, '%' ) );
                     return call_user_func_array( array( $serviceObject, $function ), func_get_args() );
                 };
             else
                 return function() use ( $serviceContainer, $argument ){
-                    return $serviceContainer->get( ltrim( $argument, '%' ), true );
+                    return $serviceContainer->get( ltrim( $argument, '%' ) );
                 };
         }
         else if ( isset( $this->dependencies[ $argument ] ) )// Existing dependencies (@Service / $Variable)
@@ -370,7 +369,7 @@ class DependencyInjectionContainer implements Container
         }
         else// Try to load a @service dependency
         {
-            $serviceObject = $this->get( ltrim( $argument, '@' ), true );
+            $serviceObject = $this->get( ltrim( $argument, '@' ) );
         }
 
         if ( $function !== '' )
