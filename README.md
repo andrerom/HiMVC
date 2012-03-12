@@ -7,13 +7,13 @@ Hierarchical injected MVC for PHP.
 * Copyright: eZ Systems AS & andrerom
 
 #Setup?
-HiMVC relies and extends classes available in ezp-next, so here is how you can setup the code to work:
+HiMVC relies and extends classes in ezp-next, so here is how you can setup the code to work:
 
 * Checkout HiMVC: $ git clone git://github.com/andrerom/HiMVC.git himvc
 * Checkout ezp-next: $ git clone git://github.com/ezsystems/ezp-next.git next
 * Symlink eZ: $ cd himvc && ln -s ../next/eZ eZ
 * Symlink config: $ ln config.php-DEVELOPMENT config.php
-* Test: $ php index.php
+* Test: $ php index.php (Alternatively if a http server is setup against himvc, open your browser)
 * Test: $ phpunit
 
 #What?
