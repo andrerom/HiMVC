@@ -32,12 +32,12 @@ class DesignDispatcher
      * Possible design locations is a combination of active modules and active designs.
      *
      * @param \HiMVC\Core\Base\Module[] $modules
-     * @param array $designs
+     * @param array $enabledDesigns
      * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException If $designs or $request->modules is empty
      */
-    public function __construct( array $modules, array $designs )
+    public function __construct( array $modules, array $enabledDesigns )
     {
-        if ( empty( $designs ) )
+        if ( empty( $enabledDesigns ) )
             throw new InvalidArgumentException( '$designs', 'Empty, can not find design locations' );
 
         if ( empty( $modules ) )
@@ -45,9 +45,10 @@ class DesignDispatcher
 
         foreach ( $modules as $module )
         {
-            foreach ( $designs as $design )
+            foreach ( $enabledDesigns as $design )
             {
-                $this->possibleDesignLocations[] = "{$module->path}/design/{$design}";
+                if ( in_array( $design, $module->designs ) )
+                    $this->possibleDesignLocations[] = "{$module->path}/design/{$design}";
             }
         }
 

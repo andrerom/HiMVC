@@ -20,7 +20,7 @@ use eZ\Publish\API\Repository\Values\ValueObject;
 class Module extends ValueObject
 {
     /**
-     * @var string Name of module
+     * @var string Name of module (the module name)
      */
     public $name;
 
@@ -30,15 +30,22 @@ class Module extends ValueObject
     public $path;
 
     /**
+     * @var string List of designs avaialble in this module
+     */
+    public $designs;
+
+    /**
      * Constructor
      *
      * @param string $name Name of module
      * @param string $path Absolute path to module
+     * @param array $designs Optional list of designs avaialble in this module
      */
-    public function __construct( $name, $path )
+    public function __construct( $name, $path, array $designs = array() )
     {
         $this->name = $name;
         $this->path = $path;
+        $this->designs = $designs;
     }
 }
 
