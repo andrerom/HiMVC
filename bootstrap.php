@@ -62,31 +62,28 @@ foreach ( $request->access as $accessMatch )
     $accessPaths[] = __DIR__ . '/' . $accessRelativePath;
 }
 $configuration->setDirs( $accessPaths, 'access' );
-$configuration->reload();
+$container->setSettings( $configuration->reload()->getAll() );
 
 
-// @todo Load modules somehow now that access settings has been loaded
-
-// Setup configuration for controllers
+// Setup modules
 $modulePaths = array();
 $moduleAccessPaths = array();
-foreach ( $request->modules as $module )
+foreach ( $container->getModules() as $module )
 {
     if ( $module->path[0] !== '/' )
-        $modulePath = __DIR__ . '/' . $module->path;
-    else
-        $modulePath = $module->path;
+        $module->path = __DIR__ . '/' . $module->path;
 
-    $modulePaths[] = "{$modulePath}/settings/";
-    foreach ($accessRelativePaths as $accessRelativePath )
+    $request->appendModule( $module );
+
+    $modulePaths[] = "{$module->path}/settings/";
+    foreach ( $accessRelativePaths as $accessRelativePath )
     {
-        $moduleAccessPaths[] = "{$modulePath}/{$accessRelativePath}";
+        $moduleAccessPaths[] = "{$module->path}/{$accessRelativePath}";
     }
 }
 $configuration->setDirs( $modulePaths, 'modules' );
 $configuration->setDirs( $moduleAccessPaths, 'modulesAccess' );
-$configuration->reload();
+$container->setSettings( $configuration->reload()->getAll() );
 
-// Reload settings on Container class and return
-$container->setSettings( $configuration->getAll() );
+// Return ready configured container
 return $container;

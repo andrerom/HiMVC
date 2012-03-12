@@ -142,6 +142,24 @@ class DependencyInjectionContainer implements Container
     }
 
     /**
+     * Get Module objects
+     *
+     * @uses get()
+     * @return \HiMVC\Core\Base\Module[]
+     * @todo Fix the fact that a seperate call to this function after settings are reloaded could return other modules
+     *       (aka the collection is not shared)
+     */
+    public function getModules()
+    {
+        $modules = array();
+        foreach ( $this->getListOfExtendedServices( '@-module' ) as $modulePrefix => $moduleName )
+        {
+            $modules[$modulePrefix] = $this->get( ltrim( $moduleName, '@' ) );
+        }
+        return $modules;
+    }
+
+    /**
      * Get a variable dependency
      *
      * @param string $variable
@@ -424,7 +442,8 @@ class DependencyInjectionContainer implements Container
                 return $this->settings[$serviceParent] + array( 'shared' => true );
             }
         }
-        else if ( !empty( $this->settings[$serviceName] ) )// Validate settings
+
+        if ( !empty( $this->settings[$serviceName] ) )// Validate settings
         {
             return $this->settings[$serviceName] + array( 'shared' => true );
         }
