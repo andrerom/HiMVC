@@ -34,7 +34,7 @@ class Configuration
      *
      * @var string
      */
-    const CONFIG_CACHE_DIR = 'var/cache/ini/';
+    const DEFAULT_CONFIG_CACHE_DIR = 'var/cache/configuration/';
 
     /**
      * Constant string used as a temporary unset variable during ini parsing
@@ -135,7 +135,8 @@ class Configuration
             'CacheFilePermission' => 0644,
             'CacheDirPermission' => 0755,
             'UseCache' => false,
-            'CheckCacheFileMTime' => false,
+            'DevelopmentMode' => false,
+            'CacheDir' => self::DEFAULT_CONFIG_CACHE_DIR,
         );
     }
 
@@ -207,6 +208,8 @@ class Configuration
 
     /**
      * Reload cache data conditionally if path hash has changed on current instance
+     *
+     * @return \HiMVC\Core\Base\Configuration
      */
     public function reload()
     {
@@ -220,6 +223,7 @@ class Configuration
      *
      * @param bool|null $hasCache Lets you specify if there is a cache file, will check if null and $useCache is true
      * @param bool $useCache Will skip using cached config files (slow), when null depends on [ini]\use-cache setting
+     * @return \HiMVC\Core\Base\Configuration
      */
     public function load( $hasCache = null, $useCache = null )
     {
@@ -273,7 +277,7 @@ class Configuration
      */
     protected function hasCache( $cacheName )
     {
-        return is_file( self::CONFIG_CACHE_DIR . $cacheName . '.php' );
+        return is_file( "{$this->settings['CacheDir']}configuration/{$cacheName}.php" );
     }
 
     /**
@@ -284,7 +288,7 @@ class Configuration
      */
     protected function readCache( $cacheName )
     {
-        $cacheData = include self::CONFIG_CACHE_DIR . $cacheName . '.php';
+        $cacheData = include( "{$this->settings['CacheDir']}configuration/{$cacheName}.php" );
 
         // Check that cache has
         if ( !isset( $cacheData['data'] ) || $cacheData['rev'] !== self::CONFIG_CACHE_REV )
@@ -293,7 +297,7 @@ class Configuration
         }
 
         // Check modified time if dev mode
-        if ( $this->settings['CheckCacheFileMTime'] )
+        if ( $this->settings['DevelopmentMode'] )
         {
             $currentTime = time();
             foreach ( $cacheData['files'] as $inputFile )
@@ -325,6 +329,7 @@ class Configuration
      * @param array $configurationData
      * @param array $sourceFiles Optional, stored in cache to be able to check modified time in future devMode
      * @param array $sourcePaths Optional, stored in cache to be able to debug it more easily
+     * @return array
      */
     protected function generateRawData( $configurationPathsHash, array $configurationData, array $sourceFiles = array(), array $sourcePaths = array() )
     {
@@ -446,13 +451,13 @@ class Configuration
         try
         {
             // Create ini dir if it does not exist
-            if ( !is_dir( self::CONFIG_CACHE_DIR ) )
+            if ( !is_dir( "{$this->settings['CacheDir']}configuration/" ) )
             {
-                mkdir( self::CONFIG_CACHE_DIR, $this->settings['CacheDirPermission'], true );
+                mkdir( "{$this->settings['CacheDir']}configuration/", $this->settings['CacheDirPermission'], true );
             }
 
             // Create cache hash
-            $cachedFile = self::CONFIG_CACHE_DIR . $cacheName . '.php';
+            $cachedFile = "{$this->settings['CacheDir']}configuration/{$cacheName}.php";
 
             // Store cache
             $generator = new ezcPhpGenerator( $cachedFile );

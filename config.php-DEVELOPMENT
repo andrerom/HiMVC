@@ -41,7 +41,7 @@ return array(
         ),
     ),
     'Configuration' => array(
-        // List of parser classes where key is file suffix
+        // List of parser classes where key is supported file suffix
         'Parsers' => array(
             '.ini' => 'eZ\\Publish\\Core\\Base\\Configuration\\Parser\\Ini',
             //'.ini.append.php' => 'eZ\\Publish\\Core\\Base\\Configuration\\Parser\\Ini',
@@ -66,7 +66,7 @@ return array(
             'IniParserStrict' => true,
 
             // Switch for development mode or not, default false
-            'CheckCacheFileMTime' => true,
+            'DevelopmentMode' => true,
 
             // File Permissions, default 0644
             'CacheFilePermission' => 0644,
@@ -76,6 +76,9 @@ return array(
 
             // Disable cache, default false
             'UseCache' => false,
+
+            // Cache dir
+            'CacheDir' => __DIR__ . '/var/cache/',
         ),
     ),
 );
