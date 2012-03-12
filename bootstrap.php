@@ -37,7 +37,9 @@ $configuration = new Configuration(
     $settings['Configuration']['Paths'],
     $settings['Configuration']['Settings']
 );
-$configuration->load();
+$configuration
+    ->enableKeepParsedData( true )// Avoid re parsing files several times during bootstrap
+    ->load();
 
 // Setup Container
 $container = new Container(
@@ -83,7 +85,12 @@ foreach ( $container->getModules() as $module )
 }
 $configuration->setDirs( $modulePaths, 'modules' );
 $configuration->setDirs( $moduleAccessPaths, 'modulesAccess' );
-$container->setSettings( $configuration->reload()->getAll() );
+$container->setSettings(
+    $configuration
+        ->enableKeepParsedData( false )// Set setting back to sane default, as a bonus parsed data is cleared on reload
+        ->reload()
+        ->getAll()
+);
 
 // Return ready configured container
 return $container;

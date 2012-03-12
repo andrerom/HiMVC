@@ -98,6 +98,13 @@ class Configuration
     protected $parsers;
 
     /**
+     * Hash of parsed data from parsers
+     *
+     * @var array Array value of false, means file is not there
+     */
+    protected $parsedData;
+
+    /**
      * Configuration object settings (see config.php['Configurtation'])
      *
      * Default values can be seen in __construct()
@@ -136,6 +143,7 @@ class Configuration
             'CacheDirPermission' => 0755,
             'UseCache' => false,
             'DevelopmentMode' => false,
+            'KeepParsedData' => false,
             'CacheDir' => self::DEFAULT_CONFIG_CACHE_DIR,
         );
     }
@@ -190,6 +198,18 @@ class Configuration
 
         $this->pathsHash = '';
         return true;
+    }
+
+    /**
+     * Enable/disable setting 'KeepParsedData'
+     *
+     * @param bool $value
+     * @return \HiMVC\Core\Base\Configuration
+     */
+    public function enableKeepParsedData( $value )
+    {
+        $this->settings['KeepParsedData'] = $value;
+        return $this;
     }
 
     /**
@@ -366,9 +386,22 @@ class Configuration
                 foreach ( $this->parsers as $suffix => $parser )
                 {
                     $fileName = $settingsDir . $this->name . $suffix;
-                    if ( !isset( $sourceFiles[$fileName] ) && is_file( $fileName ) )
+                    if ( isset( $sourceFiles[$fileName] ) )
+                    {
+                        continue;
+                    }
+                    else if ( isset( $this->parsedData[$fileName] ) )
+                    {
+                        if ( $this->parsedData[$fileName] !== false )
+                            $sourceFiles[$fileName] = $suffix;
+                    }
+                    else if ( is_file( $fileName ) )
                     {
                         $sourceFiles[$fileName] = $suffix;
+                    }
+                    else
+                    {
+                        $this->parsedData[$fileName] = false;
                     }
                 }
             }
@@ -384,12 +417,19 @@ class Configuration
         $configurationFileData = array();
         foreach ( $sourceFiles as $fileName => $suffix )
         {
+            if ( isset( $this->parsedData[$fileName] ) )
+            {
+                $configurationFileData[$fileName] = $this->parsedData[$fileName];
+                continue;
+            }
+
             if ( !$this->parsers[$suffix] instanceof Parser )
             {
                 $this->parsers[$suffix] = new $this->parsers[$suffix]( $this->settings );
             }
 
             $configurationFileData[$fileName] = $this->parsers[$suffix]->parse( $fileName, file_get_contents( $fileName ) );
+            $this->parsedData[$fileName] = $configurationFileData[$fileName];
         }
 
         // Post parsing actions @see recursivePostParseActions()
@@ -403,6 +443,9 @@ class Configuration
                 $this->recursivePostParseActions( $sectionArray, $configurationData[$section] );
             }
         }
+
+        if ( !$this->settings['KeepParsedData'] )
+            $this->parsedData = array();
 
         return $configurationData;
     }
