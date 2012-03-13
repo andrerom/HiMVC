@@ -61,17 +61,17 @@ class SessionArray implements \ArrayAccess
      *
      * @param \HiMVC\Core\MVC\Request $req
      * @param \HiMVC\Core\Base\SessionHandler\SessionHandlerInterface $handler
-     * @param array $config
+     * @param array $settings
      */
     function __construct( Request $req,
                           SessionHandlerInterface $handler,
-                          array $config )
+                          array $settings )
     {
         $this->handler = $handler;
 
-        if ( isset( $config['name'] ) )
+        if ( isset( $settings['name'] ) )
         {
-            $sessionName = $config['name'];
+            $sessionName = $settings['name'];
             session_name( $sessionName );
         }
         else
@@ -91,14 +91,16 @@ class SessionArray implements \ArrayAccess
             $this->hasSessionCookie = isset( $req->cookies[ $sessionName ] );
         }
 
-        if ( isset( $config['cookie_params'] ) )
+        if ( isset( $settings['cookie_params'] ) )
         {
-            $params = session_get_cookie_params() + $config['cookie_params'];
+            $params = session_get_cookie_params() + $settings['cookie_params'];
             session_set_cookie_params( $params['lifetime'], $params['path'], $params['domain'], $params['secure'], $params['httponly'] );
         }
 
-        if ( isset( $config['gc_maxlifetime'] ) )
-            ini_set("session.gc_maxlifetime", $config['gc_maxlifetime'] );
+        if ( isset( $settings['gc_maxlifetime'] ) )
+        {
+            ini_set("session.gc_maxlifetime", $settings['gc_maxlifetime'] );
+        }
 
         $this->handler->register( $this->hasSessionCookie );
 
