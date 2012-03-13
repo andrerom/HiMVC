@@ -23,7 +23,7 @@ interface SessionHandlerInterface
      * Register session handler
      *
      * @param bool $sessionExist  A hint that specifies is session existed (existence of session cookie) at init.
-     * @return bool The return value (usually TRUE on success, FALSE on failure).
+     * @return bool The return value (usually true on success, false on failure).
      */
     public function register( $sessionExist );
 
@@ -32,44 +32,54 @@ interface SessionHandlerInterface
      *
      * Notice: Moves session data over to new session, use destroy() if that is not prefered (aka on logout).
      *
-     * @return bool The return value (usually TRUE on success, FALSE on failure).
+     * @return bool The return value  (usually true on success, false on failure).
      */
     public function regenerate();
 
     /**
      * Session close handler
      *
-     * @return bool The return value (usually TRUE on success, FALSE on failure).
+     * @see http://php.net/sessionhandlerinterface.close
+     *
+     * @return bool The return value (usually true on success, false on failure).
      */
     public function close();
 
     /**
      * Session destroy handler
      *
+     * @see http://php.net/sessionhandlerinterface.destroy
+     *
      * @param string $sessionId
-     * @return bool The return value (usually TRUE on success, FALSE on failure).
+     * @return bool The return value (usually true on success, false on failure).
      */
     public function destroy( $sessionId );
 
     /**
-      * Session gc (garbageCollector) handler
-      *
-      * @param int $maxLifeTime In seconds
-      * @return bool The return value (usually TRUE on success, FALSE on failure).
-      */
-     public function gc( $maxLifeTime );
+     * Session gc (garbageCollector) handler
+     *
+     * @see http://php.net/sessionhandlerinterface.gc
+     *
+     * @param int $maxLifeTime In seconds
+     * @return bool The return value (usually true on success, false on failure).
+     */
+    public function gc( $maxLifeTime );
 
     /**
      * Session open handler
      *
+     * @see http://php.net/sessionhandlerinterface.open
+     *
      * @param string $savePath
      * @param string $sessionId
-     * @return bool The return value (usually TRUE on success, FALSE on failure).
+     * @return bool The return value (usually true on success, false on failure).
      */
     public function open( $savePath, $sessionId );
 
     /**
      * Session read handler
+     *
+     * @see http://php.net/sessionhandlerinterface.read
      *
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException If no session where found with that session id
      * @param string $sessionId
@@ -80,9 +90,11 @@ interface SessionHandlerInterface
     /**
      * Session write handler
      *
+     * @see http://php.net/sessionhandlerinterface.write
+     *
      * @param string $sessionId
      * @param string $sessionData Binary session data
-     * @return bool The return value (usually TRUE on success, FALSE on failure).
+     * @return bool The return value (usually true on success, false on failure).
      */
     public function write( $sessionId, $sessionData );
 }
