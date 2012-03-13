@@ -26,7 +26,7 @@ As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning o
 
 * PHP view handler
 * Add Response (/ Result) objects, and api on Request object to get it (so parser can inject)
-* Define ways to execute view hierarchically in both view handlers, also figgure out how this should affect current Request object. Possibly createSubRequest( $uri ) which clones current request object.
+* Define ways to execute view hierarchically in both view handlers, also figgure out how this should affect current Request object. Possibly createSubRequest( $uri ) which clones current request object, while at taht: should sub request be allowed to be anything but retrieval actions?
 * Define a way to do page layouts, basic idea is that standard view is changed to "pagelayout" which hierarchically calls full/edit/index/.. view, this is reverse of eZ Publish, but might be more understandable for new users of the system.
 * Define where Authorization should be done (currently planned to be part of repository in ezp-next)
 * Define where Authentication should be done (pre controller action filter?)
