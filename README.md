@@ -9,12 +9,15 @@ Hierarchical injected MVC for PHP.
 #Setup?
 HiMVC relies and extends classes in ezp-next, so here is how you can setup the code to work:
 
-* Checkout HiMVC: $ git clone git://github.com/andrerom/HiMVC.git himvc
-* Checkout ezp-next: $ git clone git://github.com/ezsystems/ezp-next.git next
-* Symlink eZ: $ cd himvc && ln -s ../next/eZ eZ
-* Symlink config: $ ln config.php-DEVELOPMENT config.php
-* Test: $ php index.php (Alternatively if a http server is setup against himvc, open your browser)
-* Test: $ phpunit
+* $ git clone git://github.com/andrerom/HiMVC.git himvc
+* $ git clone git://github.com/ezsystems/ezp-next.git next
+* $ cd himvc
+* $ ln -s ../next/eZ eZ
+* $ ln config.php-DEVELOPMENT config.php
+* $ php index.php
+* $ phpunit
+
+If you have a webserver (http) setup to the folder you just create then you can also point yout browser towards it.
 
 #What?
 HiMVC is yet another MVC prototype in PHP, it is an concept for an MVC stack that forces use of dependency injection in all parts of the stack using a Dependency injection container. It aims to be fast first, but not at the cost of extensibility.
