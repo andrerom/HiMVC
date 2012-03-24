@@ -36,7 +36,7 @@ class Hello
      */
     public function doWorld()
     {
-        return __METHOD__ . "()";
+        return __METHOD__ . '()';
     }
 }
 

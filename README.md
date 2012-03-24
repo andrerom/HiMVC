@@ -14,7 +14,15 @@ HiMVC relies and extends classes in ezp-next, so here is how you can setup the c
 * $ cd himvc
 * $ ln -s ../next/eZ eZ
 * $ ln config.php-DEVELOPMENT config.php
+
+
+For testing Hello World:
 * $ php index.php
+
+For testing twig generated ouput using ezp-next Public API Content object:
+* $ php index.php http://exmpl.cm/content/1
+
+For Running Unit Tests:
 * $ phpunit
 
 If you have a webserver (http) setup to the folder you just create then you can also point yout browser towards it.
