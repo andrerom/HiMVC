@@ -94,7 +94,8 @@ class ViewDispatcher
      * - 3 is added for identifer matchs
      * - 4 is added for remoteId matchs
      *
-     * @todo Consider if conditions should be read in reverse order / prepended on match
+     * @todo Consider if conditions should be read in reverse order / prepended on match like ezp?
+     * @todo Matching rules on request object should be limited to cache safe params? (uri, vary, query?, ..)
      *
      * @param string $source
      * @param array $params
@@ -118,7 +119,7 @@ class ViewDispatcher
                     continue 2;
 
                 if ( $value === $params[$name] )
-                    $points = ( $name === 'remoteId' ? 10 : ( $name === 'identifer' ? 9 : 6 ) );
+                    $points = ( $name === 'remoteId' ? 10 : ( $name === 'identifer' ? 9 : 7 ) );
                 else if ( !is_array( $value ) )
                     continue 2;
                 else if ( !$this->recursiveMatch( $value, $params[$name], $points ) )
@@ -133,8 +134,8 @@ class ViewDispatcher
             return null;
 
         krsort( $matches, SORT_NUMERIC );
-        $match = reset( $matches );
-        $match = reset( $match );
+        $matches = reset( $matches );// matches with heighest points
+        $match = reset( $matches );// first match among those with highest points
         return $match['target'];
     }
 

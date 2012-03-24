@@ -23,7 +23,7 @@ interface Restable
     /**
      * Add new item in collection ( ie POST /orders/ )
      *
-     * @return \HiMVC\Core\Base\Response
+     * @return \HiMVC\Core\Base\Result
      */
     public function doCreate();
 
@@ -34,7 +34,7 @@ interface Restable
      *
      * @param mixed $id
      * @param string $view
-     * @return \HiMVC\Core\Base\Response
+     * @return \HiMVC\Core\Base\Result
      */
     public function doRetrieve( $id, $view = 'full' );
 
@@ -42,7 +42,7 @@ interface Restable
      * Update item in collection ( ie PUT /orders/{id} )
      *
      * @param mixed $id
-     * @return \HiMVC\Core\Base\Response
+     * @return \HiMVC\Core\Base\Result
      */
     public function doUpdate( $id );
 
@@ -51,14 +51,14 @@ interface Restable
      * Or 'Cancel order'
      *
      * @param mixed $id
-     * @return \HiMVC\Core\Base\Response
+     * @return \HiMVC\Core\Base\Result
      */
     public function doDelete( $id );
 
     /**
      * List items in collection ( ie GET /orders/ )
      *
-     * @return \HiMVC\Core\Base\Response
+     * @return \HiMVC\Core\Base\Result
      */
     public function doIndex();
 }

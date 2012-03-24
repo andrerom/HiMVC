@@ -187,6 +187,11 @@ class Request extends ValueObject
     protected $raw = array();
 
     /**
+     * @var array List of child requests witin this request
+     */
+    protected $childRequests = array();
+
+    /**
      * Nested request exceptions
      * @see getException()
      * @see setException()
@@ -215,27 +220,6 @@ class Request extends ValueObject
     }
 
     /**
-     * Generates a uri array by uri string
-     *
-     * @param string $uri
-     * @return array
-     */
-     protected static function arrayByUri( $uri )
-     {
-         if ( isset( $uri[1] ) )
-         {
-             if ( strrpos( $uri, '/' ) > 0 )
-                 return explode( '/', trim( $uri, '/' ) );
-             return array( trim( $uri, '/' ) );
-         }
-         else if ( isset( $uri[0] ) && $uri[0] !== '/' )
-         {
-             return array( $uri[0] );
-         }
-         return array();
-     }
-
-    /**
      * 'Magic' PHP function to set values on protected properties
      *
      * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
@@ -249,6 +233,7 @@ class Request extends ValueObject
             throw new InvalidArgumentException( $name, 'does not take "null" as value on '. __CLASS__ );
         }
 
+        // @todo Change setters that forces a type to use set methods instead
         switch ( $name )
         {
             case 'uri' :
@@ -307,12 +292,8 @@ class Request extends ValueObject
         {
             return $this->uriArray = self::arrayByUri( $this->uri );
         }
-        else if ( isset( $this->$name ) || $name === 'originalUri' || $name === 'accept' )
-        {
-            return $this->$name;
-        }
 
-        throw new InvalidArgumentException( $name, 'not a valid poperty on '. __CLASS__ );
+        return parent::__get( $name );
     }
 
     /**
@@ -352,7 +333,7 @@ class Request extends ValueObject
      *
      * @return \eZ\Publish\Core\Base\Exceptions\Httpable|null
      */
-    final function getException()
+    final public function getException()
     {
         return $this->exception;
     }
@@ -363,8 +344,49 @@ class Request extends ValueObject
      * @param \eZ\Publish\Core\Base\Exceptions\Httpable $exception
      * @return \eZ\Publish\Core\Base\Exceptions\Httpable
      */
-    final function setException( HttpableException $exception )
+    final public function setException( HttpableException $exception )
     {
         return $this->exception = $exception;
     }
+
+    /**
+     * @param string $uri
+     * @return Request
+     */
+    public function createChild( $uri )
+    {
+        $child = clone $this;
+        $child->uri = $uri;
+        $child->uriArray = false;
+        $this->childRequests[] = $child;
+        return $child;
+    }
+
+    /**
+     * Protectes clone so it is only accessible via createChild()
+     */
+    protected function __clone()
+    {
+    }
+
+    /**
+     * Generates a uri array by uri string
+     *
+     * @param string $uri
+     * @return array
+     */
+     protected static function arrayByUri( $uri )
+     {
+         if ( isset( $uri[1] ) )
+         {
+             if ( strrpos( $uri, '/' ) > 0 )
+                 return explode( '/', trim( $uri, '/' ) );
+             return array( trim( $uri, '/' ) );
+         }
+         else if ( isset( $uri[0] ) && $uri[0] !== '/' )
+         {
+             return array( $uri[0] );
+         }
+         return array();
+     }
 }

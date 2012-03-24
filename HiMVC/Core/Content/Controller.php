@@ -49,7 +49,7 @@ class Controller implements Restable
     /**
      * Add new item in collection ( ie POST /orders/ )
      *
-     * @return \HiMVC\Core\MVC\Response
+     * @return \HiMVC\Core\MVC\Result
      */
     public function doCreate()
     {
@@ -61,7 +61,7 @@ class Controller implements Restable
      *
      * @param mixed $id
      * @param string $view
-     * @return \HiMVC\Core\MVC\Response
+     * @return \HiMVC\Core\MVC\Result
      */
     public function doRetrieve( $id, $view = 'full' )
     {
@@ -76,7 +76,7 @@ class Controller implements Restable
      * Update item in collection ( ie PUT /orders/{id} )
      *
      * @param mixed $id
-     * @return \HiMVC\Core\MVC\Response
+     * @return \HiMVC\Core\MVC\Result
      */
     public function doUpdate( $id )
     {
@@ -88,7 +88,7 @@ class Controller implements Restable
      * Or 'Cancel order'
      *
      * @param mixed $id
-     * @return \HiMVC\Core\MVC\Response
+     * @return \HiMVC\Core\MVC\Result
      */
     public function doDelete( $id )
     {
@@ -98,7 +98,7 @@ class Controller implements Restable
     /**
      * List items in collection ( ie GET /orders/ )
      *
-     * @return \HiMVC\Core\MVC\Response
+     * @return \HiMVC\Core\MVC\Result
      */
     public function doIndex()
     {
