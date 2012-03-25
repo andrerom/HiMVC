@@ -12,7 +12,8 @@ namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Restable,
     HiMVC\Core\MVC\Request,
     HiMVC\Core\MVC\ViewDispatcher,
-    eZ\Publish\API\Repository\Repository;
+    eZ\Publish\API\Repository\Repository,
+    HiMVC\API\MVC\Values\Result;
 
 /**
  * Example controller, does no chnages to data atm
@@ -30,26 +31,19 @@ class Controller implements Restable
     protected $repository;
 
     /**
-     * @var \HiMVC\Core\MVC\ViewDispatcher
-     */
-    protected $viewDispatcher;
-
-    /**
      * @param \HiMVC\Core\MVC\Request $request
      * @param \eZ\Publish\API\Repository\Repository $reposiotry
-     * @param \HiMVC\Core\MVC\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Request $request, Repository $reposiotry, ViewDispatcher $viewDispatcher )
+    public function __construct( Request $request, Repository $reposiotry )
     {
         $this->request = $request;
         $this->repository = $reposiotry;
-        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**
      * Add new item in collection ( ie POST /orders/ )
      *
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doCreate()
     {
@@ -61,14 +55,17 @@ class Controller implements Restable
      *
      * @param mixed $id
      * @param string $view
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doRetrieve( $id, $view = 'full' )
     {
         $model = $this->repository->getContentService()->loadContent( $id );
-        return $this->viewDispatcher->view( 'content', 'read', $view, array(
+
+        return new Result( array(
             'model' => $model,
-            'request' => $this->request,
+            'module' => 'content',
+            'action' => 'read',
+            'view' => $view,
         ) );
     }
 
@@ -76,7 +73,7 @@ class Controller implements Restable
      * Update item in collection ( ie PUT /orders/{id} )
      *
      * @param mixed $id
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doUpdate( $id )
     {
@@ -88,7 +85,7 @@ class Controller implements Restable
      * Or 'Cancel order'
      *
      * @param mixed $id
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doDelete( $id )
     {
@@ -98,7 +95,7 @@ class Controller implements Restable
     /**
      * List items in collection ( ie GET /orders/ )
      *
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doIndex()
     {

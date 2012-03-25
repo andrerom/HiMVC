@@ -1,6 +1,6 @@
 <?php
 /**
- * File contains TwigRoutingExtension class
+ * File contains TwigDispatcherExtension class
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -10,32 +10,31 @@
 
 namespace HiMVC\Core\MVC\View\Twig;
 
-use HiMVC\Core\MVC\ViewDispatcher,
-    HiMVC\Core\MVC\Router,
+use HiMVC\Core\MVC\Dispatcher,
     HiMVC\Core\MVC\Request,
     Twig_Extension,
     Twig_Environment,
     Twig_Function_Method;
 
 /**
- * TwigRoutingExtension
+ * TwigDispatcherExtension
  *
- * Extends twig by adding 'route' function for hmvc use.
+ * Extends twig by adding 'dispatch' function for hmvc use.
  */
-class TwigRoutingExtension extends Twig_Extension
+class TwigDispatcherExtension extends Twig_Extension
 {
     /**
-     * @var \HiMVC\Core\MVC\Router
+     * @var \HiMVC\Core\MVC\Dispatcher
      */
-    protected $router;
+    protected $dispatcher;
 
     /**
      * @param \HiMVC\Core\MVC\Router $router
      * @param \HiMVC\Core\MVC\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Router $router, ViewDispatcher $viewDispatcher )
+    public function __construct( Dispatcher $dispatcher )
     {
-        $this->router = $router;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -46,7 +45,7 @@ class TwigRoutingExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'route' => new Twig_Function_Method( $this, 'route')
+            'dispatch' => new Twig_Function_Method( $this, 'dispatch' )
         );
     }
 
@@ -57,17 +56,18 @@ class TwigRoutingExtension extends Twig_Extension
      */
     public function getName()
     {
-        return 'routing';
+        return 'dispatcher';
     }
 
     /**
      * Routes request
      *
      * @param \HiMVC\Core\MVC\Request $request
-     * @return \HiMVC\Core\MVC\Result
+     * @return Response An object that can be casted to string
      */
-    public function route( Request $request )
+    public function dispatch( Request $request )
     {
-        return $this->router->route( $request );
+        return $this->dispatcher->dispatch( $request );
     }
+
 }

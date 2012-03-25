@@ -45,5 +45,12 @@ interface Container
      * @return \HiMVC\Core\MVC\ViewDispatcher
      */
     public function getViewDispatcher();
+
+    /**
+     * Get Dispatcher object
+     *
+     * @return \HiMVC\Core\MVC\Dispatcher
+     */
+    public function getDispatcher();
 }
 

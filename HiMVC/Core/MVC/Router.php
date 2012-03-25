@@ -34,7 +34,7 @@ class Router
 
     /**
      * @param Request $request
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      * @throws eZ\Publish\Core\Base\Exceptions\Httpable
      * @todo Addapt some kind of httpable exceptions which maps to http errors at least, similar to /x/
      */

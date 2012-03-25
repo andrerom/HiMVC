@@ -10,6 +10,9 @@
 
 namespace HiMVC\Core\MVC;
 
+use HiMVC\Core\MVC\Request;
+use HiMVC\API\MVC\Values\Result;
+
 /**
  * ViewDispatcher
  *
@@ -48,26 +51,30 @@ class ViewDispatcher
      * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
      *
      * @uses viewSource()
-     * @param string $module Can be a sub module, but most not start or stop in slash, eg: content/rating
-     * @param string $action
-     * @param string $view
-     * @param array $params
-     * @return string
+     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Result $result
+     * @return Response An object that can be casted to string
      */
-    public function view( $module, $action, $view = '', array $params )
+    public function view( Request $request, Result $result )
     {
-        $source = $module . '/' . $action . ( $view ? '/' . $view : '' );
-        return $this->viewBySource( $source, $params );
+        $source = $result->module . '/' . $result->action . ( $result->view ? '/' . $result->view : '' );
+        return $this->viewBySource( $source, $request, $result );
     }
 
     /**
      * @param string $source
-     * @param array $params
+     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Result $result
      * @return string
      * @throws \Exception
      */
-    protected function viewBySource( $source, array $params  )
+    protected function viewBySource( $source, Request $request, Result $result )
     {
+        $params = array(
+            'request' => $request,
+            'model' => $result->model,
+            'meta' => $result->metaData,
+        ) + $result->params;
         $target = $this->getMatchingConditionTarget( $source, $params );
         if ( $target === null )
         {

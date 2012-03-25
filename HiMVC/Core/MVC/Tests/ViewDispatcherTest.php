@@ -9,8 +9,11 @@
  */
 
 namespace HiMVC\Core\MVC\Tests;
-use HiMVC\Core\MVC\ViewDispatcher,
-    PHPUnit_Framework_TestCase;
+
+use HiMVC\Core\MVC\ViewDispatcher;
+use HiMVC\API\MVC\Values\Result;
+use HiMVC\Core\MVC\Request;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Test class
@@ -28,6 +31,11 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     protected $viewMock2;
 
     /**
+     * @var \HiMVC\Core\MVC\Request $request
+     */
+    protected $request;
+
+    /**
      * Setup mock
      */
     public function setUp()
@@ -35,6 +43,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         parent::setUp();
         $this->viewMock1 = $this->getMock( 'HiMVC\API\MVC\Viewable' );
         $this->viewMock2 = $this->getMock( 'HiMVC\API\MVC\Viewable' );
+        $this->request = new Request();
     }
 
     /**
@@ -58,19 +67,25 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
             ->method( 'render' )
             ->with(
                 $this->equalTo( 'content/read/full.tpl' ),
-                $this->equalTo( array() )
+                $this->anything()
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array() );
-        $dispatcher->view( 'content', 'read', 'full', array() );
+        $dispatcher->view(
+            $this->request,
+            new Result( array( 'module' => 'content', 'action' => 'read', 'view' => 'full' ) )
+        );
 
         $this->viewMock2->expects( $this->once() )
             ->method( 'render' )
             ->with(
                 $this->equalTo( 'content/read.php' ),
-                $this->equalTo( array() )
+                $this->anything()
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'php' => array( $this->viewMock2, 'render' ) ), array() );
-        $dispatcher->view( 'content', 'read', '', array() );
+        $dispatcher->view(
+            $this->request,
+            new Result( array( 'module' => 'content', 'action' => 'read' ) )
+        );
     }
 
     /**
@@ -87,7 +102,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
             ->method( 'render' )
             ->with(
                 $this->equalTo( 'content/read/full_frontpage.tpl' ),
-                $this->equalTo( $params )
+                $this->anything()
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array(
             'frontpage' => array(
@@ -95,13 +110,16 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'target' => 'content/read/full_frontpage.tpl',
             )
         ) );
-        $dispatcher->view( 'content', 'read', 'full', $params );
+        $dispatcher->view(
+            $this->request,
+            new Result( array( 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params ) )
+        );
 
         $this->viewMock2->expects( $this->once() )
             ->method( 'render' )
             ->with(
                 $this->equalTo( 'content/read/gallery.tpl' ),
-                $this->equalTo($params )
+                $this->anything()
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock2, 'render' ) ), array(
             'gallery' => array(
@@ -110,7 +128,10 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'identifier' => 'gallery'
             )
         ) );
-        $dispatcher->view( 'content', 'read', '', $params );
+        $dispatcher->view(
+            $this->request,
+            new Result( array( 'module' => 'content', 'action' => 'read', 'params' => $params ) )
+        );
     }
 
     /**
@@ -127,7 +148,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
             ->method( 'render' )
             ->with(
                 $this->equalTo( 'content/read/full_frontpage.tpl' ),
-                $this->equalTo( $params )
+                $this->anything()
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array(
             'frontpage' => array(
@@ -141,13 +162,16 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'identifier' => 'gallery'
             ),
         ) );
-        $dispatcher->view( 'content', 'read', 'full', $params );
+        $dispatcher->view(
+            $this->request,
+            new Result( array( 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params ) )
+        );
 
         $this->viewMock2->expects( $this->once() )
             ->method( 'render' )
             ->with(
                 $this->equalTo( 'content/read/alternative_gallery.tpl' ),
-                $this->equalTo( $params )
+                $this->anything()
             )->will( $this->returnValue( null ) );
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock2, 'render' ) ), array(
             'gallery' => array(
@@ -161,6 +185,9 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
                 'remoteId' => 42,
             ),
         ) );
-        $dispatcher->view( 'content', 'read', '', $params );
+        $dispatcher->view(
+            $this->request,
+            new Result( array( 'module' => 'content', 'action' => 'read', 'params' => $params ) )
+        );
     }
 }

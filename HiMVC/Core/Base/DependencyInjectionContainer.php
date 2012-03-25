@@ -142,6 +142,17 @@ class DependencyInjectionContainer implements Container
     }
 
     /**
+     * Get Dispatcher object
+     *
+     * @uses get()
+     * @return \HiMVC\Core\MVC\Dispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->get( 'dispatcher' );
+    }
+
+    /**
      * Get Module objects
      *
      * @uses get()

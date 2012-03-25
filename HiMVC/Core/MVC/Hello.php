@@ -32,7 +32,7 @@ class Hello
     /**
      * Add new item in collection ( ie GET /hello/ )
      *
-     * @return \HiMVC\Core\MVC\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doWorld()
     {
