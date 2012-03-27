@@ -10,10 +10,10 @@ Hierarchical injected MVC for PHP.
 HiMVC relies and extends classes in ezp-next, so here is how you can setup the code to work:
 
 * $ git clone git://github.com/andrerom/HiMVC.git himvc
-* $ git clone git://github.com/ezsystems/ezp-next.git next
 * $ cd himvc
-* $ ln -s ../next/eZ eZ
-* $ ln config.php-DEVELOPMENT config.php
+* $ git submodule init
+* $ git submodule update
+* $ cp config.php-DEVELOPMENT config.php
 
 
 For testing Hello World:

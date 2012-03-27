@@ -22,7 +22,7 @@ if ( !( $settings = include( __DIR__ . '/config.php' ) ) )
 }
 
 // Setup autoloader(s)
-require __DIR__ . '/eZ/Publish/Core/Base/ClassLoader.php';
+require __DIR__ . '/ezpnext/eZ/Publish/Core/Base/ClassLoader.php';
 $classLoader = new ClassLoader(
     $settings['ClassLoader']['Repositories'],
     $settings['ClassLoader']['Mode'],

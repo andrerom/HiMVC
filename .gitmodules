@@ -1,0 +1,3 @@
+[submodule "ezpnext"]
+	path = ezpnext
+	url = git://github.com/ezsystems/ezp-next.git
