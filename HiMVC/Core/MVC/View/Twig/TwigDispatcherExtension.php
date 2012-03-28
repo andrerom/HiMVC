@@ -10,11 +10,13 @@
 
 namespace HiMVC\Core\MVC\View\Twig;
 
-use HiMVC\Core\MVC\Dispatcher,
-    HiMVC\Core\MVC\Request,
-    Twig_Extension,
-    Twig_Environment,
-    Twig_Function_Method;
+use HiMVC\Core\MVC\Dispatcher;
+use HiMVC\Core\MVC\ViewDispatcher;
+use HiMVC\Core\MVC\Request;
+use HiMVC\API\MVC\Values\Result;
+use Twig_Extension;
+use Twig_Environment;
+use Twig_Function_Method;
 
 /**
  * TwigDispatcherExtension
@@ -29,12 +31,18 @@ class TwigDispatcherExtension extends Twig_Extension
     protected $dispatcher;
 
     /**
-     * @param \HiMVC\Core\MVC\Router $router
+     * @var \HiMVC\Core\MVC\ViewDispatcher
+     */
+    protected $viewDispatcher;
+
+    /**
+     * @param \HiMVC\Core\MVC\Dispatcher $dispatcher
      * @param \HiMVC\Core\MVC\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Dispatcher $dispatcher )
+    public function __construct( Dispatcher $dispatcher, ViewDispatcher $viewDispatcher )
     {
         $this->dispatcher = $dispatcher;
+        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**
@@ -45,7 +53,8 @@ class TwigDispatcherExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'dispatch' => new Twig_Function_Method( $this, 'dispatch' )
+            'dispatch' => new Twig_Function_Method( $this, 'dispatch' ),
+            'view' => new Twig_Function_Method( $this, 'viewDispatcher' )
         );
     }
 
@@ -60,7 +69,7 @@ class TwigDispatcherExtension extends Twig_Extension
     }
 
     /**
-     * Routes request
+     * Dispatch request
      *
      * @param \HiMVC\Core\MVC\Request $request
      * @return Response An object that can be casted to string
@@ -68,6 +77,18 @@ class TwigDispatcherExtension extends Twig_Extension
     public function dispatch( Request $request )
     {
         return $this->dispatcher->dispatch( $request );
+    }
+
+    /**
+     * Generate Response for Result+Requst object
+     *
+     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Result $result
+     * @return Response An object that can be casted to string
+     */
+    public function viewDispatcher( Request $request, Result $result )
+    {
+        return $this->viewDispatcher->view( $request, $result );
     }
 
 }

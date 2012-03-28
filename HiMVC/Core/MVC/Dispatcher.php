@@ -55,17 +55,28 @@ class Dispatcher
      * the result to the view.
      *
      * @param Request $request
+     * @param bool $isRootRequest If true, this signals that this is the root request (not embed)
+     *                            and hence router->route returns Result object instead of
+     *                            exception or Response object, then layout is applied.
      * @return Response An object that can be casted to string, hence used in templates as well
      */
-    public function dispatch( Request $request )
+    public function dispatch( Request $request, $isRootRequest = false )
     {
-        // @todo: Add filters and exceptions
+        // @todo: Add filters and exceptions support (redirect and misc http errors)
         $result = $this->router->route( $request );
 
-        if ( $result instanceof Result )
-            return $this->viewDispatcher->view( $request, $result );
+        // @todo: Throw if not a Response object, or do 500 internal server error redirect
+        if ( !$result instanceof Result )
+        {
+            return $result;
+        }
 
-        // @todo: Throw if not a Response object
-        return $result;
+        if ( $isRootRequest )
+        {
+            // @todo Either rename or change this to fit json / xml requests
+            return $this->viewDispatcher->layout( $request, $result );
+        }
+
+        return $this->viewDispatcher->view( $request, $result );
     }
 }

@@ -58,7 +58,38 @@ class ViewDispatcher
     public function view( Request $request, Result $result )
     {
         $source = $result->module . '/' . $result->action . ( $result->view ? '/' . $result->view : '' );
-        return $this->viewBySource( $source, $request, $result );
+        return $this->viewBySource(
+            $source,
+            array(
+                'request' => $request,
+                'model' => $result->model,
+                'meta' => $result->metaData,
+            ) + $result->params
+        );
+    }
+
+    /**
+     * Map view by convention and do a match against override conditions before it is executed
+     *
+     * layout() $source convention: 'layout'
+     *
+     * If no override match is found then '.<defaultViewSuffix>' is appended where
+     * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
+     *
+     * @uses viewSource()
+     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Result $result
+     * @return Response An object that can be casted to string
+     */
+    public function layout( Request $request, Result $result )
+    {
+        return $this->viewBySource(
+            'layout',
+            array(
+                'request' => $request,
+                'result' => $result,
+            )
+        );
     }
 
     /**
@@ -68,13 +99,8 @@ class ViewDispatcher
      * @return string
      * @throws \Exception
      */
-    protected function viewBySource( $source, Request $request, Result $result )
+    protected function viewBySource( $source, array $params )
     {
-        $params = array(
-            'request' => $request,
-            'model' => $result->model,
-            'meta' => $result->metaData,
-        ) + $result->params;
         $target = $this->getMatchingConditionTarget( $source, $params );
         if ( $target === null )
         {

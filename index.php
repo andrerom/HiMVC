@@ -48,7 +48,7 @@ register_shutdown_function(
 );
 
 $request = $container->getRequest();
-echo $container->getDispatcher()->dispatch( $request ) . "\n";
+echo $container->getDispatcher()->dispatch( $request, true ) . "\n";
 
 
 echo "ms: " .  ( (int) ( ( microtime( true) - $request->microTime ) * 10000 ) ) / 10 . "\n";
