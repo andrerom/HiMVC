@@ -36,7 +36,7 @@ interface CRUDControllable
      * @param string $view
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doRetrieve( $id, $view = 'full' );
+    public function doRead( $id, $view = 'full' );
 
     /**
      * Update item in collection ( ie PUT /orders/{id} )

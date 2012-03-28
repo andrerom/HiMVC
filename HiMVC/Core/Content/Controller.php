@@ -57,7 +57,7 @@ class Controller implements CRUDControllable
      * @param string $view
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doRetrieve( $id, $view = 'full' )
+    public function doRead( $id, $view = 'full' )
     {
         $model = $this->repository->getContentService()->loadContent( $id );
 
