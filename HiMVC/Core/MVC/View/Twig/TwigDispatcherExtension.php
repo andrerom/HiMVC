@@ -11,8 +11,8 @@
 namespace HiMVC\Core\MVC\View\Twig;
 
 use HiMVC\Core\MVC\Dispatcher;
-use HiMVC\Core\MVC\ViewDispatcher;
-use HiMVC\Core\MVC\Request;
+use HiMVC\Core\MVC\View\ViewDispatcher;
+use HiMVC\API\MVC\Values\Request;
 use HiMVC\API\MVC\Values\Result;
 use Twig_Extension;
 use Twig_Environment;
@@ -31,13 +31,13 @@ class TwigDispatcherExtension extends Twig_Extension
     protected $dispatcher;
 
     /**
-     * @var \HiMVC\Core\MVC\ViewDispatcher
+     * @var \HiMVC\Core\MVC\View\ViewDispatcher
      */
     protected $viewDispatcher;
 
     /**
      * @param \HiMVC\Core\MVC\Dispatcher $dispatcher
-     * @param \HiMVC\Core\MVC\ViewDispatcher $viewDispatcher
+     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      */
     public function __construct( Dispatcher $dispatcher, ViewDispatcher $viewDispatcher )
     {
@@ -71,7 +71,7 @@ class TwigDispatcherExtension extends Twig_Extension
     /**
      * Dispatch request
      *
-     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @return Response An object that can be casted to string
      */
     public function dispatch( Request $request )
@@ -82,7 +82,7 @@ class TwigDispatcherExtension extends Twig_Extension
     /**
      * Generate Response for Result+Requst object
      *
-     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
      * @return Response An object that can be casted to string
      */

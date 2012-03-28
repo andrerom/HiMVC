@@ -8,9 +8,9 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\MVC;
+namespace HiMVC\Core\MVC\View;
 
-use HiMVC\Core\MVC\Request;
+use HiMVC\API\MVC\Values\Request;
 use HiMVC\API\MVC\Values\Result;
 
 /**
@@ -51,7 +51,7 @@ class ViewDispatcher
      * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
      *
      * @uses viewSource()
-     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
      * @return Response An object that can be casted to string
      */
@@ -77,7 +77,7 @@ class ViewDispatcher
      * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
      *
      * @uses viewSource()
-     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
      * @return Response An object that can be casted to string
      */
@@ -94,8 +94,7 @@ class ViewDispatcher
 
     /**
      * @param string $source
-     * @param \HiMVC\Core\MVC\Request $request
-     * @param \HiMVC\API\MVC\Values\Result $result
+     * @param array $params
      * @return string
      * @throws \Exception
      */

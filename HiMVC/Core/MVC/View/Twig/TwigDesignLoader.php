@@ -10,7 +10,7 @@
 
 namespace HiMVC\Core\MVC\View\Twig;
 
-use HiMVC\Core\MVC\DesignDispatcher,
+use HiMVC\Core\MVC\View\DesignLoader,
     Twig_LoaderInterface,
     Twig_Error_Loader,
     eZ\Publish\API\Repository\Exceptions\NotFoundException;
@@ -20,7 +20,7 @@ use HiMVC\Core\MVC\DesignDispatcher,
  *
  * Uses DesignDispatcher and just converts exceptions into twig exceptions.
  */
-class TwigDesignLoader extends DesignDispatcher implements Twig_LoaderInterface
+class TwigDesignLoader extends DesignLoader implements Twig_LoaderInterface
 {
     /**
      * Gets the source code of a template, given its name.

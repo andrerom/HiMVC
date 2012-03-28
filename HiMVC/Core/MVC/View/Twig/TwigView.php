@@ -8,10 +8,10 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\MVC\View;
+namespace HiMVC\Core\MVC\View\Twig;
 
 use HiMVC\API\MVC\Viewable,
-    HiMVC\Core\MVC\Request,
+    HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\Router,
     Twig_Environment;
 

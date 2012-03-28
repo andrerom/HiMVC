@@ -10,8 +10,8 @@
 
 namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\CRUDControllable,
-    HiMVC\Core\MVC\Request,
-    HiMVC\Core\MVC\ViewDispatcher,
+    HiMVC\API\MVC\Values\Request,
+    HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
     HiMVC\API\MVC\Values\Result;
 
@@ -21,7 +21,7 @@ use HiMVC\API\MVC\CRUDControllable,
 class Controller implements CRUDControllable
 {
     /**
-     * @var \HiMVC\Core\MVC\Request
+     * @var \HiMVC\API\MVC\Values\Request
      */
     protected $request;
 
@@ -31,7 +31,7 @@ class Controller implements CRUDControllable
     protected $repository;
 
     /**
-     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @param \eZ\Publish\API\Repository\Repository $reposiotry
      */
     public function __construct( Request $request, Repository $reposiotry )

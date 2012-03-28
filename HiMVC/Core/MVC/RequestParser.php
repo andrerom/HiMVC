@@ -77,7 +77,7 @@ class RequestParser
      * @param array $files
      * @param string $body
      * @param string $indexFile
-     * @return \HiMVC\Core\MVC\Request
+     * @return \HiMVC\API\MVC\Values\Request
      */
     public function process(
             array $server,

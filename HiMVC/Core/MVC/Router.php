@@ -10,8 +10,8 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\Core\MVC\Request,
-    eZ\Publish\Core\Base\Exceptions\Httpable;
+use HiMVC\API\MVC\Values\Request as APIRequest;
+use eZ\Publish\Core\Base\Exceptions\Httpable;
 
 /**
  * Router handles routing a request to a controller
@@ -33,12 +33,12 @@ class Router
     }
 
     /**
-     * @param Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @return \HiMVC\API\MVC\Values\Result
      * @throws eZ\Publish\Core\Base\Exceptions\Httpable
      * @todo Addapt some kind of httpable exceptions which maps to http errors at least, similar to /x/
      */
-    public function route( Request $request )
+    public function route( APIRequest $request )
     {
         $redirectCount = 0;
 

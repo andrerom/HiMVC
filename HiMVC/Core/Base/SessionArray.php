@@ -9,7 +9,7 @@
  */
 namespace HiMVC\Core\Base;
 
-use HiMVC\Core\MVC\Request,
+use HiMVC\API\MVC\Values\Request,
     HiMVC\Core\Base\SessionHandler\SessionHandlerInterface;
 
 
@@ -59,7 +59,7 @@ class SessionArray implements \ArrayAccess
     /**
      * Constructor, setup session system (but only start if session cookie is present, otherwise lazy start)
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param \HiMVC\API\MVC\Values\Request $req
      * @param \HiMVC\Core\Base\SessionHandler\SessionHandlerInterface $handler
      * @param array $settings
      */

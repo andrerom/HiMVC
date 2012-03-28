@@ -10,9 +10,9 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\Core\MVC\Request;
+use HiMVC\API\MVC\Values\Request as APIRequest;
 use HiMVC\Core\MVC\Router;
-use HiMVC\Core\MVC\ViewDispatcher;
+use HiMVC\Core\MVC\View\ViewDispatcher;
 use HiMVC\API\MVC\Values\Result;
 
 /**
@@ -40,7 +40,7 @@ class Dispatcher
      * Construct from router and viewDispatcher
      *
      * @param \HiMVC\Core\MVC\Router $router
-     * @param \HiMVC\Core\MVC\ViewDispatcher $viewDispatcher
+     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      */
     public function __construct( Router $router, ViewDispatcher $viewDispatcher )
     {
@@ -54,13 +54,13 @@ class Dispatcher
      * Dispatches the request using the information from the router and paasing
      * the result to the view.
      *
-     * @param Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @param bool $isRootRequest If true, this signals that this is the root request (not embed)
      *                            and hence router->route returns Result object instead of
      *                            exception or Response object, then layout is applied.
      * @return Response An object that can be casted to string, hence used in templates as well
      */
-    public function dispatch( Request $request, $isRootRequest = false )
+    public function dispatch( APIRequest $request, $isRootRequest = false )
     {
         // @todo: Add filters and exceptions support (redirect and misc http errors)
         $result = $this->router->route( $request );

@@ -8,18 +8,17 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\MVC;
+namespace HiMVC\Core\MVC\View;
 
 use eZ\Publish\Core\Base\Exceptions\NotFoundException,
-    eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    HiMVC\Core\MVC\Request;
+    eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 
 /**
  * DesignDispatcher, template loader
  *
  * @todo Add cache based pr $possibleDesignLocations singature
  */
-class DesignDispatcher
+class DesignLoader
 {
     /**
      * @var array List of paths (relative or absolute) to possible design locations in the system
@@ -94,7 +93,7 @@ class DesignDispatcher
      * @param  string $name The name of the template to load
      * @return string The cache key
      *
-     * @throws |eZ\Publish\API\Repository\Exceptions\NotFoundException When $name is not found
+     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException When $name is not found
      */
     public function getCacheKey( $name )
     {

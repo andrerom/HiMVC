@@ -9,7 +9,8 @@
  */
 
 namespace HiMVC\Core\MVC;
-use HiMVC\Core\MVC\Request;
+
+use HiMVC\API\MVC\Values\Request as APIRequest;
 
 /**
  * Example controller, does no chnages to data atm
@@ -17,14 +18,14 @@ use HiMVC\Core\MVC\Request;
 class Hello
 {
     /**
-     * @var \HiMVC\Core\MVC\Request
+     * @var \HiMVC\API\MVC\Values\Request
      */
     protected $request;
 
     /**
-     * @param \HiMVC\Core\MVC\Request $request
+     * @param \HiMVC\API\MVC\Values\Request $request
      */
-    public function __construct( Request $request )
+    public function __construct( APIRequest $request )
     {
         $this->request = $request;
     }

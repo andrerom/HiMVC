@@ -112,7 +112,7 @@ class DependencyInjectionContainer implements Container
      * Get Request object
      *
      * @uses get()
-     * @return \HiMVC\Core\MVC\Request
+     * @return \HiMVC\API\MVC\Values\Request
      */
     public function getRequest()
     {
@@ -134,7 +134,7 @@ class DependencyInjectionContainer implements Container
      * Get ViewDispatcher object
      *
      * @uses get()
-     * @return \HiMVC\Core\MVC\ViewDispatcher
+     * @return \HiMVC\Core\MVC\View\ViewDispatcher
      */
     public function getViewDispatcher()
     {

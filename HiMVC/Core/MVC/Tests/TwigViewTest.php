@@ -9,7 +9,7 @@
  */
 
 namespace HiMVC\Core\MVC\Tests;
-use HiMVC\Core\MVC\View\TwigView,
+use HiMVC\Core\MVC\View\Twig\TwigView,
     HiMVC\Core\MVC\View\Twig\TwigDesignLoader,
     PHPUnit_Framework_TestCase;
 

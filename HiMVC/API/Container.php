@@ -28,7 +28,7 @@ interface Container
     /**
      * Get Request object
      *
-     * @return \HiMVC\Core\MVC\Request
+     * @return \HiMVC\API\MVC\Values\Request
      */
     public function getRequest();
 
@@ -42,7 +42,7 @@ interface Container
     /**
      * Get ViewDispatcher object
      *
-     * @return \HiMVC\Core\MVC\ViewDispatcher
+     * @return \HiMVC\Core\MVC\View\ViewDispatcher
      */
     public function getViewDispatcher();
 

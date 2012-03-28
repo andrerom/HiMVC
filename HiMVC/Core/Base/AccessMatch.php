@@ -12,7 +12,7 @@ namespace HiMVC\Core\Base;
 
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
     eZ\Publish\API\Repository\Values\ValueObject,
-    HiMVC\Core\MVC\Request;
+    HiMVC\API\MVC\Values\Request;
 
 /**
  * AccessMatch class

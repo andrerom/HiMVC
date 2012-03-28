@@ -10,7 +10,7 @@
 
 namespace HiMVC\Core\MVC\Tests;
 
-use HiMVC\Core\MVC\ViewDispatcher;
+use HiMVC\Core\MVC\View\ViewDispatcher;
 use HiMVC\API\MVC\Values\Result;
 use HiMVC\Core\MVC\Request;
 use PHPUnit_Framework_TestCase;
@@ -31,7 +31,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     protected $viewMock2;
 
     /**
-     * @var \HiMVC\Core\MVC\Request $request
+     * @var \HiMVC\API\MVC\Values\Request $request
      */
     protected $request;
 
@@ -59,7 +59,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test ViewDispatcher
      *
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::view
+     * @covers \HiMVC\Core\MVC\View\ViewDispatcher::view
      */
     public function testNoConditions()
     {
@@ -91,8 +91,8 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test ViewDispatcher
      *
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::view
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::getMatchingConditionTarget
+     * @covers \HiMVC\Core\MVC\View\ViewDispatcher::view
+     * @covers \HiMVC\Core\MVC\View\ViewDispatcher::getMatchingConditionTarget
      */
     public function testVerySimpleCondition()
     {
@@ -137,8 +137,8 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test ViewDispatcher
      *
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::view
-     * @covers \HiMVC\Core\MVC\ViewDispatcher::getMatchingConditionTarget
+     * @covers \HiMVC\Core\MVC\View\ViewDispatcher::view
+     * @covers \HiMVC\Core\MVC\View\ViewDispatcher::getMatchingConditionTarget
      */
     public function testSimpleCondition()
     {
