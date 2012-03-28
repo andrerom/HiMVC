@@ -51,15 +51,9 @@ class RequestParserCLI extends RequestParser
     {
         if ( isset( $server['argv'][1] ) )
         {
-
             $this->uriComponents = parse_url( $server['argv'][1] );
-            /* ["scheme"] => string(4) "http"
-               ["host"] => string(15) "www.example.com"
-               ["port"] => int(80)
-               ["path"] => string(13) "/content/view"
-               ["query"] => string(6) "test=0"
-               ["fragment"] => string(4) "home" */
         }
+
         if ( isset( $server['argv'][2] ) )
         {
             $post = json_decode( $server['argv'][2], true );
@@ -68,8 +62,8 @@ class RequestParserCLI extends RequestParser
                 throw new InvalidArgumentException( "\$server['argv'][2]", "Could not parse json string" );
             }
         }
+
         $req = parent::process( $server, $post, $get, $cookies, $files, $body, $indexFile );
-        $req->userAgent = 'CLI';
         return $req;
     }
 
@@ -77,38 +71,58 @@ class RequestParserCLI extends RequestParser
      * Look for port in http host name and set that to port param and only host
      * on host param.
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @param array $data
+     * @return void
      */
-    protected function processHost( Request $req )
+    protected function processHost( array $server, array &$data )
     {
         if ( isset( $this->uriComponents['host'] ) )
-            $req->host = $this->uriComponents['host'];
+            $data['host'] = $this->uriComponents['host'];
 
         if ( isset( $this->uriComponents['port'] ) )
-            $req->port = $this->uriComponents['port'];
+            $data['port'] = $this->uriComponents['port'];
     }
 
     /**
      * Processes the basic HTTP auth variables is set
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @param array $data
      */
-    protected function processAuthVars( Request $req  )
+    protected function processAuthVars( array $server, array &$data )
     {
         if ( isset( $this->uriComponents['user'] ) && isset( $this->uriComponents['pass']) )
         {
-            $req->authUser = $this->uriComponents['user'];
-            $req->authPwd = $this->uriComponents['pass'];
+            $data['authUser'] = $this->uriComponents['user'];
+            $data['authPwd'] = $this->uriComponents['pass'];
+        }
+    }
+
+    /**
+     * Processes the request body for PUT requests
+     *
+     * @param string $body
+     * @param array $post
+     * @param array $server
+     * @param array $data
+     */
+    protected function processBody( $body, array $post, array $server, array &$data )
+    {
+        if ( isset( $server['argv'][2] ) && $post )
+        {
+            $data['body'] = $post;
+            $data['mimeType'] = 'application/json';
         }
     }
 
     /**
      * Get raw request URI
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
      * @return string
      */
-    protected function getRequestUri( Request $req )
+    protected function getRequestUri( array $server )
     {
         if ( isset( $this->uriComponents['path'] ) )
             return $this->uriComponents['path'];

@@ -50,14 +50,14 @@ class Router
         else if ( isset( $this->routes[ $uriArray[0] ] ) )
             $routes = $this->routes[ $uriArray[0] ];
         else
-            throw new \Exception( 'Could not find routes for $uriArray[0]: ' . $uriArray[0] );
+            throw new \Exception( 'Could not find routes for $uriArray[0]: ' . $uri );
 
         foreach ( $routes as $routeKey => $route )
         {
-            if ( isset( $route['action'] ) && $request->action !== $route['action'] )
+            if ( isset( $route['method'] ) && $request->method !== $route['method'] )
                 continue;
 
-            if ( isset( $route['actions'] ) &&  !in_array( $request->action, $route['actions'] ) )
+            if ( isset( $route['methods'] ) &&  !isset( $route['methods'][$request->method] ) )
                 continue;
 
             if ( isset( $route['uri'] ) && strpos( $uri, $route['uri'] ) !== 0 )
@@ -88,7 +88,7 @@ class Router
 
             if ( isset( $route['redirect'] ) )
             {
-                $request->uri = $route['redirect'];
+                throw new \Exception( "@todo Implement internal redirection!" );
                 $redirectCount++;
                 if ( $redirectCount > 10 )
                     throw new \Exception( "Exceeded routing redirect limit of 10!" );
@@ -99,16 +99,20 @@ class Router
             {
                 return call_user_func_array( $route['function'], $uriParams );
             }
-            else if ( !isset(  $route['controller'] ) )
+            else if ( !isset( $route['controller'] ) )
             {
                 throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing both a controller and a function parameter!" );
             }
+            else if ( !$route['methods'][$request->method] )
+            {
+                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing a methods map as needed in conjunction with controller!" );
+            }
 
             $controller = $route['controller']();
-            $method = isset( $route['method'] ) ? $route['method'] : 'do' . $request->action;
+            $method = $route['methods'][$request->method];
             return call_user_func_array( array( $controller, $method ), $uriParams );
         }
 
-        throw new \Exception( "Could not find a route for uri: '{$uri}', and action: '{$request->action}'" );
+        throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );
     }
 }

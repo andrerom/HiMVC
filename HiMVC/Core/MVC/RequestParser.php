@@ -30,6 +30,20 @@ use HiMVC\Core\MVC\Request,
  */
 class RequestParser
 {
+    /**
+     * @static
+     * @param array $server
+     * @param array $post
+     * @param array $get
+     * @param array $cookies
+     * @param array $files
+     * @param string $body
+     * @param string $indexFile
+     * @param array $settings
+     * @todo Add settings for trusted proxies for X_FORWARDED_* headers use
+     * @return Request
+     * @throws \Exception
+     */
     static final public function createRequest(
             array $server,
             array $post = array(),
@@ -74,54 +88,63 @@ class RequestParser
                   $body = '',
                   $indexFile = 'index.php' )
     {
-        $req = new Request( $get, $cookies, $files, $server );
-        $this->processStandardHeaders( $req );
-        $this->processAcceptHeaders( $req );
-        $this->processMethod( $req, $post );
+        $data = $this->processStandardHeaders( $server ) + array(
+            'raw' => $server,
+            'params' => $get,
+            'cookies' => $cookies,
+            'files' => $files,
+            'accept' => $this->processAcceptHeaders( $server ),
+            'method' => $this->processMethod( $server, $post ),
+        );
 
         // Needs to be after processStandardHeaders() as it will overwrite port it if there is a port in host name
-        $this->processHost( $req );
+        $this->processHost( $server, $data );
 
-        $this->processIfModifiedSince( $req);
+        $data['ifModifiedSince'] = $this->processIfModifiedSince( $server );
 
-        $this->processAuthVars( $req );
-        $this->processRequestUri( $req, $indexFile );
+        $this->processAuthVars( $server, $data );
+        $this->processRequestUri( $server, $data, $indexFile );
 
         // Depends on 'method' being processed already
-        $this->processBody( $req, $body, $post );
+        $this->processBody( $body, $post, $server, $data );
 
-        return $req;
+        return new Request( $data );
     }
 
     /**
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @return array The resulting data for request object
      */
-    protected function processStandardHeaders( Request $req )
+    protected function processStandardHeaders( array $server )
     {
-        if ( isset( $req->raw['REQUEST_TIME_FLOAT'] ) )
-            $req->microTime = $req->raw['REQUEST_TIME_FLOAT'];
+        $data = array();
+        if ( isset( $server['REQUEST_TIME_FLOAT'] ) )
+            $data['microTime'] = $server['REQUEST_TIME_FLOAT'];
         else
-            $req->microTime = microtime( true );
+            $data['microTime'] = microtime( true );
 
-        if ( isset( $req->raw['HTTP_IF_NONE_MATCH'] ) )
-            $req->IfNoneMatch = $req->raw['HTTP_IF_NONE_MATCH'];
+        if ( isset( $server['HTTP_IF_NONE_MATCH'] ) )
+            $data['IfNoneMatch'] = $server['HTTP_IF_NONE_MATCH'];
 
-        if ( isset( $req->raw['HTTP_REFERER'] ) )
-            $req->referrer = $req->raw['HTTP_REFERER'];
+        if ( isset( $server['HTTP_REFERER'] ) )
+            $data['referrer'] = $server['HTTP_REFERER'];
 
-        if ( isset( $req->raw['HTTP_USER_AGENT'] ) )
-            $req->userAgent = $req->raw['HTTP_USER_AGENT'];
+        if ( isset( $server['HTTP_USER_AGENT'] ) )
+            $data['userAgent'] = $server['HTTP_USER_AGENT'];
 
-        if ( isset( $req->raw['SERVER_PORT'] ) )
-            $req->port = $req->raw['SERVER_PORT'];
+        if ( isset( $server['SERVER_PORT'] ) )
+            $data['port'] = $server['SERVER_PORT'];
+
+        return $data;
     }
 
     /**
      * Create Accept object based on _SERVER hash
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @return \HiMVC\Core\MVC\Accept
      */
-     public function processAcceptHeaders( Request $req )
+     public function processAcceptHeaders( array $server )
     {
         $accept = new Accept();
         $map = array(
@@ -132,12 +155,12 @@ class RequestParser
 
         for ( $i = 0; isset( $map[$i] ); $i += 2 )
         {
-            if ( !isset( $req->raw[$map[$i]] ) )
+            if ( !isset( $server[$map[$i]] ) )
             {
                 continue;
             }
 
-            $parts = explode( ',', $req->raw[$map[$i]] );
+            $parts = explode( ',', $server[$map[$i]] );
             $priorities = array();
             for ($y = 0; isset( $parts[$y] ); $y++)
             {
@@ -154,75 +177,55 @@ class RequestParser
             }
             $accept->$map[$i+1] = $priorities;
         }
-        $req->accept = $accept;
+        return $accept;
     }
 
     /**
-     * Map http method verbs to CRUD verbs, including allowing POST to specify DELETE and PUT
-     * verbs with _method param like in Rails
+     * Map http method using post params if present
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
      * @param array $post
+     * @return string
      */
-    protected function processMethod( Request $req, array $post = array() )
+    protected function processMethod( array $server, array $post = array() )
     {
-        $method = isset( $req->raw['REQUEST_METHOD'] ) ?
-                  $req->raw['REQUEST_METHOD'] :
-                  ( empty($post) ? 'GET' : 'POST' );
+        $method = isset( $server['REQUEST_METHOD'] ) ? $server['REQUEST_METHOD'] : ( empty( $post ) ? 'GET' : 'POST' );
 
-        switch ( $method )
+        // Allow POST to be used for DELETE and PUT
+        if ( $method === 'POST' && isset( $post['_method'] ) &&
+            ( $post['_method'] === 'DELETE' || $post['_method'] === 'PUT' ) )
         {
-            case 'POST':
-                $action = 'Create';
-
-                if ( !isset( $post['_method'] ) )
-                    break;
-                // Allow POST to be used for DELETE and PUT
-                if ( $post['_method'] === 'DELETE' )
-                {
-                    $action = 'Delete';
-                }
-                else if ( $post['_method'] === 'PUT' )
-                {
-                    $action = 'Update';
-                }
-                break;
-            case 'PUT':
-                $action = 'Update'; // Replace in case of collection
-                break;
-            case 'DELETE':
-                $action = 'Delete';
-                break;
-            default: // GET / HEAD (and OPTIONS, meaning the latter is not really supported atm)
-                $action = 'Retrieve';
+            return $post['_method'];
         }
-        $req->action = $action;
+        return $method;
     }
 
     /**
      * Look for port in http host name and set that to port param and only host
      * on host param.
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @param array $data
+     * @return void
      */
-    protected function processHost( Request $req )
+    protected function processHost( array $server, array &$data )
     {
-        if ( isset( $req->raw['HTTP_HOST'] ) )
-            $host = $req->raw['HTTP_HOST'];
-        else if ( isset( $req->raw['SERVER_NAME'] ) )
-            $host = $req->raw['SERVER_NAME'];
+        if ( isset( $server['HTTP_HOST'] ) )
+            $host = $server['HTTP_HOST'];
+        else if ( isset( $server['SERVER_NAME'] ) )
+            $host = $server['SERVER_NAME'];
         else
             return;
 
         if ( strpos( $host, ':' ) !== false )
         {
             $host = explode( ':', $host );
-            $req->host = $host[0];
-            $req->port = $host[1];
+            $data['host'] = $host[0];
+            $data['port'] = $host[1];
         }
         else
         {
-            $req->host = $host;
+            $data['host'] = $host;
         }
     }
 
@@ -230,73 +233,74 @@ class RequestParser
      * Fix legacy IE specific issues with ifModifiedSince and
      * parse string to unix timestamp
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @return int
      */
-    protected function processIfModifiedSince( Request $req )
+    protected function processIfModifiedSince( array $server )
     {
-        if ( isset( $req->raw['HTTP_IF_MODIFIED_SINCE'] ) && $req->raw['HTTP_IF_MODIFIED_SINCE'] )
-            $ifModifiedSince = $req->raw['HTTP_IF_MODIFIED_SINCE'];
+        if ( isset( $server['HTTP_IF_MODIFIED_SINCE'] ) && $server['HTTP_IF_MODIFIED_SINCE'] )
+            $ifModifiedSince = $server['HTTP_IF_MODIFIED_SINCE'];
         else
-            return;
+            return 0;
 
         // @todo Is this really needed? wasn't this to wrok around IE5 issues?
-        $pos = strpos( $ifModifiedSince, ';' );// Legacy Internet Explorer specific
-        if ( $pos !== false )
+        if ( false !== ( $pos = strpos( $ifModifiedSince, ';' ) ) )
             $ifModifiedSince = substr( $ifModifiedSince, 0, $pos );
 
-        $req->ifModifiedSince = strtotime( $ifModifiedSince );
+        return strtotime( $ifModifiedSince ) ?: 0;
     }
 
     /**
      * Processes the basic HTTP auth variables is set
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @param array $data
      */
-    protected function processAuthVars( Request $req  )
+    protected function processAuthVars( array $server, array &$data )
     {
-        if ( isset( $req->raw['PHP_AUTH_USER'] ) && isset( $req->raw['PHP_AUTH_PW'] ) )
+        if ( isset( $server['PHP_AUTH_USER'] ) && isset( $server['PHP_AUTH_PW'] ) )
         {
-            $req->authUser = $req->raw['PHP_AUTH_USER'];
-            $req->authPwd = $req->raw['PHP_AUTH_PW'];
+            $data['authUser'] = $server['PHP_AUTH_USER'];
+            $data['authPwd'] = $server['PHP_AUTH_PW'];
         }
     }
 
     /**
      * Processes the request body for PUT requests
      *
-     * @param \HiMVC\Core\MVC\Request $req
      * @param string $body
      * @param array $post
+     * @param array $server
+     * @param array $data
      */
-    protected function processBody( Request $req, $body, array $post )
+    protected function processBody( $body, array $post, array $server, array &$data )
     {
         // @todo Figgure out a way to do body, especially in regards to post data + content type ('php'?)
-        if ( isset( $req->raw['CONTENT_TYPE'] ) )
-            $req->contentType = $req->raw['CONTENT_TYPE'];
+        if ( isset( $server['CONTENT_TYPE'] ) )
+            $data['mimeType'] = $server['CONTENT_TYPE'];
 
-        if ( $req->action === 'Update' )
+        if ( $data['method'] !== 'PUT' )
         {
-            $req->body = $body;
+            $data['body'] = $body;
         }
     }
 
     /**
      * Decode raw request url and to figgure out www and index paths
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
+     * @param array $data
      * @param string $indexFile
      */
-    protected function processRequestUri( Request $req, $indexFile )
+    protected function processRequestUri( array $server, array &$data, $indexFile )
     {
-        $phpSelf = $req->raw['PHP_SELF'];
-        $requestUri = $this->getRequestUri( $req );
-
-        $wwwDir = $this->getWWWDir( $phpSelf, $req->raw['SCRIPT_FILENAME'], $indexFile );
+        $requestUri = $this->getRequestUri( $server );
+        $wwwDir = $this->getWWWDir( $server['PHP_SELF'], $server['SCRIPT_FILENAME'], $indexFile );
         if ( $wwwDir !== null && $wwwDir !== false )// '' is valid
         {
             // Auto detect IIS vh mode & Apache .htaccess mode
-            if ( ( isset( $req->raw['IIS_WasUrlRewritten'] ) && $req->raw['IIS_WasUrlRewritten'] )
-              || ( isset( $req->raw['REDIRECT_URL'] ) && isset( $req->raw['REDIRECT_STATUS'] ) && $req->raw['REDIRECT_STATUS'] == '200' ) )
+            if ( ( isset( $server['IIS_WasUrlRewritten'] ) && $server['IIS_WasUrlRewritten'] )
+              || ( isset( $server['REDIRECT_URL'] ) && isset( $server['REDIRECT_STATUS'] ) && $server['REDIRECT_STATUS'] == '200' ) )
             {
                 $wwwDir = '/'. $wwwDir;
                 $indexDir = $wwwDir;
@@ -325,8 +329,8 @@ class RequestParser
                 // Append slash on index dir so it can be prepended with requestUri directly to create full url
                 $indexDir .= '/';
             }
-            $req->wwwDir = $wwwDir;
-            $req->indexDir = $indexDir;
+            $data['wwwDir'] = $wwwDir;
+            $data['indexDir'] = $indexDir;
         }// else Use defaults, as in vh mode with empty www dir
 
         // Remove url, hash and type parameters
@@ -345,21 +349,21 @@ class RequestParser
 
         // Normalize slash use and url decode url if needed
         if ( $requestUri === '/' || !$requestUri )
-            $req->uri = '';
+            $data['uri'] = '';
         else
-            $req->uri = urldecode( trim( $requestUri, '/ ' ) );
+            $data['uri'] = urldecode( trim( $requestUri, '/ ' ) );
 
     }
 
     /**
      * Get raw request URI
      *
-     * @param \HiMVC\Core\MVC\Request $req
+     * @param array $server
      * @return string
      */
-    protected function getRequestUri( Request $req )
+    protected function getRequestUri( array $server )
     {
-        return $req->raw['REQUEST_URI'];
+        return $server['REQUEST_URI'];
     }
 
     /**

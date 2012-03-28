@@ -45,7 +45,7 @@ class Dispatcher
     public function __construct( Router $router, ViewDispatcher $viewDispatcher )
     {
         $this->router = $router;
-        $this->viewDispatcher   = $viewDispatcher;
+        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**
