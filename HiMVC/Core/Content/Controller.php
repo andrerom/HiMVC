@@ -9,7 +9,7 @@
  */
 
 namespace HiMVC\Core\Content;
-use HiMVC\API\MVC\Restable,
+use HiMVC\API\MVC\CRUDControllable,
     HiMVC\Core\MVC\Request,
     HiMVC\Core\MVC\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
@@ -18,7 +18,7 @@ use HiMVC\API\MVC\Restable,
 /**
  * Example controller, does no chnages to data atm
  */
-class Controller implements Restable
+class Controller implements CRUDControllable
 {
     /**
      * @var \HiMVC\Core\MVC\Request

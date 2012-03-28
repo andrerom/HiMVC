@@ -1,6 +1,6 @@
 <?php
 /**
- * Rest Controller Interface
+ * CRUD Controller Interface
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -18,12 +18,12 @@ namespace HiMVC\API\MVC;
  * and an item controller for /orders/{id}
  */
 
-interface Restable
+interface CRUDControllable
 {
     /**
      * Add new item in collection ( ie POST /orders/ )
      *
-     * @return \HiMVC\Core\Base\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doCreate();
 
@@ -34,7 +34,7 @@ interface Restable
      *
      * @param mixed $id
      * @param string $view
-     * @return \HiMVC\Core\Base\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doRetrieve( $id, $view = 'full' );
 
@@ -42,7 +42,7 @@ interface Restable
      * Update item in collection ( ie PUT /orders/{id} )
      *
      * @param mixed $id
-     * @return \HiMVC\Core\Base\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doUpdate( $id );
 
@@ -51,14 +51,14 @@ interface Restable
      * Or 'Cancel order'
      *
      * @param mixed $id
-     * @return \HiMVC\Core\Base\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doDelete( $id );
 
     /**
      * List items in collection ( ie GET /orders/ )
      *
-     * @return \HiMVC\Core\Base\Result
+     * @return \HiMVC\API\MVC\Values\Result
      */
     public function doIndex();
 }
