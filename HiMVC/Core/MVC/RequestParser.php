@@ -65,8 +65,11 @@ class RequestParser
         if ( !$requestParser instanceof RequestParser )//@todo Interface
             throw new \Exception( 'Request Parser addapters needs to extend HiMVC\Core\MVC\RequestParser' );
 
-        return $requestParser->process( $server, $post, $get, $cookies, $files, $body, $indexFile );
+        return $requestParser->process( $server, $post, $get, $cookies, $files, $body, $indexFile, $settings );
     }
+
+    protected $settings;
+
     /**
      * Parse request and create request object
      *
@@ -77,6 +80,7 @@ class RequestParser
      * @param array $files
      * @param string $body
      * @param string $indexFile
+     * @param array $settings
      * @return \HiMVC\API\MVC\Values\Request
      */
     public function process(
@@ -86,8 +90,12 @@ class RequestParser
             array $cookies = array(),
             array $files = array(),
                   $body = '',
-                  $indexFile = 'index.php' )
+                  $indexFile = 'index.php',
+            array $settings = array() )
     {
+        $this->settings = $settings + array(
+            'trustedProxys' => array(),// Use with X_FORWARDED_HOST, X_FORWARDED_PROTO, X_FORWARDED_FOR and X_FORWARDED_PORT
+        );
         $data = $this->processStandardHeaders( $server ) + array(
             'raw' => $server,
             'params' => $get,

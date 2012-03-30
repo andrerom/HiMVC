@@ -38,6 +38,7 @@ class RequestParserCLI extends RequestParser
      * @param array $files
      * @param string $body
      * @param string $indexFile
+     * @param array $settings
      * @return \HiMVC\API\MVC\Values\Request
      */
     public function process(
@@ -47,7 +48,8 @@ class RequestParserCLI extends RequestParser
             array $cookies = array(),
             array $files = array(),
                   $body = '',
-                  $indexFile = 'index.php' )
+                  $indexFile = 'index.php',
+            array $settings = array() )
     {
         if ( isset( $server['argv'][1] ) )
         {
@@ -63,7 +65,7 @@ class RequestParserCLI extends RequestParser
             }
         }
 
-        $req = parent::process( $server, $post, $get, $cookies, $files, $body, $indexFile );
+        $req = parent::process( $server, $post, $get, $cookies, $files, $body, $indexFile, $settings );
         return $req;
     }
 
