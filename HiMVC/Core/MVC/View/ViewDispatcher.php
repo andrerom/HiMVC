@@ -58,14 +58,7 @@ class ViewDispatcher
     public function view( Request $request, Result $result )
     {
         $source = $result->module . '/' . $result->action . ( $result->view ? '/' . $result->view : '' );
-        return $this->viewBySource(
-            $source,
-            array(
-                'request' => $request,
-                'model' => $result->model,
-                'meta' => $result->metaData,
-            ) + $result->params
-        );
+        return $this->viewBySource( $source, $request, $result );
     }
 
     /**
@@ -83,36 +76,39 @@ class ViewDispatcher
      */
     public function layout( Request $request, Result $result )
     {
-        return $this->viewBySource(
-            'layout',
-            array(
-                'request' => $request,
-                'result' => $result,
-            )
-        );
+        return $this->viewBySource( 'layout', $request, $result );
     }
 
     /**
      * @param string $source
-     * @param array $params
+     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\API\MVC\Values\Result $result
      * @return string
      * @throws \Exception
      */
-    protected function viewBySource( $source, array $params )
+    protected function viewBySource( $source, Request $request, Result $result )
     {
-        $target = $this->getMatchingConditionTarget( $source, $params );
+        $target = $this->getMatchingConditionTarget(
+            $source,
+            array(
+                'metaData' => $result->metaData,
+                'model' => $result->model,
+                'params' => $result->params,
+            )
+        );
+
         if ( $target === null )
         {
             foreach ( $this->viewHandlers as $suffix => $viewHandler )// Select the first view handler (default)
             {
-                return call_user_func( $viewHandler, "{$source}.$suffix", $params );
+                return call_user_func( $viewHandler, "{$source}.{$suffix}", array( 'request' => $request, 'result' => $result ) );
             }
             throw new \Exception( 'No view handler where provided, can not render view' );
         }
 
         if ( preg_match( "/\.(?P<suffix>[^.]+)$/", $target, $match ) && isset( $this->viewHandlers[ $match['suffix'] ] ) )
         {
-            return call_user_func( $this->viewHandlers[ $match['suffix'] ], $target, $params );
+            return call_user_func( $this->viewHandlers[ $match['suffix'] ], $target, array( 'request' => $request, 'result' => $result ) );
         }
         throw new \Exception( "Could not find a view handler that matches target: {$target}" );
     }
@@ -144,6 +140,7 @@ class ViewDispatcher
             $totalPoints = 0;
             foreach ( $settings as $name => $value )
             {
+                // Skip target & source as source is already matched & target is only relevant if everything else match
                 if ( $name === 'target' || $name === 'source' )
                     continue;
 

@@ -125,7 +125,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
             'gallery' => array(
                 'source' => 'content/read',
                 'target' => 'content/read/gallery.tpl',
-                'identifier' => 'gallery'
+                'params' => array( 'identifier' => 'gallery' ),
             )
         ) );
         $dispatcher->view(
@@ -154,12 +154,12 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
             'frontpage' => array(
                 'source' => 'content/read/full',
                 'target' => 'content/read/full_frontpage.tpl',
-                'identifier' => 'gallery'
+                'params' => array( 'identifier' => 'gallery' ),
             ),
             'alternative_frontpage' => array(
                 'source' => 'content/read/full',
                 'target' => 'content/read/alternative_frontpage.tpl',
-                'identifier' => 'gallery'
+                'params' => array( 'identifier' => 'gallery' ),
             ),
         ) );
         $dispatcher->view(
@@ -177,12 +177,12 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
             'gallery' => array(
                 'source' => 'content/read',
                 'target' => 'content/read/gallery.tpl',
-                'identifier' => 'gallery',
+                'params' => array( 'identifier' => 'gallery' ),
             ),
             'alternative_gallery' => array(
                 'source' => 'content/read',
                 'target' => 'content/read/alternative_gallery.tpl',
-                'remoteId' => 42,
+                'params' => array( 'remoteId' => 42 ),
             ),
         ) );
         $dispatcher->view(

@@ -23,7 +23,7 @@ use Twig_Function_Method;
  *
  * Extends twig by adding 'dispatch' function for hmvc use.
  */
-class TwigDispatcherExtension extends Twig_Extension
+class TwigHiMVCExtension extends Twig_Extension
 {
     /**
      * @var \HiMVC\Core\MVC\Dispatcher
@@ -65,7 +65,7 @@ class TwigDispatcherExtension extends Twig_Extension
      */
     public function getName()
     {
-        return 'dispatcher';
+        return 'HiMVC';
     }
 
     /**
