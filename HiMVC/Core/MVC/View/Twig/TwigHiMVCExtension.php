@@ -53,8 +53,9 @@ class TwigHiMVCExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'dispatch' => new Twig_Function_Method( $this, 'dispatch' ),
-            'view' => new Twig_Function_Method( $this, 'viewDispatcher' )
+            'dispatch' => new Twig_Function_Method( $this, 'dispatch', array( 'is_safe' => array( 'html' ) ) ),
+            'view' => new Twig_Function_Method( $this, 'viewDispatcher', array( 'is_safe' => array( 'html' ) ) ),
+            'link' => new Twig_Function_Method( $this, 'link' )
         );
     }
 
@@ -91,4 +92,26 @@ class TwigHiMVCExtension extends Twig_Extension
         return $this->viewDispatcher->view( $request, $result );
     }
 
+    /**
+     * Generate link to a Result object
+     *
+     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\API\MVC\Values\Result $result
+     * @param bool $hostName
+     * @return string URI to Result object with or with out hostname
+     */
+    public function link( Request $request, Result $result, $hostName = false )
+    {
+        $host = '';
+        if ( $hostName )
+        {
+            if ( isset( $request->raw['HTTPS'] ) && ( $request->raw['HTTPS'] === 'on' || $request->raw['HTTPS'] === 1 ) )
+                $host = 'https://';
+            else
+                $host = 'http://';
+
+            $host .= $request->host;
+        }
+        return $host . $request->indexDir . $result->uri;
+    }
 }

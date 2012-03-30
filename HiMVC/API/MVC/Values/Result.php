@@ -20,6 +20,13 @@ use eZ\Publish\API\Repository\Values\ValueObject;
  *
  * @todo: Support disposition and ResultList (Result with several models, aka list views)?
  *        Aka: Make this abstract and cover all cases? (so impl can have 3 variants?)
+ *
+ * @property-read object $model
+ * @property-read string $module
+ * @property-read string $action
+ * @property-read string $view
+ * @property-read string $uri
+ * @property-read array $params
  */
 class Result extends ValueObject
 {
@@ -28,7 +35,7 @@ class Result extends ValueObject
      *
      * @var object
      */
-    public $model;
+    protected $model;
 
     /**
      * The module name of the controller
@@ -37,7 +44,7 @@ class Result extends ValueObject
      *
      * @var string
      */
-    public $module;
+    protected $module;
 
     /**
      * The action name performend for this result, like: edit, read, ..
@@ -46,7 +53,7 @@ class Result extends ValueObject
      *
      * @var string
      */
-    public $action;
+    protected $action;
 
     /**
      * Optional view of the action if any (If the action support different views)
@@ -55,14 +62,23 @@ class Result extends ValueObject
      *
      * @var string
      */
-    public $view = '';
+    protected $view = '';
+
+    /**
+     * The uniques resourche identifier for the result
+     *
+     * Like "content/4", must not start or end with a slash, used for links in view.
+     *
+     * @var string
+     */
+    protected $uri;
 
     /**
      * Optional view params
      *
      * @var array
      */
-    public $params = array();
+    protected $params = array();
 
     /**
      * Contains cache info
@@ -71,7 +87,7 @@ class Result extends ValueObject
      *
      * @var null|ResultCacheInfo
      */
-    public $cacheInfo;
+    protected $cacheInfo;
 
     /**
      * Contains meta data
@@ -80,12 +96,28 @@ class Result extends ValueObject
      *
      * @var null|ResultMetaData
      */
-    public $metaData;
+    protected $metaData;
 
     /**
      * Contains all the cookies to be set
      *
      * @var ResultCookie[]
      */
-    public $cookies = array();
+    protected $cookies = array();
+
+    /**
+     * Constructor for Result
+     *
+     * Check presence of model, module, action and uri as they are minimum properties that needs to be set.
+     *
+     * @param array $properties
+     */
+    public function __construct( array $properties = array() )
+    {
+        if ( !isset( $properties['model'] ) || !isset( $properties['module'] ) ||
+             !isset( $properties['action'] ) || !isset( $properties['uri'] ) )
+            throw new \Exception( 'Properties that must be present: model, module, action and uri' );
+
+        parent::__construct( $properties );
+    }
 }

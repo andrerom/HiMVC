@@ -66,6 +66,7 @@ class Controller implements CRUDControllable
             'module' => 'content',
             'action' => 'read',
             'view' => $view,
+            'uri' => "content/{$id}",
         ) );
     }
 
