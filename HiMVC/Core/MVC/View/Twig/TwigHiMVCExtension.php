@@ -105,12 +105,7 @@ class TwigHiMVCExtension extends Twig_Extension
         $host = '';
         if ( $hostName )
         {
-            if ( isset( $request->raw['HTTPS'] ) && ( $request->raw['HTTPS'] === 'on' || $request->raw['HTTPS'] === 1 ) )
-                $host = 'https://';
-            else
-                $host = 'http://';
-
-            $host .= $request->host;
+            $host = $request->scheme . '://'  . $request->host;
         }
         return $host . $request->indexDir . $result->uri;
     }

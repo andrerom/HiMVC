@@ -20,33 +20,6 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
 
 /**
  * Request class
- *
- * @property string $uri
- * @property array $uriArray
- * @property-read string $originalUri
- * @property array $params
- * @property-read array $cookies
- * @property-read array $files
- * @property \HiMVC\Core\Base\SessionArray $session
- * @property string $body
- * @property string $wwwDir
- * @property string $indexDir
- * @property string $action
- * @property float $ifModifiedSince
- * @property string $IfNoneMatch
- * @property string $protocol
- * @property string $host
- * @property int $port
- * @property string $contentType The content type of request body, like application/x-www-form-urlencoded', default: ''
- * @property \HiMVC\Core\MVC\Accept $accept
- * @property \HiMVC\Core\Base\AccessMatch[] $access
- * @property \HiMVC\Core\Base\Module[] $modules
- * @property string $authUser
- * @property string $authPwd
- * @property string $userAgent
- * @property string $referrer
- * @property float $microTime
- * @property-read array $raw
  */
 class Request extends APIRequest
 {
@@ -59,7 +32,7 @@ class Request extends APIRequest
      */
     public function __get( $name )
     {
-        if ( $name === 'uriArray' && $this->uriArray === false )
+        if ( $name === 'uriArray' && $this->uriArray === null )
         {
             return $this->uriArray = self::arrayByUri( $this->uri );
         }
@@ -115,7 +88,7 @@ class Request extends APIRequest
     {
         $child = clone $this;
         $child->uri = $uri;
-        $child->uriArray = false;
+        $child->uriArray = null;
         $this->childRequests[] = $child;
         return $child;
     }
@@ -132,7 +105,7 @@ class Request extends APIRequest
          {
              if ( strrpos( $uri, '/' ) > 0 )
                  return explode( '/', trim( $uri, '/' ) );
-             return array( trim( $uri, '/' ) );
+             return array( ltrim( $uri, '/' ) );
          }
          else if ( isset( $uri[0] ) && $uri[0] !== '/' )
          {

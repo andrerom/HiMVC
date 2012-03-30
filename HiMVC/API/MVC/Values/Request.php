@@ -34,7 +34,7 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read string $method
  * @property-read float $ifModifiedSince
  * @property-read string $IfNoneMatch
- * @property-read string $protocol
+ * @property-read string $scheme
  * @property-read string $host
  * @property-read int $port
  * @property-read string $mimeType The content type of request body, like application/x-www-form-urlencoded', default: ''
@@ -47,7 +47,7 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read string $referrer
  * @property-read float $microTime
  * @property-read array $raw
- * @property-read \HiMVC\API\MVC\Values\Request $childRequests
+ * @property-read \HiMVC\API\MVC\Values\Request[] $childRequests
  */
 abstract class Request extends ValueObject
 {
@@ -59,7 +59,7 @@ abstract class Request extends ValueObject
     /**
      * @var array Array version of $uri
      */
-    protected $uriArray = false;
+    protected $uriArray;
 
     /**
      * @var string Original request url, this is read only and set on first write to $uri.
@@ -135,7 +135,7 @@ abstract class Request extends ValueObject
     /**
      * @var string
      */
-    protected $protocol = 'HTTP/1.1';
+    protected $scheme = 'http';
 
     /**
      * @var string

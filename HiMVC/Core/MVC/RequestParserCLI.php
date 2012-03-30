@@ -84,6 +84,9 @@ class RequestParserCLI extends RequestParser
 
         if ( isset( $this->uriComponents['port'] ) )
             $data['port'] = $this->uriComponents['port'];
+
+        if ( isset( $this->uriComponents['scheme'] ) )
+            $data['scheme'] = $this->uriComponents['scheme'];
     }
 
     /**
