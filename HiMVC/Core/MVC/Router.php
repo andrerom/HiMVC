@@ -40,28 +40,23 @@ class Router
      */
     public function route( APIRequest $request )
     {
-        $redirectCount = 0;
-
-        startRouting:
         $uri = $request->uri;
         $uriArray = $request->uriArray;
-        if ( $uri === '' )
-            $routes = $this->routes[ '_root_' ];
-        else if ( isset( $this->routes[ $uriArray[0] ] ) )
+        if ( !empty( $uriArray ) && isset( $this->routes[ $uriArray[0] ] ) )
             $routes = $this->routes[ $uriArray[0] ];
         else
-            throw new \Exception( 'Could not find routes for $uriArray[0]: ' . $uri );
+            $routes = $this->routes[ '_root_' ];
 
         foreach ( $routes as $routeKey => $route )
         {
             if ( isset( $route['method'] ) && $request->method !== $route['method'] )
-                continue;
+                continue;// No match: next route
 
             if ( isset( $route['methods'] ) &&  !isset( $route['methods'][$request->method] ) )
-                continue;
+                continue;// No match: next route
 
-            if ( isset( $route['uri'] ) && strpos( $uri, $route['uri'] ) !== 0 )
-                continue;
+            if ( isset( $route['uri'] ) && $uri !== $route['uri'] && strpos( $uri, $route['uri'] ) !== 0 )
+                continue;// No match: next route
 
             $uriParams = array();
             if ( isset( $route['params'] ) )
@@ -73,26 +68,17 @@ class Router
                     {
                         if ( isset( $route['optional'][$uriParam] ) && $route['optional'][$uriParam]  )
                         {
-                            break;// Break as you can not have non optional params after a optional one
+                            break;// Still a match: As you can not have non optional params after a optional one
                         }
-                        continue 2;
+                        continue 2;// No match: next route
                     }
 
                     if ( preg_match( "/^({$uriParamRegex})$/", $uriArray[ $pos ] ) !== 1 )
                         continue 2;
 
                     $uriParams[$uriParam] = $uriArray[ $pos ];
-                    $pos++;
+                    $pos++;// No match: next route
                 }
-            }
-
-            if ( isset( $route['redirect'] ) )
-            {
-                throw new \Exception( "@todo Implement internal redirection!" );
-                $redirectCount++;
-                if ( $redirectCount > 10 )
-                    throw new \Exception( "Exceeded routing redirect limit of 10!" );
-                goto startRouting;
             }
 
             if ( isset( $route['function'] ) )
@@ -101,11 +87,11 @@ class Router
             }
             else if ( !isset( $route['controller'] ) )
             {
-                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing both a controller and a function parameter!" );
+                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing both a controller and a function parameter!" );//500
             }
-            else if ( !$route['methods'][$request->method] )
+            else if ( !isset( $route['methods'][$request->method] ) )
             {
-                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing a methods map as needed in conjunction with controller!" );
+                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing a methods map as needed in conjunction with controller!" );//500
             }
 
             $controller = $route['controller']();
@@ -113,6 +99,6 @@ class Router
             return call_user_func_array( array( $controller, $method ), $uriParams );
         }
 
-        throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );
+        throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );//404
     }
 }
