@@ -49,7 +49,7 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  *     # @see \eZ\Publish\Core\Base\settings\service.ini For more options and examples.
  *
  * "arguments" values in service.ini can start with either @ in case of other services being dependency, $ if a
- * predefined global variable is to be used ( currently: $_SERVER, $_REQUEST, $_COOKIE, $_FILES and $serviceContainer )
+ * predefined global variable is to be used ( currently: $_SERVER, $_POST, $_GET, $_COOKIE, $_FILES and $body )
  * or plain scalar if that is to be given directly as argument value.
  * If the argument value starts with %, then it is a lazy loaded service provided as a callback (closure).
  */
@@ -80,7 +80,6 @@ class DependencyInjectionContainer implements Container
         $this->settings = $settings;
         $this->dependencies = $dependencies + array(
             '$_SERVER' => $_SERVER,
-            '$_REQUEST' => $_REQUEST,
             '$_POST' => $_POST,
             '$_GET' => $_GET,
             '$_COOKIE' => $_COOKIE,

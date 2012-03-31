@@ -19,12 +19,6 @@ if ( version_compare( PHP_VERSION, '5.3' ) < 0 )
     echo '<p>PHP 5.3.0 or higher is required!</p>';
     exit;
 }
-else if ( PHP_SAPI !== 'cli' && ini_get( 'request_order' ) !== 'GP' )
-{
-    echo '<h1>HiMVC does not like your <a href="http://no2.php.net/manual/en/ini.core.php#ini.request-order">request_order</a> value: ' . ini_get('request_order'). '</h1>';
-    echo '<p>Only \'GP\' is supported due to security concerns!</p>';
-    exit;
-}
 
 // Temporary, only for getting more accurate timeing during dev
 if ( !isset( $_SEVER['REQUEST_TIME_FLOAT'] ) )
