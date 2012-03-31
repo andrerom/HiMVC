@@ -51,6 +51,7 @@ $container = new Container(
         '$cacheDirPermission' => $settings['Configuration']['Settings']['CacheDirPermission'],
         '$cacheFilePermission' => $settings['Configuration']['Settings']['CacheFilePermission'],
         '$useCache' => $settings['Configuration']['Settings']['UseCache'],
+        '$developmentMode' => $settings['Configuration']['Settings']['DevelopmentMode'],
     )
 );
 
