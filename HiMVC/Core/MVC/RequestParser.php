@@ -237,7 +237,9 @@ class RequestParser
         }
 
         if ( isset( $server['HTTPS'] ) && ( $server['HTTPS'] === 'on' || $server['HTTPS'] === 1 ) )
+        {
             $data['scheme'] = 'https';
+        }
     }
 
     /**

@@ -131,6 +131,7 @@ class RequestParserCLI extends RequestParser
     {
         if ( isset( $this->uriComponents['path'] ) )
             return $this->uriComponents['path'];
+
         return '';
     }
 }

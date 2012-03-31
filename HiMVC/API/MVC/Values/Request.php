@@ -148,7 +148,7 @@ abstract class Request extends ValueObject
     protected $port = 80;
 
     /**
-     * @var string
+     * @var string Aka CONTENT_TYPE
      */
     protected $mimeType = '';
 
@@ -183,7 +183,7 @@ abstract class Request extends ValueObject
     protected $microTime = 0.0;
 
     /**
-     * @var array The raw $_SERVER variable
+     * @var array The raw $_SERVER variable, this is not part of the public request api but exposed for specifc needs
      */
     protected $raw = array();
 
