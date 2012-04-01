@@ -21,8 +21,8 @@ if ( version_compare( PHP_VERSION, '5.3' ) < 0 )
 }
 
 // Temporary, only for getting more accurate timeing during dev
-if ( !isset( $_SEVER['REQUEST_TIME_FLOAT'] ) )
-    $_SEVER['REQUEST_TIME_FLOAT'] = microtime( true );
+if ( !isset( $_SERVER['REQUEST_TIME_FLOAT'] ) )
+    $_SERVER['REQUEST_TIME_FLOAT'] = microtime( true );
 
 /**
  * Get ServiceContainer
