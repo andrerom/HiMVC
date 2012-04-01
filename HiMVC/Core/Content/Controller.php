@@ -41,7 +41,7 @@ class Controller implements CRUDControllable
     }
 
     /**
-     * Add new item in collection ( ie POST /orders/ )
+     * Add new item in collection ( ie POST /content/ )
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
@@ -51,7 +51,7 @@ class Controller implements CRUDControllable
     }
 
     /**
-     * Get item in collection ( ie GET /orders/{id} )
+     * Get item in collection ( ie GET /content/{id} )
      *
      * @param mixed $id
      * @param string $view
@@ -71,7 +71,7 @@ class Controller implements CRUDControllable
     }
 
     /**
-     * Update item in collection ( ie PUT /orders/{id} )
+     * Update item in collection ( ie PUT /content/{id} )
      *
      * @param mixed $id
      * @return \HiMVC\API\MVC\Values\Result
@@ -82,7 +82,7 @@ class Controller implements CRUDControllable
     }
 
     /**
-     * Delete item in collection ( ie DELETE /orders/{id} )
+     * Delete item in collection ( ie DELETE /content/{id} )
      * Or 'Cancel order'
      *
      * @param mixed $id
@@ -94,7 +94,7 @@ class Controller implements CRUDControllable
     }
 
     /**
-     * List items in collection ( ie GET /orders/ )
+     * List items in collection ( ie GET /content/ )
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
