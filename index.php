@@ -28,7 +28,7 @@ if ( !isset( $_SERVER['REQUEST_TIME_FLOAT'] ) )
  * Get ServiceContainer
  * @var \HiMVC\API\Container $container
  */
-$container = require 'bootstrap.php';
+$container = require __DIR__ . '/bootstrap.php';
 
 // Ignore user abort now that we are about to execute request
 ignore_user_abort( true );
