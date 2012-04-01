@@ -18,25 +18,14 @@ use eZ\Publish\API\Repository\Values\ValueObject;
  * Encapsulates all data from a controller action to be able to generate view and
  * for hmvc use be able to figgure out the overall expiry of the full page.
  *
- * @todo: Support disposition and ResultList (Result with several models, aka list views)?
- *        Aka: Make this abstract and cover all cases? (so impl can have 3 variants?)
- *
- * @property-read object $model
  * @property-read string $module
  * @property-read string $action
  * @property-read string $view
  * @property-read string $uri
  * @property-read array $params
  */
-class Result extends ValueObject
+abstract class Result extends ValueObject
 {
-    /**
-     * The model object for the result
-     *
-     * @var object
-     */
-    protected $model;
-
     /**
      * The module name of the controller
      *
@@ -114,9 +103,8 @@ class Result extends ValueObject
      */
     public function __construct( array $properties = array() )
     {
-        if ( !isset( $properties['model'] ) || !isset( $properties['module'] ) ||
-             !isset( $properties['action'] ) || !isset( $properties['uri'] ) )
-            throw new \Exception( 'Properties that must be present: model, module, action and uri' );
+        if ( !isset( $properties['module'] ) || !isset( $properties['action'] ) || !isset( $properties['uri'] ) )
+            throw new \Exception( 'Properties that must be present: module, action and uri' );
 
         parent::__construct( $properties );
     }

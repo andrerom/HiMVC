@@ -12,6 +12,8 @@ namespace HiMVC\Core\MVC\View;
 
 use HiMVC\API\MVC\Values\Request;
 use HiMVC\API\MVC\Values\Result;
+use HiMVC\API\MVC\Values\ResultItem;
+use HiMVC\API\MVC\Values\ResultList;
 
 /**
  * ViewDispatcher
@@ -88,13 +90,17 @@ class ViewDispatcher
      */
     protected function viewBySource( $source, Request $request, Result $result )
     {
+        $params = array(
+            'metaData' => $result->metaData,
+            'params' => $result->params
+        );
+
+        if ( $result instanceof ResultItem )
+            $params['model'] = $result->model;
+
         $target = $this->getMatchingConditionTarget(
             $source,
-            array(
-                'metaData' => $result->metaData,
-                'model' => $result->model,
-                'params' => $result->params,
-            )
+            $params
         );
 
         if ( $target === null )

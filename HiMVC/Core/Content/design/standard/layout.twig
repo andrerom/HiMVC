@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ result.model.contentId }}</title>
+    <meta charset="utf-8" />
+    <title>Site title</title>
+    <style>
+        section { width:786px; }
+        article { float: left; width: 69%; }
+        aside { float: right; width: 30%; }
+    </style>
 </head>
 <body>
-
+    <section>
     <article>
         {{ view( request, result ) }}
     </article>
@@ -12,5 +18,6 @@
     <aside>
         {{ dispatch( request.createChild( 'content/4/embed' ) ) }}
     </aside>
+    </section>
 </body>
 </html>

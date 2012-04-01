@@ -13,7 +13,10 @@ use HiMVC\API\MVC\CRUDControllable,
     HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\Result;
+    HiMVC\API\MVC\Values\ResultItem,
+    HiMVC\API\MVC\Values\ResultList,
+    eZ\Publish\API\Repository\Values\Content\Query,
+    eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
 
 /**
  * Example controller, does no chnages to data atm
@@ -61,7 +64,7 @@ class Controller implements CRUDControllable
     {
         $model = $this->repository->getContentService()->loadContent( $id );
 
-        return new Result( array(
+        return new ResultItem( array(
             'model' => $model,
             'module' => 'content',
             'action' => 'read',
@@ -100,7 +103,30 @@ class Controller implements CRUDControllable
      */
     public function doIndex()
     {
-        return __METHOD__ . "()";
+        $query = new Query();
+        $query->criterion = new ParentLocationId( 1 );
+        $searchResult = $this->repository->getContentService()->findContent( $query, array() );
+
+        $resultHash = array(
+            'items' => array(),
+            'count' => $searchResult->count,
+            'module' => 'content',
+            'action' => 'index',
+            'uri' => "content/",
+        );
+
+        foreach ( $searchResult->items as $model )
+        {
+            $resultHash['items'][] = new ResultItem( array(
+                'model' => $model,
+                'module' => 'content',
+                'action' => 'read',
+                'view' => 'line',
+                'uri' => "content/{$model->contentId}",
+            ) );
+        }
+
+        return new ResultList( $resultHash );
     }
 }
 
