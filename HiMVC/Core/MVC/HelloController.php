@@ -1,6 +1,6 @@
 <?php
 /**
- * Content Controller
+ * Hello World Controller
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -13,9 +13,9 @@ namespace HiMVC\Core\MVC;
 use HiMVC\API\MVC\Values\Request as APIRequest;
 
 /**
- * Example controller, does no chnages to data atm
+ * Example Hello World controller
  */
-class Hello
+class HelloController
 {
     /**
      * @var \HiMVC\API\MVC\Values\Request

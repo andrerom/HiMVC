@@ -55,30 +55,25 @@ class Router
             if ( isset( $route['methods'] ) &&  !isset( $route['methods'][$request->method] ) )
                 continue;// No match: next route
 
-            if ( isset( $route['uri'] ) && $uri !== $route['uri'] && strpos( $uri, $route['uri'] ) !== 0 )
+            if ( isset( $route['uri'] ) && $uri !== $route['uri'] )
                 continue;// No match: next route
 
             $uriParams = array();
-            if ( isset( $route['params'] ) )
+            if ( isset( $route['regex'] ) )
             {
-                $pos = substr_count( $route['uri'], '/' );
-                foreach ( $route['params'] as $uriParam => $uriParamRegex )
+                $regex = str_replace( array( '{', '}' ), array( '(', ')' ), $route['regex'] );
+                if ( !preg_match( "@^{$regex}$@", $uri, $matches ) )
                 {
-                    if ( !isset( $uriArray[ $pos ] ) )
-                    {
-                        if ( isset( $route['optional'][$uriParam] ) && $route['optional'][$uriParam]  )
-                        {
-                            break;// Still a match: As you can not have non optional params after a optional one
-                        }
-                        continue 2;// No match: next route
-                    }
-
-                    if ( preg_match( "/^({$uriParamRegex})$/", $uriArray[ $pos ] ) !== 1 )
-                        continue 2;
-
-                    $uriParams[$uriParam] = $uriArray[ $pos ];
-                    $pos++;// No match: next route
+                    continue;
                 }
+
+                $i = 0;// Remove all indexes that has numeric keys, the once we care about have string keys
+                while ( isset( $matches[$i] ) )
+                {
+                    unset( $matches[$i] );
+                    ++$i;
+                }
+                $uriParams = $matches;
             }
 
             if ( isset( $route['function'] ) )

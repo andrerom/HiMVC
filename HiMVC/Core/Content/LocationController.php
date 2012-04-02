@@ -1,6 +1,6 @@
 <?php
 /**
- * Content Controller
+ * Content Location Controller
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -18,9 +18,9 @@ use HiMVC\API\MVC\Values\Request,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
 
 /**
- * Example content controller, does no changes to data atm
+ * Example cotnent location controller, does no changes to data atm
  */
-class Controller
+class LocationController
 {
     /**
      * @var \HiMVC\API\MVC\Values\Request
@@ -43,7 +43,7 @@ class Controller
     }
 
     /**
-     * Add new item in collection ( ie POST /content/ )
+     * Add new item in collection ( ie POST /content/locations/ )
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
@@ -53,7 +53,7 @@ class Controller
     }
 
     /**
-     * Get item in collection ( ie GET /content/{id} )
+     * Get item in collection ( ie GET /content/location/{id} )
      *
      * @param mixed $id
      * @param string $view
@@ -61,19 +61,19 @@ class Controller
      */
     public function doRead( $id, $view = 'full' )
     {
-        $model = $this->repository->getContentService()->loadContent( $id );
+        $model = $this->repository->getLocationService()->loadLocation( $id );
 
         return new ResultItem( array(
             'model' => $model,
-            'module' => 'content',
+            'module' => 'content/location',
             'action' => 'read',
             'view' => $view,
-            'uri' => "content/{$id}",
+            'uri' => "content/location/{$id}",
         ) );
     }
 
     /**
-     * Update item in collection ( ie PUT /content/{id} )
+     * Update item in collection ( ie PUT /content/location/{id} )
      *
      * @param mixed $id
      * @return \HiMVC\API\MVC\Values\Result
@@ -84,7 +84,7 @@ class Controller
     }
 
     /**
-     * Delete item in collection ( ie DELETE /content/{id} )
+     * Delete item in collection ( ie DELETE /content/location/{id} )
      * Or 'Cancel order'
      *
      * @param mixed $id
@@ -96,33 +96,47 @@ class Controller
     }
 
     /**
-     * List items in collection ( ie GET /content/ )
+     * List items in collection ( ie GET /content/location/ )
      *
-     * @todo This should probably not list items by location, but just list of content sorted by creation
      * @return \HiMVC\API\MVC\Values\Result
      */
     public function doIndex()
     {
-        $query = new Query();
-        $query->criterion = new ParentLocationId( 1 );
-        $searchResult = $this->repository->getContentService()->findContent( $query, array() );
+        return $this->doList( 1 );
+    }
+
+    /**
+     * List items in collection ( ie GET /content/locations/{$parentId} )
+     *
+     * @param mixed $parentId
+     * @param int $offset
+     * @param int $limit
+     * @return \HiMVC\API\MVC\Values\Result
+     *
+     * @todo Add global (injected) setting to specify max limits
+     */
+    public function doList( $parentId, $offset = 0, $limit = -1 )
+    {
+        $locationService = $this->repository->getLocationService();
+        $location = $locationService->loadLocation( $parentId );
+        $children = $locationService->loadLocationChildren( $location, $offset, $limit );
 
         $resultHash = array(
             'items' => array(),
-            'count' => $searchResult->count,
-            'module' => 'content',
-            'action' => 'index',
-            'uri' => "content/",
+            'count' => $location->childCount,
+            'module' => 'content/location',
+            'action' => 'list',
+            'uri' => "content/locations/{$parentId}",
         );
 
-        foreach ( $searchResult->items as $model )
+        foreach ( $children as $model )
         {
             $resultHash['items'][] = new ResultItem( array(
                 'model' => $model,
-                'module' => 'content',
+                'module' => 'content/location',
                 'action' => 'read',
                 'view' => 'line',
-                'uri' => "content/{$model->contentId}",
+                'uri' => "content/location/{$model->id}",
             ) );
         }
 
