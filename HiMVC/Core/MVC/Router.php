@@ -49,13 +49,13 @@ class Router
 
         foreach ( $routes as $routeKey => $route )
         {
+            if ( isset( $route['uri'] ) && $uri !== $route['uri'] )
+                continue;// No match: next route
+
             if ( isset( $route['method'] ) && $request->method !== $route['method'] )
                 continue;// No match: next route
 
             if ( isset( $route['methods'] ) &&  !isset( $route['methods'][$request->method] ) )
-                continue;// No match: next route
-
-            if ( isset( $route['uri'] ) && $uri !== $route['uri'] )
                 continue;// No match: next route
 
             $uriParams = array();
@@ -63,9 +63,7 @@ class Router
             {
                 $regex = str_replace( array( '{', '}' ), array( '(', ')' ), $route['regex'] );
                 if ( !preg_match( "@^{$regex}$@", $uri, $matches ) )
-                {
                     continue;
-                }
 
                 $i = 0;// Remove all indexes that has numeric keys, the once we care about have string keys
                 while ( isset( $matches[$i] ) )
