@@ -3,7 +3,7 @@ Hierarchical injected MVC for PHP.
 
 * Status: Proof Of Concept(s)
 * Provided: As is
-* License: GPL3
+* License: AGPL v3
 * Copyright: eZ Systems AS & andrerom
 
 [![Build Status](https://secure.travis-ci.org/andrerom/HiMVC.png)](http://travis-ci.org/andrerom/HiMVC)

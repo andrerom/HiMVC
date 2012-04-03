@@ -4,7 +4,7 @@
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU General Public License v3
+ * @license http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License v3
  * @version //autogentag//
  *
  * @uses ezcPhpGenerator To generate INI cache
