@@ -51,11 +51,11 @@ As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning o
 * Define how cache hints should be part of the system, including vary by logic
 * ------- " -------  View Cache should be done ( pre + post cotroller action filter?)
 * Add interfaces and unit tests for code that is considered mature (ready)
+* The router is currently not cable of generating urls (reverse route) based on Result (currently controller needs to specify uri on Result; sub optimal)
 * @todo's
 
 Things that should be reconsidered:
 
-* The properties on Request object including action vs method
 * How the RequestParser works including json/xml addapters
 * If request param (GET parmeters) should be validated by controller before view cache is checked
 * (...)
