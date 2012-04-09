@@ -18,19 +18,6 @@ use HiMVC\API\MVC\Values\Request as APIRequest;
 class HelloController
 {
     /**
-     * @var \HiMVC\API\MVC\Values\Request
-     */
-    protected $request;
-
-    /**
-     * @param \HiMVC\API\MVC\Values\Request $request
-     */
-    public function __construct( APIRequest $request )
-    {
-        $this->request = $request;
-    }
-
-    /**
      * Add new item in collection ( ie GET /hello/ )
      *
      * @return \HiMVC\API\MVC\Values\Result

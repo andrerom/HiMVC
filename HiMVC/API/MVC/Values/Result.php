@@ -23,6 +23,9 @@ use eZ\Publish\API\Repository\Values\ValueObject;
  * @property-read string $view
  * @property-read string $uri
  * @property-read array $params
+ * @property-read null|ResultCacheInfo $cacheInfo
+ * @property-read null|ResultMetaData $metaData
+ * @property-read ResultCookie[] $cookies
  */
 abstract class Result extends ValueObject
 {
