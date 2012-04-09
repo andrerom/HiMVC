@@ -23,22 +23,15 @@ use HiMVC\API\MVC\Values\Request,
 class LocationController
 {
     /**
-     * @var \HiMVC\API\MVC\Values\Request
-     */
-    protected $request;
-
-    /**
      * @var \eZ\Publish\API\Repository\Repository
      */
     protected $repository;
 
     /**
-     * @param \HiMVC\API\MVC\Values\Request $request
      * @param \eZ\Publish\API\Repository\Repository $reposiotry
      */
-    public function __construct( Request $request, Repository $reposiotry )
+    public function __construct( Repository $reposiotry )
     {
-        $this->request = $request;
         $this->repository = $reposiotry;
     }
 
