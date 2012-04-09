@@ -7,6 +7,9 @@
   convertWarningsToExceptions="true"
   >
   <testsuites>
+    <testsuite name="HiMVC\Core\Base">
+      <directory>HiMVC/Core/Base/Tests</directory>
+    </testsuite>
     <testsuite name="HiMVC\Core\MVC">
       <directory>HiMVC/Core/MVC/Tests</directory>
     </testsuite>
@@ -15,7 +18,8 @@
     <whitelist>
       <directory suffix=".php">HiMVC</directory>
       <exclude>
-          <directory suffix=".php">HiMVC/Core/MVC/Tests</directory>
+        <directory suffix=".php">HiMVC/Core/Bse/Tests</directory>
+        <directory suffix=".php">HiMVC/Core/MVC/Tests</directory>
       </exclude>
     </whitelist>
   </filter>
