@@ -46,7 +46,7 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  *     [inmemory_persistence_handler]
  *     class=eZ\Publish\Core\Persistence\InMemory\Handler
  *
- *     # @see \eZ\Publish\Core\Base\settings\service.ini For more options and examples.
+ *     # @see \eZ\Publish\Core\settings\service.ini For more options and examples.
  *
  * "arguments" values in service.ini can start with either @ in case of other services being dependency, $ if a
  * predefined global variable is to be used ( currently: $_SERVER, $_POST, $_GET, $_COOKIE, $_FILES and $body )
@@ -202,19 +202,20 @@ class DependencyInjectionContainer implements Container
     }
 
     /**
-     * Get service by name (internal variant, exposes possibility to allow private services as used by dependencies)
+     * Get service by name
      *
      * @uses lookupArguments()
      * @throws BadConfiguration
      * @throws MissingClass
-     * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException If dependency is private & !$allowPrivate
      * @param string $serviceName
      * @return object
      */
     public function get( $serviceName )
     {
         $serviceKey = "@{$serviceName}";
-        if ( isset( $this->dependencies[$serviceKey] ) )// Return directly if it already exists
+
+        // Return directly if it already exists
+        if ( isset( $this->dependencies[$serviceKey] ) )
         {
             return $this->dependencies[$serviceKey];
         }
@@ -433,6 +434,7 @@ class DependencyInjectionContainer implements Container
      * @param $serviceName
      * @return array
      * @throws \eZ\Publish\Core\Base\Exceptions\BadConfiguration
+     * @todo Consider adding support for several levels of settings inheretance, or consider adding settings includes
      */
     protected function getSettings( $serviceName )
     {
