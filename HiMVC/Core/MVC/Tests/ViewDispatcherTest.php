@@ -72,7 +72,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -84,7 +84,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'php' => array( $this->viewMock2, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read' ) )
         );
     }
 
@@ -112,7 +112,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params, 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -130,7 +130,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params, 'uri' => 'content/') )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params ) )
         );
     }
 
@@ -164,7 +164,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params, 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -187,7 +187,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params, 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params ) )
         );
     }
 }
