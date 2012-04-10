@@ -11,6 +11,7 @@
 namespace HiMVC\API\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
+use HiMVC\API\MVC\Values\Route;
 
 /**
  * Result object
@@ -18,17 +19,25 @@ use eZ\Publish\API\Repository\Values\ValueObject;
  * Encapsulates all data from a controller action to be able to generate view and
  * for hmvc use be able to figgure out the overall expiry of the full page.
  *
+ * @property-read object $model
  * @property-read string $module
  * @property-read string $action
  * @property-read string $view
- * @property-read string $uri
+ * @property-read Route $route
  * @property-read array $params
  * @property-read null|ResultCacheInfo $cacheInfo
  * @property-read null|ResultMetaData $metaData
  * @property-read ResultCookie[] $cookies
  */
-abstract class Result extends ValueObject
+class Result extends ValueObject
 {
+    /**
+     * The model object for the result
+     *
+     * @var object
+     */
+    protected $model;
+
     /**
      * The module name of the controller
      *
@@ -57,13 +66,11 @@ abstract class Result extends ValueObject
     protected $view = '';
 
     /**
-     * The uniques resourche identifier for the result
+     * The route that matched this result.
      *
-     * Like "content/4", must not start or end with a slash, used for links in view.
-     *
-     * @var string
+     * @var Route
      */
-    protected $uri;
+    protected $route;
 
     /**
      * Optional view params
@@ -106,9 +113,17 @@ abstract class Result extends ValueObject
      */
     public function __construct( array $properties = array() )
     {
-        if ( !isset( $properties['module'] ) || !isset( $properties['action'] ) || !isset( $properties['uri'] ) )
-            throw new \Exception( 'Properties that must be present: module, action and uri' );
+        if ( !isset( $properties['module'] ) || !isset( $properties['action'] ) || !isset( $properties['model'] ) )
+            throw new \Exception( 'Properties that must be present: module, model and action' );
 
         parent::__construct( $properties );
+    }
+
+    /**
+     * @param Route $route
+     */
+    public function setRoute( Route $route )
+    {
+        $this->route = $route;
     }
 }

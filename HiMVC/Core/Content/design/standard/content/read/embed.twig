@@ -1,5 +1,5 @@
-<h4><a href="{{ link( request, result ) }}">Name: {{ result.model.contentInfo.name }}</a></h4>
+<h4><a href="{{ link( request, result, { 'view': 'full' } ) }}">Name: {{ result.model.contentInfo.name }}</a></h4>
 
 
 Embed twig template got Content object with id: {{ result.model.contentId }}
-<a href="{{ link( request, result, true ) }}">Read more</a>
+<a href="{{ link( request, result, { 'view': 'full' }, true ) }}">Read more</a>

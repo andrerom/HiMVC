@@ -97,16 +97,17 @@ class TwigHiMVCExtension extends Twig_Extension
      *
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
+     * @param array $params
      * @param bool $hostName
      * @return string URI to Result object with or with out hostname
      */
-    public function link( Request $request, Result $result, $hostName = false )
+    public function link( Request $request, Result $result, array $params = array(), $hostName = false )
     {
         $host = '';
         if ( $hostName )
         {
             $host = $request->scheme . '://'  . $request->host;
         }
-        return $host . $request->indexDir . $result->uri;
+        return $host . $request->indexDir . $result->route->reverse( $params + $result->params );
     }
 }

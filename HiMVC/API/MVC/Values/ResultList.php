@@ -11,22 +11,21 @@
 namespace HiMVC\API\MVC\Values;
 
 use HiMVC\API\MVC\Values\Result;
-use HiMVC\API\MVC\Values\ResultItem;
 
 /**
  * Result Item object
  *
  * @see \HiMVC\API\MVC\Values\Result
  *
- * @property-read \HiMVC\API\MVC\Values\ResultItem $items[]
- * @property-read int $count
+ * @property-read array $items The model objects for the result
+ * @property-read int $count Count of total count in the collection of items
  */
 class ResultList extends Result
 {
     /**
      * The model objects for the result
      *
-     * @var \HiMVC\API\MVC\Values\ResultItem[]
+     * @var array
      */
     protected $items;
 

@@ -12,7 +12,7 @@ namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\ResultItem,
+    HiMVC\API\MVC\Values\Result,
     HiMVC\API\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
@@ -56,12 +56,12 @@ class Controller
     {
         $model = $this->repository->getContentService()->loadContent( $id );
 
-        return new ResultItem( array(
+        return new Result( array(
             'model' => $model,
             'module' => 'content',
             'action' => 'read',
             'view' => $view,
-            'uri' => "content/{$id}",
+            'params' => array( 'id' => $id, 'view' => $view ),
         ) );
     }
 
@@ -100,26 +100,13 @@ class Controller
         $query->criterion = new ParentLocationId( 1 );
         $searchResult = $this->repository->getContentService()->findContent( $query, array() );
 
-        $resultHash = array(
-            'items' => array(),
+        return new ResultList( array(
+            'model' => array(),
+            'items' => $searchResult->items,
             'count' => $searchResult->count,
             'module' => 'content',
             'action' => 'index',
-            'uri' => "content/",
-        );
-
-        foreach ( $searchResult->items as $model )
-        {
-            $resultHash['items'][] = new ResultItem( array(
-                'model' => $model,
-                'module' => 'content',
-                'action' => 'read',
-                'view' => 'line',
-                'uri' => "content/{$model->contentId}",
-            ) );
-        }
-
-        return new ResultList( $resultHash );
+        ) );
     }
 }
 

@@ -11,6 +11,7 @@
 namespace HiMVC\Core\MVC;
 
 use HiMVC\API\MVC\Values\Request as APIRequest;
+use HiMVC\API\MVC\Values\Result as APIResult;
 use eZ\Publish\Core\Base\Exceptions\Httpable;
 
 /**
@@ -19,13 +20,12 @@ use eZ\Publish\Core\Base\Exceptions\Httpable;
 class Router
 {
     /**
-     * @var array
+     * @var \HiMVC\API\MVC\Values\Route[]
      */
     protected $routes;
 
     /**
-     * @param array $routes
-     * @todo Document $routes
+     * @param \HiMVC\API\MVC\Values\Route[] $routes
      */
     public function __construct( array $routes )
     {
@@ -41,55 +41,32 @@ class Router
     public function route( APIRequest $request )
     {
         $uri = $request->uri;
-        $uriArray = $request->uriArray;
-        if ( !empty( $uriArray ) && isset( $this->routes[ $uriArray[0] ] ) )
-            $routes = $this->routes[ $uriArray[0] ];
-        else
-            $routes = $this->routes[ '_root_' ];
-
-        foreach ( $routes as $routeKey => $route )
+        foreach ( $this->routes as $route )
         {
-            if ( isset( $route['uri'] ) && $uri !== $route['uri'] )
+            if ( $route->uri === $uri )
+            {
+                // Do nothing
+            }
+            else if ( $route->uri !== '' && strpos( $uri, $route->uri ) !== 0 )
+                continue;
+
+            if ( isset( $route->methodMap[$request->method] ) )
+                $method = $route->methodMap[$request->method];
+            else if ( isset( $route->methodMap['ALL'] ) )
+                $method = $route->methodMap['ALL'];
+            else
                 continue;// No match: next route
 
-            if ( isset( $route['method'] ) && $request->method !== $route['method'] )
-                continue;// No match: next route
+            if ( ( $uriParams = $route->match( $request ) ) === null )
+                continue;
 
-            if ( isset( $route['methods'] ) &&  !isset( $route['methods'][$request->method] ) )
-                continue;// No match: next route
-
-            $uriParams = array();
-            if ( isset( $route['regex'] ) )
+            $controller = $route->controller;
+            $result = call_user_func_array( array( $controller(), $method ), $uriParams );
+            if ( $result instanceof APIResult )
             {
-                $regex = str_replace( array( '{', '}' ), array( '(', ')' ), $route['regex'] );
-                if ( !preg_match( "@^{$regex}$@", $uri, $matches ) )
-                    continue;
-
-                $i = 0;// Remove all indexes that has numeric keys, the once we care about have string keys
-                while ( isset( $matches[$i] ) )
-                {
-                    unset( $matches[$i] );
-                    ++$i;
-                }
-                $uriParams = $matches;
+                $result->setRoute( $route );
             }
-
-            if ( isset( $route['function'] ) )
-            {
-                return call_user_func_array( $route['function'], $uriParams );
-            }
-            else if ( !isset( $route['controller'] ) )
-            {
-                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing both a controller and a function parameter!" );//500
-            }
-            else if ( !isset( $route['methods'][$request->method] ) )
-            {
-                throw new \Exception( "Routes[{$uriArray[0]}][{$routeKey}] is missing a methods map as needed in conjunction with controller!" );//500
-            }
-
-            $controller = $route['controller']();
-            $method = $route['methods'][$request->method];
-            return call_user_func_array( array( $controller, $method ), $uriParams );
+            return $result;
         }
 
         throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );//404

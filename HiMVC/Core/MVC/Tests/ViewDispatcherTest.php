@@ -11,7 +11,7 @@
 namespace HiMVC\Core\MVC\Tests;
 
 use HiMVC\Core\MVC\View\ViewDispatcher;
-use HiMVC\API\MVC\Values\ResultItem;
+use HiMVC\API\MVC\Values\Result;
 use HiMVC\Core\MVC\Request;
 use PHPUnit_Framework_TestCase;
 
@@ -72,7 +72,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            new ResultItem( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'uri' => 'content/' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -84,7 +84,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'php' => array( $this->viewMock2, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            new ResultItem( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'uri' => 'content/' ) )
         );
     }
 
@@ -112,7 +112,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new ResultItem( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params, 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params, 'uri' => 'content/' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -130,7 +130,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new ResultItem( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params, 'uri' => 'content/') )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params, 'uri' => 'content/') )
         );
     }
 
@@ -164,7 +164,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new ResultItem( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params, 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params, 'uri' => 'content/' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -187,7 +187,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new ResultItem( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params, 'uri' => 'content/' ) )
+            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params, 'uri' => 'content/' ) )
         );
     }
 }

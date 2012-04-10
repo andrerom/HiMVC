@@ -12,7 +12,7 @@ namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\ResultItem,
+    HiMVC\API\MVC\Values\Result,
     HiMVC\API\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
@@ -56,12 +56,12 @@ class LocationController
     {
         $model = $this->repository->getLocationService()->loadLocation( $id );
 
-        return new ResultItem( array(
+        return new Result( array(
             'model' => $model,
             'module' => 'content/location',
             'action' => 'read',
             'view' => $view,
-            'uri' => "content/location/{$id}",
+            'params' => array( 'id' => $id, 'view' => $view ),
         ) );
     }
 
@@ -114,26 +114,14 @@ class LocationController
         $location = $locationService->loadLocation( $parentId );
         $children = $locationService->loadLocationChildren( $location, $offset, $limit );
 
-        $resultHash = array(
-            'items' => array(),
+        return new ResultList( array(
+            'model' => $location,
+            'items' => $children,
             'count' => $location->childCount,
             'module' => 'content/location',
             'action' => 'list',
-            'uri' => "content/locations/{$parentId}",
-        );
-
-        foreach ( $children as $model )
-        {
-            $resultHash['items'][] = new ResultItem( array(
-                'model' => $model,
-                'module' => 'content/location',
-                'action' => 'read',
-                'view' => 'line',
-                'uri' => "content/location/{$model->id}",
-            ) );
-        }
-
-        return new ResultList( $resultHash );
+            'params' => array( 'parentId' => $parentId, 'offset' => $offset, 'limit' => $limit ),
+        ) );
     }
 }
 
