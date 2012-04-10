@@ -51,7 +51,7 @@ class DesignLoader
             }
         }
 
-        // Reverse the list as we the last item has first priority
+        // Reverse the list as the last item has first priority
         $this->possibleDesignLocations = array_reverse( $this->possibleDesignLocations );
 
     }

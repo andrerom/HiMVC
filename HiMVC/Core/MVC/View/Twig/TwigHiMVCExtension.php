@@ -54,7 +54,7 @@ class TwigHiMVCExtension extends Twig_Extension
     {
         return array(
             'dispatch' => new Twig_Function_Method( $this, 'dispatch', array( 'is_safe' => array( 'html' ) ) ),
-            'view' => new Twig_Function_Method( $this, 'viewDispatcher', array( 'is_safe' => array( 'html' ) ) ),
+            'view' => new Twig_Function_Method( $this, 'view', array( 'is_safe' => array( 'html' ) ) ),
             'link' => new Twig_Function_Method( $this, 'link' )
         );
     }
@@ -87,7 +87,7 @@ class TwigHiMVCExtension extends Twig_Extension
      * @param \HiMVC\API\MVC\Values\Result $result
      * @return Response An object that can be casted to string
      */
-    public function viewDispatcher( Request $request, Result $result )
+    public function view( Request $request, Result $result )
     {
         return $this->viewDispatcher->view( $request, $result );
     }

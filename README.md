@@ -43,15 +43,11 @@ HiMVC is yet another MVC prototype in PHP, it is an concept for an MVC stack tha
 The code has some parts that can be used as is, and some parts that should be given more thought before it can be considered final and interface can be created for these parts.
 
 #Todo?
-As the Hierarchical part is not yet done, HiMVC atm has an alternative meaning of "Highly injected MVC". But some missing pices to get this part in:
-
-* PHP view handler
 * Add Response objects
 * Define where Authentication should be done (pre controller action filter?) and how to pass on user id from session / do basic auth
 * Define how cache hints should be part of the system, including vary by logic
-* ------- " -------  View Cache should be done ( pre + post cotroller action filter?)
+* ------- " -------  View Cache should be done ( pre + post controller action filter?)
 * Add interfaces and unit tests for code that is considered mature (ready)
-* The router is currently not cable of generating urls (reverse route) based on Result (currently controller needs to specify uri on Result; sub optimal)
 * @todo's
 
 Things that should be reconsidered:

@@ -11,14 +11,12 @@
 namespace HiMVC\Core\MVC\View\Twig;
 
 use HiMVC\API\MVC\Viewable,
-    HiMVC\API\MVC\Values\Request,
-    HiMVC\Core\MVC\Router,
     Twig_Environment;
 
 /**
  * Twig view handler
  *
- * @todo Deal with hmvc dependecies like router, request and viewDispatcher objects more nativly then $params
+ * Uses a Twig_Environment instance, either stock or with custom (design) loader
  */
 class TwigView implements Viewable
 {

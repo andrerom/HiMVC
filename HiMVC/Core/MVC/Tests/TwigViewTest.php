@@ -29,7 +29,7 @@ class TwigViewTest extends PHPUnit_Framework_TestCase
     protected $twigMock;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject $twigMock
+     * @var \PHPUnit_Framework_MockObject_MockObject $twigTemplateMock
      */
     protected $twigTemplateMock;
 
