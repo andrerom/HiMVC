@@ -19,7 +19,8 @@ use Closure;
  *
  * Represent a route, in this case using regex matching
  *
- * @property-read string $pattern The pattern used for uri matching and to extract uri params
+ * @property-read string $pattern The pattern used for uri matching and to extract uri params, $uri (root uri) is
+ *                                prepended to this string before match.
  */
 class RegexRoute extends Route
 {
@@ -53,7 +54,7 @@ class RegexRoute extends Route
     public function match( Request $request )
     {
         $regex = str_replace( array( '{', '}' ), array( '(', ')' ), $this->pattern );
-        if ( !preg_match( "@^{$regex}$@", $request->uri, $matches ) )
+        if ( !preg_match( "@^{$this->uri}{$regex}$@", $request->uri, $matches ) )
             return null;
 
         $i = 0;// Remove all indexes that has numeric keys, the once we care about have string keys
