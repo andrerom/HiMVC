@@ -1,0 +1,83 @@
+<?php
+/**
+ * config.php file
+ *
+ * Returns global application settings.
+ * Contains settings needed to setup services needed for ezp startup.
+ *
+ * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
+ * @license http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License v3
+ * @version //autogentag//
+ */
+
+// Required: Settings bellow are runtime settings that needs to be set here, you can
+// optionally also override any other setting here.
+return array(
+    'ClassLoader' => array(
+        // Hash with class name prefix and folder name, needed for ClassLoader and Configuration system
+        // as well as router (key)
+        'Repositories' => array( 'eZ' => __DIR__ . '/ezpnext/eZ',
+                                 'HiMVC' => __DIR__ . '/HiMVC',
+                                 /*'Vendor\SomeApp' => __DIR__ . '/Vendor/SomeApp'*/ ),
+        // Mode for class loader
+        'Mode' => 1,
+        // Hash of lazy loaded functions to register autoloaders lazily
+        'lazyClassLoaders' => array(
+            'ezc' => function( $className ){
+                require 'ezc/Base/base.php';
+                spl_autoload_register( array( 'ezcBase', 'autoload' ) );
+                return true;
+            },
+            /* There is no view cache yet, so no reason to benchmark using Twig view
+            'Twig_' => function( $className ){
+                require 'Twig/Autoloader.php';
+                Twig_Autoloader::register();
+                return true;
+            },*/
+        ),
+    ),
+    'Configuration' => array(
+        // List of parser classes where key is supported file suffix
+        'Parsers' => array(
+            '.ini' => 'eZ\\Publish\\Core\\Base\\Configuration\\Parser\\Ini',
+            //'.ini.append.php' => 'eZ\\Publish\\Core\\Base\\Configuration\\Parser\\Ini',
+        ),
+
+        // Initial paths and scopes to read ini settings from
+        'Paths' => array(
+             'base' => array(
+                 __DIR__ . '/ezpnext/eZ/Publish/Core/settings/',
+                 __DIR__ . '/HiMVC/Core/Base/settings/',
+                 __DIR__ . '/HiMVC/Core/MVC/settings/',
+             ),
+             'modules' => array(
+                 __DIR__ . '/HiMVC/Core/Content/settings/',// Makes sure configuration is loaded in 1 pass instead of 2
+             ),
+             'access' => array(),
+             'modulesAccess' => array(),
+             'global' => array( __DIR__ . '/settings/override/' ),
+        ),
+
+        // Misc settings for Configuration
+        'Settings' => array(
+            // Enable strict ini parsing using parse_ini_string(), default false using eZ/Zeta Components INI Reader
+            'IniParserStrict' => true,
+
+            // Switch for development mode or not, default false
+            'DevelopmentMode' => false,
+
+            // File Permissions, default 0644
+            'CacheFilePermission' => 0644,
+
+            // Dir permissions, default 0755
+            'CacheDirPermission' => 0755,
+
+            // Disable cache, default false
+            'UseCache' => true,
+
+            // Cache dir
+            'CacheDir' => __DIR__ . '/var/cache/',
+        ),
+    ),
+);
