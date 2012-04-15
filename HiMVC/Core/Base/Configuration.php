@@ -357,6 +357,10 @@ class Configuration
     /**
      * Parse configuration files
      *
+     * Uses configured parsers to do the file parsing pr file, and then merges the result from them and:
+     * - Handles array clearing
+     * - Handles section extends ( "Section:Base" extends "Base" )
+     *
      * @param array $configurationPaths
      * @param array $sourceFiles ByRef value or source files that has been/is going to be parsed
      *                           files you pass in will not be checked if they exists.
@@ -423,15 +427,45 @@ class Configuration
             $this->parsedData[$fileName] = $configurationFileData[$fileName];
         }
 
-        // Post parsing actions @see recursivePostParseActions()
-        foreach ( $configurationFileData as $file => $data )
+        // Post processing actions @see recursivePostParseActions()
+        $extendedConfigurationFileData = array();
+        foreach ( $configurationFileData as $fileName => $data )
         {
             foreach ( $data as $section => $sectionArray )
             {
+                // Leave settings that extend others for second pass, key by depth
+                if ( ( $count = substr_count( $section, ':' ) ) !== 0 )
+                {
+                    $extendedConfigurationFileData[$count][$fileName][$section] = $sectionArray;
+                    continue;
+                }
+
                 if ( !isset( $configurationData[$section] ) )
                     $configurationData[$section] = array();
 
                 $this->recursivePostParseActions( $sectionArray, $configurationData[$section] );
+            }
+        }
+
+        // Second pass post processing dealing with settings that extends others
+        ksort( $extendedConfigurationFileData, SORT_NUMERIC );
+        foreach ( $extendedConfigurationFileData as $configurationFileData )
+        {
+            foreach ( $configurationFileData as $data )
+            {
+                foreach ( $data as $section => $sectionArray )
+                {
+                    if ( !isset( $configurationData[$section] ) )
+                    {
+                        $parent = substr( $section, stripos( $section, ':' ) +1 );
+                        if ( isset( $configurationData[$parent] ) )
+                            $configurationData[$section] = $configurationData[$parent];
+                        else
+                            $configurationData[$section] = array();
+                    }
+
+                    $this->recursivePostParseActions( $sectionArray, $configurationData[$section] );
+                }
             }
         }
 

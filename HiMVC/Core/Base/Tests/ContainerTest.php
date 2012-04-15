@@ -227,20 +227,22 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                 'ExtendedTestCheck' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTestCheck',
                     'arguments' => array(
-                            'extendedTests' => '@-ExtendedTest',
+                            'extendedTests' => '@:ExtendedTest',
                     ),
                 ),
-                'ExtendedTest1-ExtendedTest' => array(
+                'ExtendedTest1:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest1',
+                    'arguments' => array( 'h' => '$H' ),
                 ),
-                'ExtendedTest2-ExtendedTest' => array(
+                'ExtendedTest2:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest2',
                     'arguments' => array(),
                 ),
-                'ExtendedTest3-ExtendedTest' => array(
+                'ExtendedTest3:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest3',
+                    'arguments' => array( 'h' => '$H' ),
                 ),
-                '-ExtendedTest' => array(
+                'ExtendedTest' => array(
                     'arguments' => array( 'h' => '$H'),
                 ),
             ),
@@ -263,20 +265,22 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                 'ExtendedTestLacyCheck' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTestLacyCheck',
                     'arguments' => array(
-                            'extendedTests' => '%-ExtendedTest',
+                            'extendedTests' => '%:ExtendedTest',
                     ),
                 ),
-                'ExtendedTest1-ExtendedTest' => array(
+                'ExtendedTest1:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest1',
+                    'arguments' => array( 'h' => '$H' ),
                 ),
-                'ExtendedTest2-ExtendedTest' => array(
+                'ExtendedTest2:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest2',
                     'arguments' => array(),
                 ),
-                'ExtendedTest3-ExtendedTest' => array(
+                'ExtendedTest3:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest3',
+                    'arguments' => array( 'h' => '$H' ),
                 ),
-                '-ExtendedTest' => array(
+                'ExtendedTest' => array(
                     'arguments' => array( 'h' => '$H'),
                 ),
             ),
@@ -299,21 +303,23 @@ class ContainerTest extends PHPUnit_Framework_TestCase
                 'ExtendedTestLacyCheck' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTestLacyCheck',
                     'arguments' => array(
-                            'extendedTests' => '%-ExtendedTest::setTest',
+                            'extendedTests' => '%:ExtendedTest::setTest',
                             'test' => 'newValue',
                     ),
                 ),
-                'ExtendedTest1-ExtendedTest' => array(
+                'ExtendedTest1:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest1',
+                    'arguments' => array( 'h' => '$H' ),
                 ),
-                'ExtendedTest2-ExtendedTest' => array(
+                'ExtendedTest2:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest2',
                     'arguments' => array(),
                 ),
-                'ExtendedTest3-ExtendedTest' => array(
+                'ExtendedTest3:ExtendedTest' => array(
                     'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest3',
+                    'arguments' => array( 'h' => '$H' ),
                 ),
-                '-ExtendedTest' => array(
+                'ExtendedTest' => array(
                     'arguments' => array( 'h' => '$H' ),
                 ),
             ),
