@@ -29,7 +29,7 @@ return array(
                 spl_autoload_register( array( 'ezcBase', 'autoload' ) );
                 return true;
             },
-            /* There is no view cache yet, so no reason to benchmark using Twig view
+            /* There is no view cache yet + twig cache setting, so not ready for benchmarking
             'Twig_' => function( $className ){
                 require 'Twig/Autoloader.php';
                 Twig_Autoloader::register();
@@ -52,7 +52,8 @@ return array(
                  __DIR__ . '/HiMVC/Core/MVC/settings/',
              ),
              'modules' => array(
-                 __DIR__ . '/HiMVC/Core/Content/settings/',// Makes sure configuration is loaded in 1 pass instead of 2
+                 /* Not ready for benchmarking just yet (see twig comment above)
+                 __DIR__ . '/HiMVC/Core/Content/settings/',*/
              ),
              'access' => array(),
              'modulesAccess' => array(),
