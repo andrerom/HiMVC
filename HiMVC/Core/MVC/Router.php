@@ -43,22 +43,18 @@ class Router
         $uri = $request->uri;
         foreach ( $this->routes as $route )
         {
-            if ( $route->uri === $uri )
-            {
-                // Do nothing
-            }
-            else if ( $route->uri !== '' && strpos( $uri, $route->uri ) !== 0 )
-                continue;
+            if ( $route->uri !== $uri && $route->uri !== '' && strpos( $uri, $route->uri ) !== 0 )
+                continue;// No root uri match
 
             if ( isset( $route->methodMap[$request->method] ) )
                 $method = $route->methodMap[$request->method];
             else if ( isset( $route->methodMap['ALL'] ) )
                 $method = $route->methodMap['ALL'];
             else
-                continue;// No match: next route
+                continue;// No method match
 
             if ( ( $uriParams = $route->match( $request ) ) === null )
-                continue;
+                continue;// No request match
 
             $controller = $route->controller;
             $result = call_user_func_array( array( $controller(), $method ), $uriParams );
