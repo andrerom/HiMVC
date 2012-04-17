@@ -24,18 +24,18 @@ namespace HiMVC\Core\Base;
 class ClassLoader
 {
     /**
-     * Mode for enabling PEAR autoloader compatibility (and PSR-0 compat)
+     * Mode for disabling PEAR autoloader compatibility (and PSR-0 compat)
      *
      * @var int
      */
-    const PSR_0_PEAR_COMPAT = 1;
+    const PSR_0_STRICT_MODE = 1;
 
     /**
-     * Mode to check if file exists before loading class name that matches prefix
+     * Mode to not check if file exists before loading class name that matches prefix
      *
      * @var int
      */
-    const PSR_2_FILECHECK = 2;
+    const PSR_0_NO_FILECHECK = 2;
 
     /**
      * @var array Contains namespace/class prefix as key and sub path as value
@@ -93,7 +93,7 @@ class ClassLoader
             if ( strpos( $className, $prefix ) !== 0 )
                 continue;
 
-            if ( $this->mode & self::PSR_0_PEAR_COMPAT ) // PSR-0 / PEAR compat
+            if ( !( $this->mode & self::PSR_0_STRICT_MODE ) ) // Normal PSR-0 PEAR compat
             {
                 $lastNsPos = strripos( $className, '\\' );
                 $prefixLen = strlen( $prefix ) + 1;
@@ -102,27 +102,22 @@ class ClassLoader
                 if ( $lastNsPos > $prefixLen )
                 {
                     // Replacing '\' to '/' in namespace part
-                    $fileName .= substr(
-                        str_replace( '\\', DIRECTORY_SEPARATOR, substr( $className, 0, $lastNsPos ) ),
-                        $prefixLen
-                    ) . DIRECTORY_SEPARATOR;
+                    $fileName .= str_replace( '\\', DIRECTORY_SEPARATOR, substr( $className, $prefixLen, $lastNsPos - $prefixLen ) )
+                               . DIRECTORY_SEPARATOR;
                 }
 
                 // Replacing '_' to '/' in className part and append '.php'
                 $fileName .= str_replace( '_', DIRECTORY_SEPARATOR, substr( $className, $lastNsPos + 1 ) ) . '.php';
             }
-            else // PSR-2 Default
+            else // Strict PSR mode
             {
-                 // Replace prefix with sub path if different
-                if ( $prefix === $subPath )
-                    $fileName = str_replace( '\\', DIRECTORY_SEPARATOR, $className ) . '.php';
-                else
-                    $fileName = $subPath . DIRECTORY_SEPARATOR .
-                                substr( str_replace( '\\', DIRECTORY_SEPARATOR, $className ), strlen( $prefix ) +1 ) . '.php';
+                $fileName = $subPath . DIRECTORY_SEPARATOR .
+                            str_replace( '\\', DIRECTORY_SEPARATOR, substr( $className , strlen( $prefix ) +1 ) ) .
+                            '.php';
             }
 
-            if ( ( $this->mode & self::PSR_2_FILECHECK )
-              && ( $fileName = stream_resolve_include_path( $fileName ) ) === false )
+            if ( !( $this->mode & self::PSR_0_NO_FILECHECK ) &&
+                 ( $fileName = stream_resolve_include_path( $fileName ) ) === false )
                 return false;
 
 
