@@ -11,7 +11,7 @@
  */
 
 
-use eZ\Publish\Core\Base\ClassLoader,
+use HiMVC\Core\Base\ClassLoader,
     HiMVC\Core\Base\Configuration,
     HiMVC\Core\Base\DependencyInjectionContainer as Container;
 
@@ -22,7 +22,7 @@ if ( !( $settings = include( __DIR__ . '/config.php' ) ) )
 }
 
 // Setup autoloader(s)
-require __DIR__ . '/ezpnext/eZ/Publish/Core/Base/ClassLoader.php';
+require __DIR__ . '/HiMVC/Core/Base/ClassLoader.php';
 $classLoader = new ClassLoader(
     $settings['ClassLoader']['Repositories'],
     $settings['ClassLoader']['Mode'],
