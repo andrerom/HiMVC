@@ -1,6 +1,6 @@
 <?php
 /**
- * MVC\Result class
+ * MVC\ResultList class
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -13,11 +13,11 @@ namespace HiMVC\API\MVC\Values;
 use HiMVC\API\MVC\Values\Result;
 
 /**
- * Result Item object
+ * Result List object
  *
  * @see \HiMVC\API\MVC\Values\Result
  *
- * @property-read array $items The model objects for the result
+ * @property-read ResultItem[] $items The model objects for the result
  * @property-read int $count Count of total count in the collection of items
  */
 class ResultList extends Result
@@ -25,7 +25,7 @@ class ResultList extends Result
     /**
      * The model objects for the result
      *
-     * @var array
+     * @var ResultItem[]
      */
     protected $items;
 
@@ -41,7 +41,7 @@ class ResultList extends Result
     protected $count;
 
     /**
-     * Constructor for Result
+     * Constructor for ResultList
      *
      * Check presence of model, module, action and uri as they are minimum properties that needs to be set.
      *

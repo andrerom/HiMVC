@@ -18,11 +18,11 @@ use HiMVC\API\MVC\Values\Request as APIRequest;
 class HelloController
 {
     /**
-     * Add new item in collection ( ie GET /hello/ )
+     * A Hello World action.
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doWorld()
+    public function world()
     {
         return __METHOD__ . '()';
     }

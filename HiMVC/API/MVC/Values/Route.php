@@ -71,12 +71,12 @@ class Route extends ValueObject
     /**
      * Match request and return uri params, null if no match.
      *
-     * @param Request $request
+     * @param string $uri
      * @return array|null
      */
-    public function match( Request $request )
+    public function match( $uri )
     {
-        if ( $this->uri !== $request->uri )
+        if ( $this->uri !== $uri )
             return null;
         return array();
     }
@@ -92,6 +92,8 @@ class Route extends ValueObject
         $uri = $this->uri;
         foreach ( $uriParams as $paramValue )
         {
+            if ( $paramValue === null || $paramValue === false )
+                break;
             $uri .= "/{$paramValue}";
         }
         return $uri;

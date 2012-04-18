@@ -25,6 +25,11 @@ class Router
     protected $routes;
 
     /**
+     * @var array[] Key is conrtoller class, value list of routes
+     */
+    protected $reverseRoutes = array();
+
+    /**
      * @param \HiMVC\API\MVC\Values\Route[] $routes
      */
     public function __construct( array $routes )
@@ -53,18 +58,62 @@ class Router
             else
                 continue;// No method match
 
-            if ( ( $uriParams = $route->match( $request ) ) === null )
+            if ( ( $uriParams = $route->match( $uri ) ) === null )
                 continue;// No request match
 
             $controller = $route->controller;
-            $result = call_user_func_array( array( $controller(), $method ), $uriParams );
-            if ( $result instanceof APIResult )
-            {
-                $result->setRoute( $route );
-            }
-            return $result;
+            return call_user_func_array( array( $controller(), $method ), $uriParams );
         }
 
         throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );//404
+    }
+
+    /**
+     * @param $controller
+     * @param $action
+     * @param array $params
+     * @return array First value is the matched method, and second is the matched uri
+     */
+    public function reverse( $controller, $action, array $params )
+    {
+        if ( empty( $this->reverseRoutes[$controller] ) )
+        {
+            throw new \Exception( "No routes exists for coneroller: {$controller}" );
+        }
+
+        foreach ($this->reverseRoutes[$controller] as $route )
+        {
+            if (  $key = array_search( $action, $route->methodMap, true ) )
+                return array( $key, $route->reverse( $params ) );
+        }
+        throw new \Exception( "Did not find a matching route for: {$controller}::{$action}" );
+    }
+
+    /**
+     * Method injection of container settings
+     *
+     * Needed to be able to generate info for doing reverse routing
+     *
+     * @see $reverseRoutes
+     * @param array $settings
+     */
+    public function generateReverseInfo( array $settings )
+    {
+        foreach ( $this->routes as $section => $route )
+        {
+            $controller = $settings["{$section}:route"]['arguments']['controller'];
+            if ( ( $functionPos = stripos( $controller, '::' ) ) !== false )
+            {
+                $controller = substr( $controller, 0, $functionPos );
+            }
+
+            if ( $controller[0] === '@' || $controller[0] === '%' )
+            {
+                $controller = substr( $controller, 1 );
+                $controller = $settings[$controller]['class'];
+            }
+
+            $this->reverseRoutes[$controller][$section] = $route;
+        }
     }
 }

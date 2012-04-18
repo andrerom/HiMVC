@@ -11,7 +11,6 @@
 namespace HiMVC\API\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
-use HiMVC\API\MVC\Values\Route;
 
 /**
  * Result object
@@ -19,25 +18,17 @@ use HiMVC\API\MVC\Values\Route;
  * Encapsulates all data from a controller action to be able to generate view and
  * for hmvc use be able to figgure out the overall expiry of the full page.
  *
- * @property-read object $model
  * @property-read string $module
  * @property-read string $action
  * @property-read string $view
- * @property-read Route $route
+ * @property-read string controller
  * @property-read array $params
  * @property-read null|ResultCacheInfo $cacheInfo
  * @property-read null|ResultMetaData $metaData
  * @property-read ResultCookie[] $cookies
  */
-class Result extends ValueObject
+abstract class Result extends ValueObject
 {
-    /**
-     * The model object for the result
-     *
-     * @var object
-     */
-    protected $model;
-
     /**
      * The module name of the controller
      *
@@ -66,11 +57,11 @@ class Result extends ValueObject
     protected $view = '';
 
     /**
-     * The route that matched this result.
+     * The controller handling the result (for reverse route use)
      *
-     * @var Route
+     * @var string
      */
-    protected $route;
+    protected $controller;
 
     /**
      * Optional view params
@@ -113,17 +104,11 @@ class Result extends ValueObject
      */
     public function __construct( array $properties = array() )
     {
-        if ( !isset( $properties['module'] ) || !isset( $properties['action'] ) || !isset( $properties['model'] ) )
-            throw new \Exception( 'Properties that must be present: module, model and action' );
+        if ( !isset( $properties['module'] ) ||
+             !isset( $properties['action'] ) ||
+             !isset( $properties['controller'] ) )
+            throw new \Exception( 'Properties that must be present: module, action and controller' );
 
         parent::__construct( $properties );
-    }
-
-    /**
-     * @param Route $route
-     */
-    public function setRoute( Route $route )
-    {
-        $this->route = $route;
     }
 }

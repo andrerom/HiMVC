@@ -1,4 +1,7 @@
 <h1>Name: {{ result.model.contentInfo.name }}</h1>
 
+{% for field in result.model.fields %}
+    {{ field }}
+{% endfor %}
 
 Twig template got Content object with id: {{ result.model.id }}

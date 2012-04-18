@@ -11,6 +11,7 @@
 namespace HiMVC\Core\MVC\View\Twig;
 
 use HiMVC\Core\MVC\Dispatcher;
+use HiMVC\Core\MVC\Router;
 use HiMVC\Core\MVC\View\ViewDispatcher;
 use HiMVC\API\MVC\Values\Request;
 use HiMVC\API\MVC\Values\Result;
@@ -31,17 +32,24 @@ class TwigHiMVCExtension extends Twig_Extension
     protected $dispatcher;
 
     /**
+     * @var \HiMVC\Core\MVC\Router
+     */
+    protected $router;
+
+    /**
      * @var \HiMVC\Core\MVC\View\ViewDispatcher
      */
     protected $viewDispatcher;
 
     /**
      * @param \HiMVC\Core\MVC\Dispatcher $dispatcher
+     * @param \HiMVC\Core\MVC\Router $router
      * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Dispatcher $dispatcher, ViewDispatcher $viewDispatcher )
+    public function __construct( Dispatcher $dispatcher, Router $router, ViewDispatcher $viewDispatcher )
     {
         $this->dispatcher = $dispatcher;
+        $this->router = $router;
         $this->viewDispatcher = $viewDispatcher;
     }
 
@@ -103,11 +111,29 @@ class TwigHiMVCExtension extends Twig_Extension
      */
     public function link( Request $request, Result $result, array $params = array(), $hostName = false )
     {
+        // Append host name if asked for
         $host = '';
         if ( $hostName )
         {
             $host = $request->scheme . '://'  . $request->host;
         }
-        return $host . $request->indexDir . $result->route->reverse( $params + $result->params );
+
+        // Put $params that exists in $result->params in resulting $uriParams, and rest as $query params
+        $query = '';
+        $uriParams = $result->params;
+        foreach ( $params as $key => $value )
+        {
+            if ( isset( $uriParams[$key] ) )
+                $uriParams[$key] = $value;
+            else
+                $query = ( $query === '' ? '?' : '&' ) . $key . '=' . $value;
+        }
+
+        // Put them all thogheter and get router uri based on info in result object
+        $route = $this->router->reverse( $result->controller, $result->action, $uriParams );
+        return $host .
+            $request->indexDir .
+            $route[1] .
+            $query;
     }
 }

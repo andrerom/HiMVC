@@ -12,7 +12,7 @@ namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\Result,
+    HiMVC\API\MVC\Values\ResultItem,
     HiMVC\API\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
@@ -40,7 +40,7 @@ class LocationController
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doCreate()
+    public function create()
     {
         return __METHOD__ . "()";
     }
@@ -52,17 +52,10 @@ class LocationController
      * @param string $view
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doRead( $id, $view = 'full' )
+    public function read( $id, $view = 'full' )
     {
         $model = $this->repository->getLocationService()->loadLocation( $id );
-
-        return new Result( array(
-            'model' => $model,
-            'module' => 'content/location',
-            'action' => 'read',
-            'view' => $view,
-            'params' => array( 'id' => $id, 'view' => $view ),
-        ) );
+        return $this->getResult( $model, $view, array( 'id' => $model->id, 'view' => $view ) );
     }
 
     /**
@@ -71,7 +64,7 @@ class LocationController
      * @param mixed $id
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doUpdate( $id )
+    public function update( $id )
     {
         return __METHOD__ . "( $id )";
     }
@@ -83,7 +76,7 @@ class LocationController
      * @param mixed $id
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doDelete( $id )
+    public function delete( $id )
     {
         return __METHOD__ . "( $id )";
     }
@@ -93,9 +86,9 @@ class LocationController
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doIndex()
+    public function index()
     {
-        return $this->doList( 1 );
+        return $this->children( 1 );
     }
 
     /**
@@ -108,19 +101,45 @@ class LocationController
      *
      * @todo Add global (injected) setting to specify max limits
      */
-    public function doList( $parentId, $offset = 0, $limit = -1 )
+    public function children( $parentId, $offset = 0, $limit = -1 )
     {
         $locationService = $this->repository->getLocationService();
         $location = $locationService->loadLocation( $parentId );
         $children = $locationService->loadLocationChildren( $location, $offset, $limit );
 
+        $items = array();
+        foreach ( $children as $model )
+        {
+            $items[] = $this->getResult( $model, 'line', array( 'id' => $model->id, 'view' => 'line' ) );
+        }
+
         return new ResultList( array(
-            'model' => $location,
-            'items' => $children,
+            'items' => $items,
             'count' => $location->childCount,
             'module' => 'content/location',
             'action' => 'list',
+            'controller' => __CLASS__,
             'params' => array( 'parentId' => $parentId, 'offset' => $offset, 'limit' => $limit ),
+        ) );
+    }
+
+    /**
+     * @param object $model
+     * @param string $view
+     * @param array $params
+     * @param string $action
+     * @param string $controller
+     * @return \HiMVC\API\MVC\Values\ResultItem
+     */
+    private function getResult( $model, $view = '', array $params = array(), $action = 'read', $controller = __CLASS__ )
+    {
+        return new ResultItem( array(
+            'model' => $model,
+            'module' => 'content/location',
+            'action' => $action,
+            'view' => $view,
+            'controller' => $controller,
+            'params' => $params
         ) );
     }
 }

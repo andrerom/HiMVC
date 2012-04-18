@@ -12,7 +12,7 @@ namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\Result,
+    HiMVC\API\MVC\Values\ResultItem,
     HiMVC\API\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
@@ -40,7 +40,7 @@ class Controller
      *
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doCreate()
+    public function create()
     {
         return __METHOD__ . "()";
     }
@@ -52,17 +52,10 @@ class Controller
      * @param string $view
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doRead( $id, $view = 'full' )
+    public function read( $id, $view = 'full' )
     {
         $model = $this->repository->getContentService()->loadContent( $id );
-
-        return new Result( array(
-            'model' => $model,
-            'module' => 'content',
-            'action' => 'read',
-            'view' => $view,
-            'params' => array( 'id' => $id, 'view' => $view ),
-        ) );
+        return $this->getResult( $model, $view, array( 'id' => $model->id, 'view' => $view  ) );
     }
 
     /**
@@ -71,7 +64,7 @@ class Controller
      * @param mixed $id
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doUpdate( $id )
+    public function update( $id )
     {
         return __METHOD__ . "( $id )";
     }
@@ -83,7 +76,7 @@ class Controller
      * @param mixed $id
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doDelete( $id )
+    public function delete( $id )
     {
         return __METHOD__ . "( $id )";
     }
@@ -94,18 +87,44 @@ class Controller
      * @todo This should probably not list items by location, but just list of content sorted by creation
      * @return \HiMVC\API\MVC\Values\Result
      */
-    public function doIndex()
+    public function index()
     {
         $query = new Query();
         $query->criterion = new ParentLocationId( 1 );
         $searchResult = $this->repository->getContentService()->findContent( $query, array() );
 
+        $items = array();
+        foreach ( $searchResult->items as $model )
+        {
+            $items[] = $this->getResult( $model, 'line', array( 'id' => $model->id, 'view' => 'line'  ) );
+        }
+
         return new ResultList( array(
-            'model' => array(),
-            'items' => $searchResult->items,
+            'items' => $items,
             'count' => $searchResult->count,
             'module' => 'content',
             'action' => 'index',
+            'controller' => __CLASS__,
+        ) );
+    }
+
+    /**
+     * @param object $model
+     * @param string $view
+     * @param array $params
+     * @param string $action
+     * @param string $controller
+     * @return \HiMVC\API\MVC\Values\ResultItem
+     */
+    private function getResult( $model, $view = '', array $params = array(), $action = 'read', $controller = __CLASS__ )
+    {
+        return new ResultItem( array(
+            'model' => $model,
+            'module' => 'content',
+            'view' => $view,
+            'controller' => $controller,
+            'action' => $action,
+            'params' => $params
         ) );
     }
 }

@@ -63,13 +63,6 @@ class DependencyInjectionContainer implements Container
     private $dependencies;
 
     /**
-     * Array of optional settings overrides
-     *
-     * @var array[]
-     */
-    private $settings;
-
-    /**
      * Construct object with optional configuration overrides
      *
      * @param array $settings Services settings
@@ -77,7 +70,6 @@ class DependencyInjectionContainer implements Container
      */
     public function __construct( array $settings, array $dependencies = array() )
     {
-        $this->settings = $settings;
         $this->dependencies = $dependencies + array(
             '$_SERVER' => $_SERVER,
             '$_POST' => $_POST,
@@ -85,6 +77,7 @@ class DependencyInjectionContainer implements Container
             '$_COOKIE' => $_COOKIE,
             '$_FILES' => $_FILES,
             '$body' => file_get_contents( "php://input" ),
+            '$settings' => $settings,
         );
     }
 
@@ -93,7 +86,7 @@ class DependencyInjectionContainer implements Container
      */
     public function setSettings( array $settings )
     {
-        $this->settings = $settings;
+        $this->dependencies['$settings'] = $settings;
     }
 
     /**
@@ -220,12 +213,12 @@ class DependencyInjectionContainer implements Container
             return $this->dependencies[$serviceKey];
         }
 
-        if ( empty( $this->settings[$serviceName] ) )// Validate settings
+        if ( empty( $this->dependencies['$settings'][$serviceName] ) )// Validate settings
         {
             throw new BadConfiguration( "service\\[{$serviceName}]", "no settings exist for '{$serviceName}'" );
         }
 
-        $settings = $this->settings[$serviceName] + array( 'shared' => true );
+        $settings = $this->dependencies['$settings'][$serviceName] + array( 'shared' => true );
         if ( empty( $settings['class'] ) )
         {
             throw new BadConfiguration( "service\\[{$serviceName}]\\class", 'class setting is not defined' );
@@ -425,7 +418,7 @@ class DependencyInjectionContainer implements Container
         if ( $function !== '' )
             $function = '::' . $function;
 
-        foreach ( $this->settings as $service => $settings )
+        foreach ( $this->dependencies['$settings'] as $service => $settings )
         {
             if ( stripos( $service, $parent ) !== false &&
                  preg_match( "/^(?P<prefix>[\w:]+){$parent}$/", $service, $match ) )
@@ -435,7 +428,6 @@ class DependencyInjectionContainer implements Container
         }
         return $services;
     }
-
 
     /**
      * Filter a value on all listeners

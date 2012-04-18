@@ -48,13 +48,13 @@ class RegexRoute extends Route
     /**
      * Match request and return uri params, null if no match.
      *
-     * @param Request $request
+     * @param string $uri
      * @return array|null
      */
-    public function match( Request $request )
+    public function match( $uri )
     {
         $regex = str_replace( array( '{', '}' ), array( '(', ')' ), $this->pattern );
-        if ( !preg_match( "@^{$this->uri}{$regex}$@", $request->uri, $matches ) )
+        if ( !preg_match( "@^{$this->uri}{$regex}$@", $uri, $matches ) )
             return null;
 
         $i = 0;// Remove all indexes that has numeric keys, the once we care about have string keys

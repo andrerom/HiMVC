@@ -11,7 +11,7 @@
 namespace HiMVC\Core\MVC\Tests;
 
 use HiMVC\Core\MVC\View\ViewDispatcher;
-use HiMVC\API\MVC\Values\Result;
+use HiMVC\API\MVC\Values\ResultItem;
 use HiMVC\Core\MVC\Request;
 use PHPUnit_Framework_TestCase;
 
@@ -72,7 +72,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full' ) )
+            $this->getResultItem( array(), 'full' )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -84,7 +84,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'php' => array( $this->viewMock2, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read' ) )
+            $this->getResultItem( array(), '' )
         );
     }
 
@@ -112,7 +112,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params ) )
+            $this->getResultItem( array(), 'full', $params )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -130,7 +130,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params ) )
+            $this->getResultItem( array(), '', $params )
         );
     }
 
@@ -164,7 +164,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'view' => 'full', 'params' => $params ) )
+            $this->getResultItem( array(), 'full', $params )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -187,7 +187,27 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            new Result( array( 'model' => array(), 'module' => 'content', 'action' => 'read', 'params' => $params ) )
+            $this->getResultItem( array(), '', $params )
         );
+    }
+
+    /**
+     * @param object $model
+     * @param string $view
+     * @param array $params
+     * @param string $action
+     * @param string $controller
+     * @return \HiMVC\API\MVC\Values\ResultItem
+     */
+    protected function getResultItem( $model, $view = '', array $params = array(), $action = 'read', $controller = __CLASS__ )
+    {
+        return new ResultItem( array(
+            'model' => $model,
+            'module' => 'content',
+            'action' => $action,
+            'view' => $view,
+            'controller' => $controller,
+            'params' => $params
+        ) );
     }
 }
