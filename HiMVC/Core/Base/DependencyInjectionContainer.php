@@ -235,7 +235,7 @@ class DependencyInjectionContainer implements Container
             if ( !empty( $settings['PreFilters'] ) )
             {
                 $arguments = $this->filter(
-                    $this->lookupArguments( $settings['PreFilters'] ),
+                    $this->recursivlyLookupArguments( $settings['PreFilters'] ),
                     $arguments
                 );
             }
@@ -283,7 +283,7 @@ class DependencyInjectionContainer implements Container
         if ( !empty( $settings['PostListeners'] ) )
         {
             $this->notify(
-                $this->lookupArguments( $settings['PostListeners'] ),
+                $this->recursivlyLookupArguments( $settings['PostListeners'] ),
                 $serviceObject
             );
         }
@@ -294,7 +294,8 @@ class DependencyInjectionContainer implements Container
     /**
      * Lookup arguments for variable, service or arrays for recursive lookup
      *
-     * Does not keep key of first level arguments!
+     * 1. Does not keep keys of first level arguments
+     * 2. Exists loop when it encounters optional non existing service dependencies
      *
      * @uses getServiceArgument()
      * @uses recursivlyLookupArguments()
@@ -310,7 +311,11 @@ class DependencyInjectionContainer implements Container
         {
             if ( isset( $argument[0] ) && ( $argument[0] === '$' || $argument[0] === '@'  || $argument[0] === '%' ) )
             {
-                $builtArguments[] = $this->getServiceArgument( $argument );
+                $serviceObject = $this->getServiceArgument( $argument );
+                if ( $argument[1] === '?' && $serviceObject === null )
+                    break;
+
+                $builtArguments[] = $serviceObject;
             }
             else if ( $recursivly && is_array( $argument ) )
             {
@@ -327,7 +332,8 @@ class DependencyInjectionContainer implements Container
     /**
      * Lookup arguments for variable, service or arrays for recursive lookup
      *
-     * Keep keys of arguments.
+     * 1. Keep keys of arguments
+     * 2. Does not exit loop on optional non existing service dependencies
      *
      * @uses getServiceArgument()
      * @uses recursivlyLookupArguments()
@@ -342,7 +348,9 @@ class DependencyInjectionContainer implements Container
         {
             if ( isset( $argument[0] ) && ( $argument[0] === '$' || $argument[0] === '@'  || $argument[0] === '%' ) )
             {
-                $builtArguments[$key] = $this->getServiceArgument( $argument );
+                $serviceObject = $this->getServiceArgument( $argument );
+                if ( $argument[1] !== '?' || $serviceObject !== null )
+                    $builtArguments[$key] = $serviceObject;
             }
             else if ( is_array( $argument ) )
             {
@@ -360,7 +368,7 @@ class DependencyInjectionContainer implements Container
      * @uses getListOfExtendedServices()
      * @uses recursivlyLookupArguments()
      * @param $argument
-     * @return array|closure|mixed|object
+     * @return array|closure|mixed|object|null Null on non existing optional dependencies
      * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue
      */
     protected function getServiceArgument( $argument )
@@ -376,6 +384,10 @@ class DependencyInjectionContainer implements Container
         }
         elseif ( $argument[0] === '%' )// lazy loaded services
         {
+            // Optional dependency handling
+            if ( $argument[1] === '?' && !isset( $this->dependencies['settings'][substr( $argument, 2 )] ) )
+                return null;
+
             if ( $function !== '' )
                 return function() use ( $serviceContainer, $argument, $function ){
                     $serviceObject = $serviceContainer->get( ltrim( $argument, '%' ) );
@@ -392,10 +404,18 @@ class DependencyInjectionContainer implements Container
         }
         else if ( $argument[0] === '$' )// Undefined variables will trow an exception
         {
+            // Optional dependency handling
+            if ( $argument[1] === '?' )
+                return null;
+
             throw new InvalidArgumentValue( "\$arguments", $argument );
         }
         else// Try to load a @service dependency
         {
+            // Optional dependency handling
+            if ( $argument[1] === '?' && !isset( $this->dependencies['settings'][substr( $argument, 2 )] ) )
+                return null;
+
             $serviceObject = $this->get( ltrim( $argument, '@' ) );
         }
 

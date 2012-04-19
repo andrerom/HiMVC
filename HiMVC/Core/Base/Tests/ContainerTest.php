@@ -60,7 +60,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      */
-    public function testComplexService()
+    public function testService()
     {
         $sc = new Container(
             array(
@@ -88,7 +88,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      */
-    public function testComplexServiceCustomDependencies()
+    public function testServiceCustomDependencies()
     {
         $sc = new Container(
             array(
@@ -116,7 +116,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      */
-    public function testComplexServiceUsingVariables()
+    public function testServiceUsingVariables()
     {
         $sc = new Container(
             array(
@@ -160,7 +160,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      */
-    public function testComplexServiceUsingHash()
+    public function testServiceUsingHash()
     {
         $sc = new Container(
             array(
@@ -188,7 +188,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      */
-    public function testComplexLazyLoadedServiceUsingHash()
+    public function testLazyLoadedServiceUsingHash()
     {
         $sc = new Container(
             array(
@@ -220,7 +220,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::expandExtendedServices
      */
-    public function testComplexExtendedServicesUsingHash()
+    public function testExtendedServicesUsingHash()
     {
         $sc = new Container(
             array(
@@ -258,7 +258,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::expandExtendedServices
      */
-    public function testComplexLazyExtendedServicesUsingHash()
+    public function testLazyExtendedServicesUsingHash()
     {
         $sc = new Container(
             array(
@@ -296,7 +296,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
      * @covers \HiMVC\Core\Base\DependencyInjectionContainer::expandExtendedServices
      */
-    public function testComplexLazyExtendedCallbackUsingHash()
+    public function testLazyExtendedCallbackUsingHash()
     {
         $sc = new Container(
             array(
@@ -328,6 +328,72 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         );
         $obj = $sc->get('ExtendedTestLacyCheck');
         self::assertEquals( 3, $obj->count );
+    }
+
+    /**
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::expandExtendedServices
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::getServiceArgument
+     */
+    public function testOptionalServiceDependency()
+    {
+        $sc = new Container(
+            array(
+                'ExtendedTest2' => array(
+                    'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest2',
+                    'arguments' => array( 'optional' => '@?myservice' ),
+                ),
+            ),
+            array( )
+
+        );
+        $obj = $sc->get('ExtendedTest2');
+        self::assertTrue( $obj instanceof ExtendedTest );
+    }
+
+    /**
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::expandExtendedServices
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::getServiceArgument
+     */
+    public function testOptionalCallbackDependency()
+    {
+        $sc = new Container(
+            array(
+                'ExtendedTest2' => array(
+                    'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest2',
+                    'arguments' => array( 'optional' => '%?myservice' ),
+                ),
+            ),
+            array( )
+
+        );
+        $obj = $sc->get('ExtendedTest2');
+        self::assertTrue( $obj instanceof ExtendedTest );
+    }
+
+    /**
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::get
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::lookupArguments
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::expandExtendedServices
+     * @covers \HiMVC\Core\Base\DependencyInjectionContainer::getServiceArgument
+     */
+    public function testOptionalVariableDependency()
+    {
+        $sc = new Container(
+            array(
+                'ExtendedTest2' => array(
+                    'class' => 'HiMVC\\Core\\Base\\Tests\\ExtendedTest2',
+                    'arguments' => array( 'optional' => '$?myservice' ),
+                ),
+            ),
+            array( )
+
+        );
+        $obj = $sc->get('ExtendedTest2');
+        self::assertTrue( $obj instanceof ExtendedTest );
     }
 }
 
