@@ -25,8 +25,7 @@ if ( !( $settings = include( __DIR__ . '/config.php' ) ) )
 require __DIR__ . '/HiMVC/Core/Base/ClassLoader.php';
 $classLoader = new ClassLoader(
     $settings['ClassLoader']['Repositories'],
-    $settings['ClassLoader']['Mode'],
-    $settings['ClassLoader']['lazyClassLoaders']
+    $settings['ClassLoader']['Settings']
 );
 spl_autoload_register( array( $classLoader, 'load' ) );
 

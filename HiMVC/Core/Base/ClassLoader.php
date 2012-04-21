@@ -43,21 +43,9 @@ class ClassLoader
     protected $paths;
 
     /**
-     * @var int
-     */
-    protected $mode;
-
-    /**
-     * @var array
-     */
-    protected $lazyClassLoaders;
-
-    /**
-     * Construct a loader instance
-     *
-     * @param array $paths Containing class/namespace prefix as key and sub path as value
-     * @param int $mode One or more of of the MODE constants, these are opt-in
-     * @param \Closure[] $lazyClassLoaders Hash with class name prefix as key and callback as function to setup loader
+     * @var array Hash of settings for this Class loader
+     *      'Mode' int One or more of of the MODE constants, these are opt-in. Default; 0
+     *      'LazyLoaders' array Hash with class name prefix as key and callback as function a setup loader
      *          Example:
      *          array(
      *              'ezc' => function( $className ){
@@ -66,13 +54,29 @@ class ClassLoader
      *                  return true;
      *              }
      *          )
-     *          Return true signals that autoloader was successfully registered and can be removed from $loders.
+     *          Return true signals that autoloader was successfully registered and can be removed from hash.
+     *          Default: empty array
+     *      'LegacyClassMap' array|null Hash of class name to file map for legacy use, tries to load from eZ Publish
+     *          if null. Defaul: null
+     *      'AllowKernelOverride' bool Defines if LegacyClassMap=null should load class map for kernel overrides or not.
      */
-    public function __construct( array $paths, $mode = 0, array $lazyClassLoaders = array() )
+    protected $settings;
+
+    /**
+     * Construct a loader instance
+     *
+     * @param array $paths Containing class/namespace prefix as key and sub path as value
+     * @param array $settings Settings for loader, {@see $settings}
+     */
+    public function __construct( array $paths, array $settings = array() )
     {
         $this->paths = $paths;
-        $this->mode = $mode;
-        $this->lazyClassLoaders = $lazyClassLoaders;
+        $this->settings = $settings + array(
+            'Mode' => 0,
+            'LazyLoaders' => array(),
+            'LegacyClassMap' => null,
+            'AllowKernelOverride' => false,
+        );
     }
 
     /**
@@ -93,7 +97,7 @@ class ClassLoader
             if ( strpos( $className, $prefix ) !== 0 )
                 continue;
 
-            if ( !( $this->mode & self::PSR_0_STRICT_MODE ) ) // Normal PSR-0 PEAR compat
+            if ( !( $this->settings['Mode'] & self::PSR_0_STRICT_MODE ) ) // Normal PSR-0 PEAR compat
             {
                 $lastNsPos = strripos( $className, '\\' );
                 $prefixLen = strlen( $prefix ) + 1;
@@ -116,7 +120,7 @@ class ClassLoader
                             '.php';
             }
 
-            if ( !( $this->mode & self::PSR_0_NO_FILECHECK ) &&
+            if ( !( $this->settings['Mode'] & self::PSR_0_NO_FILECHECK ) &&
                  ( $fileName = stream_resolve_include_path( $fileName ) ) === false )
                 return false;
 
@@ -128,19 +132,54 @@ class ClassLoader
             return true;
         }
 
-        if ( empty( $this->lazyClassLoaders ) )
-            return null;
-
         // No match where found, see if we have any lazy loaded closures that should register other autoloaders
-        foreach ( $this->lazyClassLoaders as $prefix => $callable )
+        foreach ( $this->settings['LazyLoaders'] as $prefix => $callable )
         {
             if ( strpos( $className, $prefix ) !== 0 )
                 continue;
 
             if ( $callable( $className ) )
-                unset( $this->lazyClassLoaders[$prefix] );
+                unset( $this->settings['LazyLoaders'][$prefix] );
 
             return true;
         }
+
+        if ( $this->settings['LegacyClassMap'] === null )
+            $this->settings['LegacyClassMap'] = $this->getEzp4ClassesList();
+
+        if ( isset( $this->settings['LegacyClassMap'][$className] ) )
+            require $this->settings['LegacyClassMap'][$className];
+
+        return null;
+    }
+
+    /**
+     * Merges all eZ Publish 4.x autoload files and return result
+     *
+     * @return array
+     */
+    public function getEzp4ClassesList()
+    {
+        if ( file_exists( 'autoload/ezp_kernel.php' ) )
+            $ezpKernelClasses = require 'autoload/ezp_kernel.php';
+        else
+            $ezpKernelClasses = array();
+
+        if ( file_exists( 'var/autoload/ezp_extension.php' ) )
+            $ezpExtensionClasses = require 'var/autoload/ezp_extension.php';
+        else
+            $ezpExtensionClasses = array();
+
+        if ( file_exists( 'var/autoload/ezp_tests.php' ) )
+            $ezpTestClasses = require 'var/autoload/ezp_tests.php';
+        else
+            $ezpTestClasses = array();
+
+        if ( $this->settings['AllowKernelOverride'] && file_exists( 'var/autoload/ezp_override.php' ) )
+            $ezpKernelOverrideClasses = require 'var/autoload/ezp_override.php';
+        else
+            $ezpKernelOverrideClasses = array();
+
+        return $ezpKernelOverrideClasses + $ezpTestClasses + $ezpExtensionClasses + $ezpKernelClasses;
     }
 }

@@ -23,20 +23,23 @@ return array(
         'Repositories' => array( 'eZ' => __DIR__ . '/ezpnext/eZ',
                                  'HiMVC' => __DIR__ . '/HiMVC',
                                  /*'Vendor\SomeApp' => __DIR__ . '/Vendor/SomeApp'*/ ),
-        // Mode for class loader
-        'Mode' => 1,
-        // Hash of lazy loaded functions to register autoloaders lazily
-        'lazyClassLoaders' => array(
-            'ezc' => function( $className ){
-                require 'ezc/Base/base.php';
-                spl_autoload_register( array( 'ezcBase', 'autoload' ) );
-                return true;
-            },
-            'Twig_' => function( $className ){
-                require 'Twig/Autoloader.php';
-                Twig_Autoloader::register();
-                return true;
-            },
+        // ClassLoader settings
+        'Settings' => array(
+            // Mode for class loader
+            'Mode' => 1,
+            // Hash of lazy loaded functions to register autoloaders lazily
+            'LazyLoaders' => array(
+                'ezc' => function( $className ){
+                    require 'ezc/Base/base.php';
+                    spl_autoload_register( array( 'ezcBase', 'autoload' ) );
+                    return true;
+                },
+                'Twig_' => function( $className ){
+                    require 'Twig/Autoloader.php';
+                    Twig_Autoloader::register();
+                    return true;
+                },
+            ),
         ),
     ),
     'Configuration' => array(
