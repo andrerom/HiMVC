@@ -455,16 +455,16 @@ class DependencyInjectionContainer implements Container
      * All listerneres must return ALL $params even if they are not modified!
      *
      * @param array $listerners
-     * @param array $params The arguments for the specific event as simple array structure (not hash)
+     * @param array $arguments The arguments for the specific event as simple array structure (not hash)
      * @return mixed $params param after being filtered by filters, or unmodified if no filters or not changed
      */
-    protected function filter( array $listerners, array $params )
+    protected function filter( array $listerners, array $arguments )
     {
         foreach ( $listerners as $listener )
         {
-            $params = call_user_func_array( $listener, $params );
+            $arguments = call_user_func_array( $listener, $arguments );
         }
-        return $params;
+        return $arguments;
     }
 
     /**
