@@ -21,6 +21,26 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  *
  * A dependency injection container that uses configuration for defining dependencies.
  *
+ * Features:
+ * - Constructor injection
+ * - Setter injection
+ * - Pre create argument filters
+ * - Post create service listerners
+ * - "service" dependecies using "@" prefix before dependency name
+ *       Example: argument[fieldTypes]=@:fieldType
+ *
+ * - Variable dependecies using "$" prefix before dependency name
+ *       Currently: $_SERVER, $_POST, $_GET, $_COOKIE, $_FILES, $body and $settings
+ * - Lazy loaded "service" dependecies using "%" prefix before dependency name, returns a closure that will load service
+ * - List of related services referance using ":", works both after @ and % (returns list of closures)
+ *       Example: argument[fieldTypes]=@:fieldType
+ *                argument[routes]=%:route
+ *
+ * - Optional dependencies using "?", works after all dependecy symbols: $, @ and %
+ * - Factory methods
+ * - Callable dependecy object creation with "::" key, works with all dependecy symbols: $, @ and %
+ *       Example: argument[parse_callback]=@xztxmlvideo::parseCallback
+ *
  * Usage:
  *
  *     $sc = new eZ\Publish\Core\Base\ServiceContainer( $configManager->getConfiguration('service')->getAll() );
@@ -47,11 +67,6 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  *     class=eZ\Publish\Core\Persistence\InMemory\Handler
  *
  *     # @see \eZ\Publish\Core\settings\service.ini For more options and examples.
- *
- * "arguments" values in service.ini can start with either @ in case of other services being dependency, $ if a
- * predefined global variable is to be used ( currently: $_SERVER, $_POST, $_GET, $_COOKIE, $_FILES and $body )
- * or plain scalar if that is to be given directly as argument value.
- * If the argument value starts with %, then it is a lazy loaded service provided as a callback (closure).
  */
 class DependencyInjectionContainer implements Container
 {
