@@ -87,8 +87,8 @@ $configuration->setDirs( $modulePaths, 'modules' );
 $configuration->setDirs( $moduleAccessPaths, 'modulesAccess' );
 $container->setSettings(
     $configuration
-        ->enableKeepParsedData( false )// Set setting back to sane default, as a bonus parsed data is cleared on reload
         ->reload()
+        ->enableKeepParsedData( false )// Set setting back to default
         ->getAll()
 );
 

@@ -208,6 +208,9 @@ class Configuration
      */
     public function enableKeepParsedData( $value )
     {
+        if ( $value === false )
+            $this->parsedData = array();
+
         $this->settings['KeepParsedData'] = $value;
         return $this;
     }
