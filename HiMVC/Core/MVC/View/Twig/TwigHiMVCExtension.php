@@ -13,6 +13,7 @@ namespace HiMVC\Core\MVC\View\Twig;
 use HiMVC\Core\MVC\Dispatcher;
 use HiMVC\Core\MVC\Router;
 use HiMVC\Core\MVC\View\ViewDispatcher;
+use HiMVC\Core\MVC\View\DesignLoader;
 use HiMVC\API\MVC\Values\Request;
 use HiMVC\API\MVC\Values\Result;
 use Twig_Extension;
@@ -42,15 +43,22 @@ class TwigHiMVCExtension extends Twig_Extension
     protected $viewDispatcher;
 
     /**
+     * @var \HiMVC\Core\MVC\View\DesignLoader
+     */
+    protected $designLoader;
+
+    /**
      * @param \HiMVC\Core\MVC\Dispatcher $dispatcher
      * @param \HiMVC\Core\MVC\Router $router
      * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
+     * @param \HiMVC\Core\MVC\View\DesignLoader $designLoader
      */
-    public function __construct( Dispatcher $dispatcher, Router $router, ViewDispatcher $viewDispatcher )
+    public function __construct( Dispatcher $dispatcher, Router $router, ViewDispatcher $viewDispatcher, DesignLoader $designLoader )
     {
         $this->dispatcher = $dispatcher;
         $this->router = $router;
         $this->viewDispatcher = $viewDispatcher;
+        $this->designLoader = $designLoader;
     }
 
     /**
@@ -63,7 +71,8 @@ class TwigHiMVCExtension extends Twig_Extension
         return array(
             'dispatch' => new Twig_Function_Method( $this, 'dispatch', array( 'is_safe' => array( 'html' ) ) ),
             'view' => new Twig_Function_Method( $this, 'view', array( 'is_safe' => array( 'html' ) ) ),
-            'link' => new Twig_Function_Method( $this, 'link' )
+            'link' => new Twig_Function_Method( $this, 'link' ),
+            'design' => new Twig_Function_Method( $this, 'design' )
         );
     }
 
@@ -80,6 +89,8 @@ class TwigHiMVCExtension extends Twig_Extension
     /**
      * Dispatch request
      *
+     * @uses \HiMVC\Core\MVC\Dispatcher::dispatch()
+     *
      * @param \HiMVC\API\MVC\Values\Request $request
      * @return Response An object that can be casted to string
      */
@@ -90,6 +101,8 @@ class TwigHiMVCExtension extends Twig_Extension
 
     /**
      * Generate Response for Result+Requst object
+     *
+     * @uses \HiMVC\Core\MVC\View\ViewDispatcher::view()
      *
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
@@ -102,6 +115,8 @@ class TwigHiMVCExtension extends Twig_Extension
 
     /**
      * Generate link to a Result object
+     *
+     * @uses \HiMVC\Core\MVC\Router::reverse()
      *
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
@@ -135,5 +150,27 @@ class TwigHiMVCExtension extends Twig_Extension
             $request->indexDir .
             $route[1] .
             $query;
+    }
+
+    /**
+     * Lookup static asset using design loader.
+     *
+     * @todo CSS / JS assets should be handled differently, this is more aimed at inline design images use.
+     * @uses \HiMVC\Core\MVC\View\DesignLoader::getPath()
+     *
+     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param string $file
+     * @param bool $hostName
+     * @return string
+     */
+    public function design( Request $request, $file, $hostName = false )
+    {
+        // Append host name if asked for @todo Host map based on asset file ending
+        $host = '';
+        if ( $hostName )
+        {
+            $host = $request->scheme . '://'  . $request->host;
+        }
+        return $host . $request->wwwDir . $this->designLoader->getPath( $file );
     }
 }

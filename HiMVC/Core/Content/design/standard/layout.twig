@@ -3,16 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <title>Site title</title>
-    <style>
-        section { width:786px; }
-        article { float: left; width: 69%; }
-        aside { float: right; width: 30%; }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ design( request, 'layout.css' ) }}" />
 </head>
 <body>
     <section>
     <article>
         {{ view( request, result ) }}
+
     </article>
 
     <aside>

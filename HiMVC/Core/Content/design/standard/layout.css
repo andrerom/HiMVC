@@ -1,0 +1,7 @@
+/* This is css, it stands for Cascading Style Sheets, usually used to style HTML documents.
+ * Now you know.. ;)
+ */
+
+section { width:786px; }
+article { float: left; width: 69%; }
+aside { float: right; width: 30%; }

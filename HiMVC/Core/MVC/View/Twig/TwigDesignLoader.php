@@ -20,8 +20,21 @@ use HiMVC\Core\MVC\View\DesignLoader,
  *
  * Uses DesignDispatcher and just converts exceptions into twig exceptions.
  */
-class TwigDesignLoader extends DesignLoader implements Twig_LoaderInterface
+class TwigDesignLoader implements Twig_LoaderInterface
 {
+    /**
+     * @var \HiMVC\Core\MVC\View\DesignLoader
+     */
+    protected $designLoader;
+
+    /**
+     * @param \HiMVC\Core\MVC\View\DesignLoader $designLoader
+     */
+    public function __construct( DesignLoader $designLoader )
+    {
+        $this->designLoader = $designLoader;
+    }
+
     /**
      * Gets the source code of a template, given its name.
      *
@@ -34,7 +47,7 @@ class TwigDesignLoader extends DesignLoader implements Twig_LoaderInterface
     {
         try
         {
-            return parent::getSource( $name );
+            return $this->designLoader->getSource( $name );
         }
         catch ( NotFoundException $e )
         {
@@ -54,7 +67,7 @@ class TwigDesignLoader extends DesignLoader implements Twig_LoaderInterface
     {
         try
         {
-            return parent::getCacheKey( $name );
+            return $this->designLoader->getCacheKey( $name );
         }
         catch ( NotFoundException $e )
         {
@@ -75,7 +88,7 @@ class TwigDesignLoader extends DesignLoader implements Twig_LoaderInterface
     {
         try
         {
-            return parent::isFresh( $name, $time );
+            return $this->designLoader->isFresh( $name, $time );
         }
         catch ( NotFoundException $e )
         {

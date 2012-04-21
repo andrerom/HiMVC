@@ -26,15 +26,21 @@ class DesignLoader
     private $possibleDesignLocations;
 
     /**
+     * @var string Root dir of HiMVC
+     */
+    private $rootDir;
+
+    /**
      * Construct DesignDispatcher and pre generate possible design locations.
      *
      * Possible design locations is a combination of active modules and active designs.
      *
      * @param \HiMVC\Core\Base\Module[] $modules
      * @param array $enabledDesigns
+     * @param string $rootDir
      * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException If $designs or $request->modules is empty
      */
-    public function __construct( array $modules, array $enabledDesigns )
+    public function __construct( array $modules, array $enabledDesigns, $rootDir )
     {
         if ( empty( $enabledDesigns ) )
             throw new InvalidArgumentException( '$designs', 'Empty, can not find design locations' );
@@ -53,18 +59,24 @@ class DesignLoader
 
         // Reverse the list as the last item has first priority
         $this->possibleDesignLocations = array_reverse( $this->possibleDesignLocations );
-
+        $this->rootDir = $rootDir;
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param bool $absolute
      * @return string
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException If $name was not found in $possibleDesignLocations
      */
-    public function getPath( $name )
+    public function getPath( $name, $absolute = false )
     {
         foreach ( $this->possibleDesignLocations as $designPath )
         {
+            if ( $absolute )
+            {
+                $designPath = $this->rootDir . '/' . $designPath;
+            }
+
             if ( is_file( "{$designPath}/{$name}" ) )
             {
                 return "{$designPath}/{$name}";
@@ -83,7 +95,7 @@ class DesignLoader
      */
     public function getSource( $name )
     {
-        $path = $this->getPath( $name );
+        $path = $this->getPath( $name, true );
         return file_get_contents( $path );
     }
 
@@ -111,7 +123,7 @@ class DesignLoader
      */
     public function isFresh( $name, $time )
     {
-        $path = $this->getPath( $name );
+        $path = $this->getPath( $name, true );
         return filemtime( $path ) <= $time;
     }
 }

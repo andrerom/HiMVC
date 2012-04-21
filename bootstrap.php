@@ -15,8 +15,11 @@ use HiMVC\Core\Base\ClassLoader,
     HiMVC\Core\Base\Configuration,
     HiMVC\Core\Base\DependencyInjectionContainer as Container;
 
+if ( !isset( $rootDir ) )
+    $rootDir = __DIR__;
+
 // Read config.php
-if ( !( $settings = include( __DIR__ . '/config.php' ) ) )
+if ( !( $settings = include( $rootDir . '/config.php' ) ) )
 {
     die( 'Could not find config.php, please copy config.php-DEVELOPMENT to config.php and customize to your needs!' );
 }
@@ -45,6 +48,7 @@ $container = new Container(
     $configuration->getAll(),
     array(
         '$indexFile' => (isset( $indexFile ) ? $indexFile : 'index.php'),
+        '$rootDir' => $rootDir,
         '$classLoader' => $classLoader,
         '$configuration' => $configuration,
         '$cacheDirPermission' => $settings['Configuration']['Settings']['CacheDirPermission'],
@@ -61,7 +65,7 @@ $request = $container->getRequest();
 foreach ( $request->access as $accessMatch )
 {
     $accessRelativePaths[] = $accessRelativePath = "settings/access/{$accessMatch->type}/{$accessMatch->name}/";
-    $accessPaths[] = __DIR__ . '/' . $accessRelativePath;
+    $accessPaths[] = $rootDir . '/' . $accessRelativePath;
 }
 $configuration->setDirs( $accessPaths, 'access' );
 $container->setSettings( $configuration->reload()->getAll() );
@@ -72,15 +76,11 @@ $modulePaths = array();
 $moduleAccessPaths = array();
 foreach ( $container->getModules() as $module )
 {
-    if ( $module->path[0] !== '/' )
-        $module->path = __DIR__ . '/' . $module->path;
-
     $request->appendModule( $module );
-
-    $modulePaths[] = "{$module->path}/settings/";
+    $modulePaths[] = "{$rootDir}/{$module->path}/settings/";
     foreach ( $accessRelativePaths as $accessRelativePath )
     {
-        $moduleAccessPaths[] = "{$module->path}/{$accessRelativePath}";
+        $moduleAccessPaths[] = "{$rootDir}/{$module->path}/{$accessRelativePath}";
     }
 }
 $configuration->setDirs( $modulePaths, 'modules' );

@@ -25,7 +25,7 @@ class Module extends ValueObject
     public $name;
 
     /**
-     * @var string Absolute path to module
+     * @var string Realtive path to module
      */
     public $path;
 
@@ -38,7 +38,7 @@ class Module extends ValueObject
      * Constructor
      *
      * @param string $name Name of module
-     * @param string $path Absolute path to module
+     * @param string $path Relative path to module
      * @param array $designs Optional list of designs avaialble in this module
      */
     public function __construct( $name, $path, array $designs = array() )
