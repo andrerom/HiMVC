@@ -148,7 +148,13 @@ class ClassLoader
             $this->settings['LegacyClassMap'] = $this->getEzp4ClassesList();
 
         if ( isset( $this->settings['LegacyClassMap'][$className] ) )
+        {
+            if ( $returnFileName )
+                return $this->settings['LegacyClassMap'][$className];
+
             require $this->settings['LegacyClassMap'][$className];
+            return true;
+        }
 
         return null;
     }
