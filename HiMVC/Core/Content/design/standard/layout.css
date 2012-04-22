@@ -2,6 +2,7 @@
  * Now you know.. ;)
  */
 
-section { width:786px; }
-article { float: left; width: 69%; }
-aside { float: right; width: 30%; }
+section#page { width: 988px; overflow: auto; }
+article { float: left; width: 72%; }
+article pre { overflow-x: scroll; background-color: #eee; padding: 1.2em; }
+aside { float: right; width: 27%; }
