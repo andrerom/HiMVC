@@ -84,7 +84,7 @@ class Value extends BaseValue
      */
     public function __toString()
     {
-        // @todo Remove, temprary stuff for demo use
+        // @todo Remove, temporary stuff for demo use
         $doc = new DOMDocument( '1.0', 'utf-8' );
         $doc->loadXML( str_replace(
             array( ' xmlns:tmp="http://ez.no/namespaces/ezpublish3/temporary/"', '<paragraph', '</paragraph>', '<line>', '</line>', '<literal', '</literal>', ),
