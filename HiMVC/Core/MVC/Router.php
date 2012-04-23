@@ -61,6 +61,7 @@ class Router
             if ( ( $uriParams = $route->match( $uri ) ) === null )
                 continue;// No request match
 
+            //$uriParams[] = $request; Won't work as it doesn't contains optional missing params
             $controller = $route->controller;
             return call_user_func_array( array( $controller(), $method ), $uriParams );
         }
