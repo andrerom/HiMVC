@@ -16,11 +16,10 @@ use eZ\Publish\API\Repository\Values\ValueObject;
  * Result object
  *
  * Encapsulates all data from a controller action to be able to generate view and
- * for hmvc use be able to figgure out the overall expiry of the full page.
+ * for hmvc use be able to figure out the overall expiry of the full page.
  *
  * @property-read string $module
  * @property-read string $action
- * @property-read string $view
  * @property-read string controller
  * @property-read array $params
  * @property-read null|ResultCacheInfo $cacheInfo
@@ -46,15 +45,6 @@ abstract class Result extends ValueObject
      * @var string
      */
     protected $action;
-
-    /**
-     * Optional view of the action if any (If the action support different views)
-     *
-     * Used for template name conventions in view handlers.
-     *
-     * @var string
-     */
-    protected $view = '';
 
     /**
      * The controller handling the result (for reverse route use)

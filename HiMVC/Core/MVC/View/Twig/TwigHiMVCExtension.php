@@ -144,7 +144,7 @@ class TwigHiMVCExtension extends Twig_Extension
                 $query = ( $query === '' ? '?' : '&' ) . $key . '=' . $value;
         }
 
-        // Put them all thogheter and get router uri based on info in result object
+        // Put them all together and get router uri based on info in result object
         $route = $this->router->reverse( $result->controller, $result->action, $uriParams );
         return $host .
             $request->indexDir .

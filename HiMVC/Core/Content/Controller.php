@@ -55,7 +55,7 @@ class Controller
     public function read( $id, $view = 'full' )
     {
         $model = $this->repository->getContentService()->loadContent( $id );
-        return $this->getResult( $model, $view, array( 'id' => $model->id, 'view' => $view  ) );
+        return $this->getResult( $model, array( 'id' => $model->id, 'view' => $view  ) );
     }
 
     /**
@@ -96,7 +96,7 @@ class Controller
         $items = array();
         foreach ( $searchResult->items as $model )
         {
-            $items[] = $this->getResult( $model, 'line', array( 'id' => $model->id, 'view' => 'line'  ) );
+            $items[] = $this->getResult( $model, array( 'id' => $model->id, 'view' => 'line' ) );
         }
 
         return new ResultList( array(
@@ -110,19 +110,16 @@ class Controller
 
     /**
      * @param object $model
-     * @param string $view
      * @param array $params
      * @param string $action
-     * @param string $controller
      * @return \HiMVC\API\MVC\Values\ResultItem
      */
-    private function getResult( $model, $view = '', array $params = array(), $action = 'read', $controller = __CLASS__ )
+    private function getResult( $model, array $params, $action = 'read' )
     {
         return new ResultItem( array(
             'model' => $model,
             'module' => 'content',
-            'view' => $view,
-            'controller' => $controller,
+            'controller' => __CLASS__,
             'action' => $action,
             'params' => $params
         ) );

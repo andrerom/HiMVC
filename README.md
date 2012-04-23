@@ -44,6 +44,9 @@ The code has some parts that can be used as is, and some parts that should be gi
 
 #Todo?
 * Add Response objects
+* Change default values of optional params to be part of route
+* Provide query params as last params to actions
+  Or introduce abstract class Controller with a ->run( $request, $action, array $params ) so controller can decide
 * Define where Authentication should be done (pre controller action filter?) and how to pass on user id from session / do basic auth
 * Define how cache hints should be part of the system, including vary by logic
 * ------- " -------  View Cache should be done ( pre + post controller action filter?)

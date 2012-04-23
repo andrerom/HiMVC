@@ -55,7 +55,7 @@ class LocationController
     public function read( $id, $view = 'full' )
     {
         $model = $this->repository->getLocationService()->loadLocation( $id );
-        return $this->getResult( $model, $view, array( 'id' => $model->id, 'view' => $view ) );
+        return $this->getResult( $model, array( 'id' => $model->id, 'view' => $view ) );
     }
 
     /**
@@ -101,16 +101,16 @@ class LocationController
      *
      * @todo Add global (injected) setting to specify max limits
      */
-    public function children( $parentId, $offset = 0, $limit = -1 )
+    public function children( $parentId, $view = 'line' )
     {
         $locationService = $this->repository->getLocationService();
         $location = $locationService->loadLocation( $parentId );
-        $children = $locationService->loadLocationChildren( $location, $offset, $limit );
+        $children = $locationService->loadLocationChildren( $location );
 
         $items = array();
         foreach ( $children as $model )
         {
-            $items[] = $this->getResult( $model, 'line', array( 'id' => $model->id, 'view' => 'line' ) );
+            $items[] = $this->getResult( $model, array( 'id' => $model->id, 'view' => $view ) );
         }
 
         return new ResultList( array(
@@ -119,26 +119,23 @@ class LocationController
             'module' => 'content/location',
             'action' => 'list',
             'controller' => __CLASS__,
-            'params' => array( 'parentId' => $parentId, 'offset' => $offset, 'limit' => $limit ),
+            'params' => array( 'parentId' => $parentId ),
         ) );
     }
 
     /**
      * @param object $model
-     * @param string $view
      * @param array $params
      * @param string $action
-     * @param string $controller
      * @return \HiMVC\API\MVC\Values\ResultItem
      */
-    private function getResult( $model, $view = '', array $params = array(), $action = 'read', $controller = __CLASS__ )
+    private function getResult( $model, array $params, $action = 'read' )
     {
         return new ResultItem( array(
             'model' => $model,
             'module' => 'content/location',
             'action' => $action,
-            'view' => $view,
-            'controller' => $controller,
+            'controller' => __CLASS__,
             'params' => $params
         ) );
     }

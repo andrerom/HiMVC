@@ -58,7 +58,8 @@ class ViewDispatcher
      */
     public function view( Request $request, Result $result )
     {
-        $source = $result->module . '/' . $result->action . ( $result->view ? '/' . $result->view : '' );
+        $source = $result->module . '/' . $result->action .
+            ( isset( $result->params['view'] ) ? '/' . $result->params['view'] : '' );
         return $this->viewBySource( $source, $request, $result );
     }
 
@@ -128,7 +129,7 @@ class ViewDispatcher
      * - 4 is added for remoteId matchs
      *
      * @todo Consider if conditions should be read in reverse order / prepended on match like ezp?
-     * @todo Matching rules on request object should be limited to cache safe params? (uri, vary, query?, ..)
+     * @todo Matching rules on request object should (if added) be limited to cache safe params? (uri, vary, query?, ..)
      *
      * @param string $source
      * @param array $params
