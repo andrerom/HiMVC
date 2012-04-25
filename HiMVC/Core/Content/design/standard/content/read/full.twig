@@ -1,7 +1,5 @@
-<h1>Name: {{ result.model.contentInfo.name }}</h1>
+<h1>{{ result.model.contentInfo.name }}</h1>
 
 {% for field in result.model.getFields() %}
     <p class="ezp-content-field ezp-content-field-{{ field.fieldDefIdentifier }}">{{ field.value|raw }}</p>
 {% endfor %}
-
-Twig template got Content object with id: {{ result.model.id }}

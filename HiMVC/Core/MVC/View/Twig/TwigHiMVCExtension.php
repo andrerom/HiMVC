@@ -92,11 +92,12 @@ class TwigHiMVCExtension extends Twig_Extension
      * @uses \HiMVC\Core\MVC\Dispatcher::dispatch()
      *
      * @param \HiMVC\API\MVC\Values\Request $request
+     * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
-    public function dispatch( Request $request )
+    public function dispatch( Request $request, array $viewParams = array() )
     {
-        return $this->dispatcher->dispatch( $request );
+        return $this->dispatcher->dispatch( $request, $viewParams );
     }
 
     /**
@@ -106,11 +107,12 @@ class TwigHiMVCExtension extends Twig_Extension
      *
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
+     * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
-    public function view( Request $request, Result $result )
+    public function view( Request $request, Result $result, array $viewParams = array() )
     {
-        return $this->viewDispatcher->view( $request, $result );
+        return $this->viewDispatcher->view( $request, $result, $viewParams );
     }
 
     /**

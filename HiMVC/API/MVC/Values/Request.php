@@ -47,7 +47,7 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read string $referrer
  * @property-read float $microTime
  * @property-read array $raw
- * @property-read \HiMVC\API\MVC\Values\Request[] $childRequests
+ * @property-read \HiMVC\API\MVC\Values\Request[] $children
  */
 abstract class Request extends ValueObject
 {
@@ -188,9 +188,9 @@ abstract class Request extends ValueObject
     protected $raw = array();
 
     /**
-     * @var array List of child requests witin this request
+     * @var \HiMVC\API\MVC\Values\Request[] List of child requests within this request
      */
-    protected $childRequests = array();
+    protected $children = array();
 
     /**
      * Nested request exceptions
@@ -232,7 +232,7 @@ abstract class Request extends ValueObject
     abstract public function createChild( $uri );
 
     /**
-     * Protectes clone so it is only accessible via createChild()
+     * Protect clone so it is only accessible via createChild()
      */
     protected function __clone()
     {

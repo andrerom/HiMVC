@@ -89,7 +89,7 @@ class Request extends APIRequest
         $child = clone $this;
         $child->uri = $uri;
         $child->uriArray = null;
-        $this->childRequests[] = $child;
+        $this->children[] = $child;
         return $child;
     }
 

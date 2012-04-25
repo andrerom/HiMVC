@@ -101,4 +101,28 @@ abstract class Result extends ValueObject
 
         parent::__construct( $properties );
     }
+
+    /**
+     * @param array $params
+     * @return \HiMVC\API\MVC\Values\Result
+     */
+    public function with( array $params )
+    {
+        $clone = clone $this;
+        foreach ( $params as $key => $value )
+        {
+            if ( isset( $clone->params[$key] ) )
+                $clone->params[$key] = $value;
+            else
+                throw new \Excpetion( "Could not find provided param: {$key}", __METHOD__ );
+        }
+        return $clone;
+    }
+
+    /**
+     * Protect clone so it is only accessible via createChild()
+     */
+    protected function __clone()
+    {
+    }
 }

@@ -55,12 +55,10 @@ class Dispatcher
      * the result to the view.
      *
      * @param \HiMVC\API\MVC\Values\Request $request
-     * @param bool $isRootRequest If true, this signals that this is the root request (not embed)
-     *                            and hence router->route returns Result object instead of
-     *                            exception or Response object, then layout is applied.
+     * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string, hence used in templates as well
      */
-    public function dispatch( APIRequest $request, $isRootRequest = false )
+    public function dispatch( APIRequest $request, array $viewParams = null )
     {
         // @todo: Add filters and exceptions support (redirect and misc http errors)
         $result = $this->router->route( $request );
@@ -71,12 +69,12 @@ class Dispatcher
             return $result;
         }
 
-        if ( $isRootRequest )
+        if ( $viewParams === null )
         {
             // @todo Either rename or change this to fit json / xml requests
             return $this->viewDispatcher->layout( $request, $result );
         }
 
-        return $this->viewDispatcher->view( $request, $result );
+        return $this->viewDispatcher->view( $request, $result, $viewParams );
     }
 }

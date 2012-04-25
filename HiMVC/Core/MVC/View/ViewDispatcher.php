@@ -54,13 +54,14 @@ class ViewDispatcher
      * @uses viewSource()
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
+     * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
-    public function view( Request $request, Result $result )
+    public function view( Request $request, Result $result, array $viewParams = array() )
     {
         $source = $result->module . '/' . $result->action .
             ( isset( $result->params['view'] ) ? '/' . $result->params['view'] : '' );
-        return $this->viewBySource( $source, $request, $result );
+        return $this->viewBySource( $source, $request, $result, $viewParams );
     }
 
     /**
@@ -85,36 +86,37 @@ class ViewDispatcher
      * @param string $source
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
+     * @param array $viewParams Parameters that are sent to sub "template
      * @return string
      * @throws \Exception
      */
-    protected function viewBySource( $source, Request $request, Result $result )
+    protected function viewBySource( $source, Request $request, Result $result, array $viewParams = array() )
     {
-        $params = array(
+        $conditionParams = array(
             'metaData' => $result->metaData,
             'params' => $result->params
         );
 
         if ( $result instanceof ResultItem )
-            $params['model'] = $result->model;
+            $conditionParams['model'] = $result->model;
 
         $target = $this->getMatchingConditionTarget(
             $source,
-            $params
+            $conditionParams
         );
 
         if ( $target === null )
         {
             foreach ( $this->viewHandlers as $suffix => $viewHandler )// Select the first view handler (default)
             {
-                return call_user_func( $viewHandler, "{$source}.{$suffix}", array( 'request' => $request, 'result' => $result ) );
+                return call_user_func( $viewHandler, "{$source}.{$suffix}", array( 'request' => $request, 'result' => $result, 'params' => $viewParams ) );
             }
             throw new \Exception( 'No view handler where provided, can not render view' );
         }
 
         if ( preg_match( "/\.(?P<suffix>[^.]+)$/", $target, $match ) && isset( $this->viewHandlers[ $match['suffix'] ] ) )
         {
-            return call_user_func( $this->viewHandlers[ $match['suffix'] ], $target, array( 'request' => $request, 'result' => $result ) );
+            return call_user_func( $this->viewHandlers[ $match['suffix'] ], $target, array( 'request' => $request, 'result' => $result, 'params' => $viewParams ));
         }
         throw new \Exception( "Could not find a view handler that matches target: {$target}" );
     }
