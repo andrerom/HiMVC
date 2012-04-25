@@ -1,5 +1,7 @@
 <h1>{{ result.model.contentInfo.name }}</h1>
 
 {% for field in result.model.getFields() %}
+    {% if field.fieldDefIdentifier not in [ 'title', 'name' ] %}
     <p class="ezp-content-field ezp-content-field-{{ field.fieldDefIdentifier }}">{{ field.value|raw }}</p>
+    {% endif %}
 {% endfor %}
