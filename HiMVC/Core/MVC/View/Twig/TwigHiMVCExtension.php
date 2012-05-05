@@ -70,6 +70,7 @@ class TwigHiMVCExtension extends Twig_Extension
     {
         return array(
             'dispatch' => new Twig_Function_Method( $this, 'dispatch', array( 'is_safe' => array( 'html' ) ) ),
+            'route' => new Twig_Function_Method( $this, 'route', array( 'is_safe' => array( 'html' ) ) ),
             'view' => new Twig_Function_Method( $this, 'view', array( 'is_safe' => array( 'html' ) ) ),
             'link' => new Twig_Function_Method( $this, 'link' ),
             'design' => new Twig_Function_Method( $this, 'design' )
@@ -87,7 +88,7 @@ class TwigHiMVCExtension extends Twig_Extension
     }
 
     /**
-     * Dispatch request
+     * Dispatch request, uri based dispatching
      *
      * @uses \HiMVC\Core\MVC\Dispatcher::dispatch()
      *
@@ -98,6 +99,23 @@ class TwigHiMVCExtension extends Twig_Extension
     public function dispatch( Request $request, array $viewParams = array() )
     {
         return $this->dispatcher->dispatch( $request, $viewParams );
+    }
+
+    /**
+     * Dispatch a call to controller based on controller identifier
+     *
+     * @uses \HiMVC\Core\MVC\Router::dispatch()
+     *
+     * @param string $controllerIdentifier
+     * @param string $action
+     * @param array $viewParams Parameters that are sent to sub "template"
+     * @return Response An object that can be casted to string
+     */
+    public function route( $controllerIdentifier, $action, array $viewParams = array() )
+    {
+        $route = $this->router->getRouteByControllerIdentifier( $controllerIdentifier, $action );
+        $controller = $route->controller;
+        return call_user_func_array( array( $controller(), $action ), $viewParams );
     }
 
     /**
@@ -147,10 +165,10 @@ class TwigHiMVCExtension extends Twig_Extension
         }
 
         // Put them all together and get router uri based on info in result object
-        $route = $this->router->reverse( $result->controller, $result->action, $uriParams );
+        $route = $this->router->getRouteByControllerClassName( $result->controller, $result->action );
         return $host .
             $request->indexDir .
-            $route[1] .
+            $route->reverse( $uriParams ) .
             $query;
     }
 

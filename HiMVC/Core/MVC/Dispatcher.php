@@ -12,8 +12,6 @@ namespace HiMVC\Core\MVC;
 
 use HiMVC\API\MVC\Values\Request as APIRequest;
 use HiMVC\Core\MVC\Router;
-use HiMVC\Core\MVC\View\ViewDispatcher;
-use HiMVC\API\MVC\Values\Result;
 
 /**
  * Dispatcher
@@ -30,22 +28,13 @@ class Dispatcher
     protected $router;
 
     /**
-     * View handler to use
-     *
-     * @var ViewDispatcher
-     */
-    protected $viewDispatcher;
-
-    /**
      * Construct from router and viewDispatcher
      *
      * @param \HiMVC\Core\MVC\Router $router
-     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Router $router, ViewDispatcher $viewDispatcher )
+    public function __construct( Router $router )
     {
         $this->router = $router;
-        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**

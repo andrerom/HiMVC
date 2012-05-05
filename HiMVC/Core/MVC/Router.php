@@ -25,9 +25,15 @@ class Router
     protected $routes;
 
     /**
-     * @var array[] Key is conrtoller class, value list of routes
+     * @var array[] Key is controller class name, value list of routes with route identifier as key
      */
-    protected $reverseRoutes = array();
+    protected $routesByControllerClass = array();
+
+    /**
+     * @var array[] Key is controller class name, value list of routes with route identifier as key
+     */
+    protected $routesByControllerIdentifier = array();
+
 
     /**
      * @param \HiMVC\API\MVC\Values\Route[] $routes
@@ -39,9 +45,8 @@ class Router
 
     /**
      * @param \HiMVC\API\MVC\Values\Request $request
+     * @throws \Exception
      * @return \HiMVC\API\MVC\Values\Result
-     * @throws eZ\Publish\Core\Base\Exceptions\Httpable
-     * @todo Addapt some kind of httpable exceptions which maps to http errors at least, similar to /x/
      */
     public function route( APIRequest $request )
     {
@@ -52,69 +57,92 @@ class Router
                 continue;// No root uri match
 
             if ( isset( $route->methodMap[$request->method] ) )
-                $method = $route->methodMap[$request->method];
+                $action = $route->methodMap[$request->method];
             else if ( isset( $route->methodMap['ALL'] ) )
-                $method = $route->methodMap['ALL'];
+                $action = $route->methodMap['ALL'];
             else
                 continue;// No method match
 
             if ( ( $uriParams = $route->match( $uri ) ) === null )
                 continue;// No request match
 
-            //$uriParams[] = $request; Won't work as it doesn't contains optional missing params
             $controller = $route->controller;
-            return call_user_func_array( array( $controller(), $method ), $uriParams );
+            return call_user_func_array( array( $controller(), $action ), $uriParams );
         }
 
         throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );//404
     }
 
     /**
-     * @param $controller
+     * @param $className
      * @param $action
-     * @param array $params
-     * @return array First value is the matched method, and second is the matched uri
+     * @throws \Exception
+     * @return \HiMVC\API\MVC\Values\Route
      */
-    public function reverse( $controller, $action, array $params )
+    public function getRouteByControllerClassName( $className, $action )
     {
-        if ( empty( $this->reverseRoutes[$controller] ) )
+        if ( empty( $this->routesByControllerClass[$className] ) )
         {
-            throw new \Exception( "No routes exists for coneroller: {$controller}" );
+            throw new \Exception( "No routes exists for controller: {$className}" );
         }
 
-        foreach ($this->reverseRoutes[$controller] as $route )
+        foreach ($this->routesByControllerClass[$className] as $route )
         {
             if (  $key = array_search( $action, $route->methodMap, true ) )
-                return array( $key, $route->reverse( $params ) );
+                return $route;
         }
-        throw new \Exception( "Did not find a matching route for: {$controller}::{$action}" );
+        throw new \Exception( "Did not find a matching route for: {$className}::{$action}" );
+    }
+
+    /**
+     * @param $identifier
+     * @param $action
+     * @throws \Exception
+     * @return \HiMVC\API\MVC\Values\Route
+     */
+    public function getRouteByControllerIdentifier( $identifier, $action )
+    {
+        if ( empty( $this->routesByControllerIdentifier[$identifier] ) )
+        {
+            throw new \Exception( "No routes exists for controller identifier: {$identifier}" );
+        }
+
+        foreach ($this->routesByControllerIdentifier[$identifier] as $route )
+        {
+            if (  $key = array_search( $action, $route->methodMap, true ) )
+                return $route;
+        }
+        throw new \Exception( "Did not find a matching route for: {$identifier}::{$action}" );
     }
 
     /**
      * Method injection of container settings
      *
-     * Needed to be able to generate info for doing reverse routing
+     * Needed to be able to generate info for doing reverse routing both by controller class name
+     * and controller identifier (in case of ini settings: the section defining the controller service).
      *
-     * @see $reverseRoutes
+     * @see $routesByControllerClass
+     * @see $routesByControllerIdentifier
      * @param array $settings
      */
     public function generateReverseInfo( array $settings )
     {
-        foreach ( $this->routes as $section => $route )
+        foreach ( $this->routes as $routeIdentifier => $route )
         {
-            $controller = $settings["{$section}:route"]['arguments']['controller'];
-            if ( ( $functionPos = stripos( $controller, '::' ) ) !== false )
+            $controllerClass = $settings["{$routeIdentifier}:route"]['arguments']['controller'];
+            if ( ( $functionPos = stripos( $controllerClass, '::' ) ) !== false )
             {
-                $controller = substr( $controller, 0, $functionPos );
+                $controllerClass = substr( $controllerClass, 0, $functionPos );
             }
 
-            if ( $controller[0] === '@' || $controller[0] === '%' )
+            if ( $controllerClass[0] === '@' || $controllerClass[0] === '%' )
             {
-                $controller = substr( $controller, 1 );
-                $controller = $settings[$controller]['class'];
+                $controllerIdentifier = substr( $controllerClass, 1 );
+                $controllerClass = $settings[$controllerIdentifier]['class'];
+                $this->routesByControllerIdentifier[$controllerIdentifier][$routeIdentifier] = $route;
             }
 
-            $this->reverseRoutes[$controller][$section] = $route;
+            $this->routesByControllerClass[$controllerClass][$routeIdentifier] = $route;
         }
     }
 }

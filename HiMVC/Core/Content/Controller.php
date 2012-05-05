@@ -12,6 +12,7 @@ namespace HiMVC\Core\Content;
 use HiMVC\API\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
+    HiMVC\API\MVC\Values\Result,
     HiMVC\API\MVC\Values\ResultItem,
     HiMVC\API\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
@@ -28,11 +29,20 @@ class Controller
     protected $repository;
 
     /**
-     * @param \eZ\Publish\API\Repository\Repository $reposiotry
+     * View handler to use
+     *
+     * @var \HiMVC\Core\MVC\View\ViewDispatcher
      */
-    public function __construct( Repository $reposiotry )
+    protected $viewDispatcher;
+
+    /**
+     * @param \eZ\Publish\API\Repository\Repository $repository
+     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
+     */
+    public function __construct( Repository $repository, ViewDispatcher $viewDispatcher )
     {
-        $this->repository = $reposiotry;
+        $this->repository = $repository;
+        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**
@@ -112,10 +122,11 @@ class Controller
      * @param object $model
      * @param array $params
      * @param string $action
-     * @return \HiMVC\API\MVC\Values\ResultItem
+     * @return \HiMVC\API\MVC\Values\Response
      */
-    private function getResult( $model, array $params, $action = 'read' )
+    private function display( Result $result )
     {
+        return $this->viewDispatcher->view()
         return new ResultItem( array(
             'model' => $model,
             'module' => 'content',

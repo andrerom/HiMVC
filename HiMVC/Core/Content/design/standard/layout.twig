@@ -13,7 +13,10 @@
     </article>
 
     <aside>
+        {{ route( 'Content:controller', 'read', [ 4, 'embed' ] ) }}
+        {# Same as bellow, but route avoids hard coding routes in templates
         {{ dispatch( request.createChild( 'content/4/embed' ) ) }}
+        #}
     </aside>
     </section>
 </body>
