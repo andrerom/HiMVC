@@ -59,13 +59,21 @@ class Route extends ValueObject
      *
      * @param string $uri
      * @param array $methodMap
-     * @param Closure $controller A callback to get the controller
+     * @param callable $controller  A callback to execute controller
      */
-    public function __construct( $uri, array $methodMap, Closure $controller )
+    public function __construct( $uri, array $methodMap, $controller )
     {
         $this->uri = $uri;
         $this->methodMap = $methodMap;
-        $this->controller = $controller;
+
+        if ( $controller instanceof Closure )
+            $this->controller = $controller;
+        else if ( is_callable( $controller ) )
+            $this->controller = $controller;
+        else
+            throw new \Exception( "Argument \$controller must be callable" );
+
+
     }
 
     /**

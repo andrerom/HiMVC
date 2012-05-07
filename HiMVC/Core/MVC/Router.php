@@ -52,18 +52,16 @@ class Router
                 continue;// No root uri match
 
             if ( isset( $route->methodMap[$request->method] ) )
-                $method = $route->methodMap[$request->method];
+                $action = $route->methodMap[$request->method];
             else if ( isset( $route->methodMap['ALL'] ) )
-                $method = $route->methodMap['ALL'];
+                $action = $route->methodMap['ALL'];
             else
                 continue;// No method match
 
             if ( ( $uriParams = $route->match( $uri ) ) === null )
                 continue;// No request match
 
-            //$uriParams[] = $request; Won't work as it doesn't contains optional missing params
-            $controller = $route->controller;
-            return call_user_func_array( array( $controller(), $method ), $uriParams );
+            return call_user_func( $route->controller, $request, $action, $uriParams );
         }
 
         throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );//404

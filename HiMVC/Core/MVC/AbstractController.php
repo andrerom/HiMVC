@@ -10,19 +10,24 @@
 
 namespace HiMVC\Core\MVC;
 
+use HiMVC\API\MVC\Values\Request as APIRequest;
+
 /**
  * Example Hello World controller
  */
-class HelloController
+abstract class AbstractController
 {
     /**
-     * A Hello World action.
+     * Execution point for controller actions
      *
+     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param $action
+     * @param array $params
      * @return \HiMVC\API\MVC\Values\Result
      */
-    static public function world()
+    public function run( APIRequest $request, $action, array $params = array() )
     {
-        return __METHOD__ . '()';
+        return call_user_func_array( array( $this, $action ), $params );
     }
 }
 
