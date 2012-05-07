@@ -72,7 +72,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'tpl' => array( $this->viewMock1, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            $this->getResultItem( array(), 'full' )
+            $this->getResultItem( array(),  array( 'view' => 'full' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -84,7 +84,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher = new ViewDispatcher( array( 'php' => array( $this->viewMock2, 'render' ) ), array() );
         $dispatcher->view(
             $this->request,
-            $this->getResultItem( array(), '' )
+            $this->getResultItem( array() )
         );
     }
 
@@ -112,7 +112,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            $this->getResultItem( array(), 'full', $params )
+            $this->getResultItem( array(), $params + array( 'view' => 'full' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -130,7 +130,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            $this->getResultItem( array(), '', $params )
+            $this->getResultItem( array(), $params )
         );
     }
 
@@ -164,7 +164,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            $this->getResultItem( array(), 'full', $params )
+            $this->getResultItem( array(), $params + array( 'view' => 'full' ) )
         );
 
         $this->viewMock2->expects( $this->once() )
@@ -187,25 +187,23 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
         ) );
         $dispatcher->view(
             $this->request,
-            $this->getResultItem( array(), '', $params )
+            $this->getResultItem( array(), $params )
         );
     }
 
     /**
      * @param object $model
-     * @param string $view
      * @param array $params
      * @param string $action
      * @param string $controller
      * @return \HiMVC\API\MVC\Values\ResultItem
      */
-    protected function getResultItem( $model, $view = '', array $params = array(), $action = 'read', $controller = __CLASS__ )
+    protected function getResultItem( $model, array $params = array(), $action = 'read', $controller = __CLASS__ )
     {
         return new ResultItem( array(
             'model' => $model,
             'module' => 'content',
             'action' => $action,
-            'view' => $view,
             'controller' => $controller,
             'params' => $params
         ) );
