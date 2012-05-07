@@ -1,0 +1,10 @@
+<h1><a href="{{ link( request, result, { 'view': 'full' } ) }}">Header</a></h1>
+
+<nav>
+    {# Add root folder as a menu item #}
+    <a href="{{ link( request, result, { 'view': 'full' } ) }}"{%
+    if result.model.id == params.main_result.model.id %} class="current"{%
+    endif %}>{{ result.model.contentInfo.name }}</a>
+
+    {{ route( request, 'ContentLocation:controller', 'children', [ result.model.id, 'nav_item' ], { 'main_result': params.main_result } ) }}
+</nav>

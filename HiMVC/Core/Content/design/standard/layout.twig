@@ -6,18 +6,18 @@
     <link rel="stylesheet" type="text/css" href="{{ design( request, 'layout.css' ) }}" />
 </head>
 <body>
-    <section id="page">
+<section id="page">
+    <header>
+        <!-- @todo This view should be cached pr request (the current one) -->
+        {{ route( request, 'ContentLocation:controller', 'read', [ 2, 'header' ], { 'main_result': result } ) }}
+    </header>
     <article>
         {{ view( request, result ) }}
 
     </article>
-
-    <aside>
-        {{ route( request, 'Content:controller', 'read', [ 4, 'embed' ] ) }}
-        {# Same as bellow, but route avoids hard coding routes in templates
-        {{ dispatch( request.createChild( 'content/4/embed' ) ) }}
-        #}
-    </aside>
-    </section>
+    <footer>
+        Copyright footer text (c) 2012
+    </footer>
+</section>
 </body>
 </html>
