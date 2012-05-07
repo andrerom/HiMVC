@@ -66,8 +66,8 @@ class Router
             if ( ( $uriParams = $route->match( $uri ) ) === null )
                 continue;// No request match
 
-            $controller = $route->controller;
-            return call_user_func_array( array( $controller(), $action ), $uriParams );
+
+            return call_user_func( $route->controller, $request, $action, $uriParams );
         }
 
         throw new \Exception( "Could not find a route for uri: '{$uri}', and method: '{$request->method}'" );//404

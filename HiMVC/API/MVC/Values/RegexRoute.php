@@ -36,10 +36,10 @@ class RegexRoute extends Route
      *
      * @param string $uri
      * @param array $methodMap
-     * @param Closure $controller A callback to get the controller
+     * @param callable $controller A callback to execute controller
      * @param string $pattern The pattern used for uri matching and to extract uri params
      */
-    public function __construct( $uri, array $methodMap, Closure $controller, $pattern )
+    public function __construct( $uri, array $methodMap, $controller, $pattern )
     {
         $this->pattern = $pattern;
         parent::__construct( $uri, $methodMap, $controller );

@@ -18,10 +18,12 @@ use HiMVC\API\MVC\Values\Request,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
 
+use HiMVC\Core\MVC\AbstractController;
+
 /**
  * Example content controller, does no changes to data atm
  */
-class Controller
+class Controller extends AbstractController
 {
     /**
      * @var \eZ\Publish\API\Repository\Repository
@@ -29,20 +31,11 @@ class Controller
     protected $repository;
 
     /**
-     * View handler to use
-     *
-     * @var \HiMVC\Core\MVC\View\ViewDispatcher
-     */
-    protected $viewDispatcher;
-
-    /**
      * @param \eZ\Publish\API\Repository\Repository $repository
-     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      */
-    public function __construct( Repository $repository, ViewDispatcher $viewDispatcher )
+    public function __construct( Repository $repository )
     {
         $this->repository = $repository;
-        $this->viewDispatcher = $viewDispatcher;
     }
 
     /**
