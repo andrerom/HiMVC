@@ -3,7 +3,7 @@
 <nav>
     {# Add root folder as a menu item #}
     <a href="{{ link( request, result, { 'view': 'full' } ) }}"{%
-    if result.model.id == params.main_result.model.id %} class="current"{%
+    if params.main_result.model.path is defined and result.model.id == params.main_result.model.id %} class="current"{%
     endif %}>{{ result.model.contentInfo.name }}</a>
 
     {{ route( request, 'ContentLocation:controller', 'children', [ result.model.id, 'nav_item' ], { 'main_result': params.main_result } ) }}
