@@ -93,12 +93,11 @@ class TwigHiMVCExtension extends Twig_Extension
      * @uses \HiMVC\Core\MVC\Dispatcher::dispatch()
      *
      * @param \HiMVC\API\MVC\Values\Request $request
-     * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
-    public function dispatch( Request $request, array $viewParams = array() )
+    public function dispatch( Request $request )
     {
-        return $this->dispatcher->dispatch( $request, $viewParams );
+        return $this->dispatcher->dispatch( $request );
     }
 
     /**
@@ -109,14 +108,16 @@ class TwigHiMVCExtension extends Twig_Extension
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param string $controllerIdentifier
      * @param string $action
-     * @param array $uriParams Parameters that are sent to sub "template"
+     * @param array $uriParams Parameters that are sent to controller
+     * @param array $viewParams Parameters that are sent to sub "template"
+     *
      * @return Response An object that can be casted to string
      */
-    public function route( Request $request, $controllerIdentifier, $action, array $uriParams = array() )
+    public function route( Request $request, $controllerIdentifier, $action, array $uriParams = array(), array $viewParams = array() )
     {
         $route = $this->router->getRouteByControllerIdentifier( $controllerIdentifier, $action );
         $controller = $route->controller;
-        return call_user_func( $controller, $request->createChild( $route->reverse( $uriParams ) ), $action, $uriParams );
+        return call_user_func( $controller, $request->createChild( $route->reverse( $uriParams ) ), $action, $uriParams, $viewParams );
     }
 
     /**

@@ -41,9 +41,11 @@ abstract class AbstractController
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param string $action
      * @param array $params
+     * @param array $viewParams Params to send to template (used for sending params from parent template to child)
+     *
      * @return \HiMVC\API\MVC\Values\Response
      */
-    public function run( APIRequest $request, $action, array $params = array() )
+    public function run( APIRequest $request, $action, array $params = array(), array $viewParams = array() )
     {
         $result = call_user_func_array( array( $this, $action ), $params );
 
@@ -52,7 +54,7 @@ abstract class AbstractController
             return $result;
         }
 
-        return $this->viewDispatcher->view( $request, $result );
+        return $this->viewDispatcher->view( $request, $result, $viewParams );
     }
 }
 

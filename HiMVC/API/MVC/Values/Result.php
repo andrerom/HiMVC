@@ -104,6 +104,8 @@ abstract class Result extends ValueObject
 
     /**
      * @param array $params
+     *
+     * @throws \Excpetion
      * @return \HiMVC\API\MVC\Values\Result
      */
     public function with( array $params )
