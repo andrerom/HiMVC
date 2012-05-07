@@ -11,23 +11,48 @@
 namespace HiMVC\Core\MVC;
 
 use HiMVC\API\MVC\Values\Request as APIRequest;
+use HiMVC\API\MVC\Values\Result as APIResult;
+use HiMVC\Core\MVC\View\ViewDispatcher;
 
 /**
- * Example Hello World controller
+ * Abstract controller
  */
 abstract class AbstractController
 {
     /**
+     * @var \HiMVC\Core\MVC\View\ViewDispatcher
+     */
+    private $viewDispatcher;
+
+    /**
+     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
+     */
+    public function __construct( ViewDispatcher $viewDispatcher )
+    {
+        $this->viewDispatcher = $viewDispatcher;
+    }
+
+    /**
      * Execution point for controller actions
      *
+     * Note: As this calls $action directly, make sure private functions are marked as private and not
+     * protected so they can not be exposed directly by mistakes in routes.
+     *
      * @param \HiMVC\API\MVC\Values\Request $request
-     * @param $action
+     * @param string $action
      * @param array $params
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\API\MVC\Values\Response
      */
     public function run( APIRequest $request, $action, array $params = array() )
     {
-        return call_user_func_array( array( $this, $action ), $params );
+        $result = call_user_func_array( array( $this, $action ), $params );
+
+        if ( !$result instanceof APIResult )
+        {
+            return $result;
+        }
+
+        return $this->viewDispatcher->view( $request, $result );
     }
 }
 

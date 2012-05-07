@@ -24,6 +24,11 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
 class Request extends APIRequest
 {
     /**
+     * @var bool
+     */
+    private $isMain = true;
+
+    /**
      * Make sure uriArray has value or generate it from uri string if not
      *
      * @uses \eZ\Publish\API\Repository\Values\ValueObject::__get()
@@ -82,15 +87,26 @@ class Request extends APIRequest
 
     /**
      * @param string $uri
-     * @return Request
+     * @return \HiMVC\Core\MVC\Request
      */
     public function createChild( $uri )
     {
         $child = clone $this;
         $child->uri = $uri;
         $child->uriArray = null;
+        $child->isMain = false;
         $this->children[] = $child;
         return $child;
+    }
+
+    /**
+     * Tells if current request object is main (parent) request, or a embed request.
+     *
+     * @return bool
+     */
+    public function isMain()
+    {
+        return $this->isMain;
     }
 
     /**

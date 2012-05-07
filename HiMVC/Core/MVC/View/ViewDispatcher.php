@@ -33,6 +33,11 @@ class ViewDispatcher
     protected $conditions;
 
     /**
+     * @var bool
+     */
+    protected $initialRun = true;
+
+    /**
      * @param \Closure[] $viewHandlers First is default, key of array must be file suffix used by viewHandler
      *                            View handler must be a callback.
      * @param array $conditions Conditions for override
@@ -65,24 +70,6 @@ class ViewDispatcher
     }
 
     /**
-     * Map view by convention and do a match against override conditions before it is executed
-     *
-     * layout() $source convention: 'layout'
-     *
-     * If no override match is found then '.<defaultViewSuffix>' is appended where
-     * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
-     *
-     * @uses viewSource()
-     * @param \HiMVC\API\MVC\Values\Request $request
-     * @param \HiMVC\API\MVC\Values\Result $result
-     * @return Response An object that can be casted to string
-     */
-    public function layout( Request $request, Result $result )
-    {
-        return $this->viewBySource( 'layout', $request, $result );
-    }
-
-    /**
      * @param string $source
      * @param \HiMVC\API\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
@@ -94,11 +81,21 @@ class ViewDispatcher
     {
         $conditionParams = array(
             'metaData' => $result->metaData,
-            'params' => $result->params
+            'params' => $result->params,
+            'accept' => $request->accept
         );
 
         if ( $result instanceof ResultItem )
             $conditionParams['model'] = $result->model;
+
+        if ( $this->initialRun )
+        {
+            $this->initialRun = false;
+            $conditionParams['initial_run'] = true;
+        }
+
+        if ( $request->isMain() )
+            $conditionParams['is_main_request'] = true;
 
         $target = $this->getMatchingConditionTarget(
             $source,
@@ -142,8 +139,16 @@ class ViewDispatcher
         $matches = array();
         foreach ( $this->conditions as $identifier => $settings )
         {
-            if ( $settings['source'] !== $source )
+            if ( !isset( $settings['source'] ) )
+            {
+                // In this case make sure there are some conditions, or else everything will match this $setting
+                if ( count( $settings ) < ( isset( $settings['priority'] ) ? 3 : 2 ) )
+                    continue;
+            }
+            else if ( $settings['source'] !== $source )
+            {
                 continue;
+            }
 
             $totalPoints = 0;
             foreach ( $settings as $name => $value )
@@ -151,6 +156,12 @@ class ViewDispatcher
                 // Skip target & source as source is already matched & target is only relevant if everything else match
                 if ( $name === 'target' || $name === 'source' )
                     continue;
+
+                if ( $name === 'priority' )
+                {
+                    $totalPoints += $value;
+                    continue;
+                }
 
                 if ( !isset( $params[$name] ) )
                     continue 2;
@@ -166,7 +177,6 @@ class ViewDispatcher
             }
             $matches[$totalPoints][$identifier] = $settings;
         }
-
         if ( empty( $matches ) )
             return null;
 

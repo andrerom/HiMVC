@@ -31,11 +31,13 @@ class Controller extends AbstractController
     protected $repository;
 
     /**
+     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      * @param \eZ\Publish\API\Repository\Repository $repository
      */
-    public function __construct( Repository $repository )
+    public function __construct( ViewDispatcher $viewDispatcher, Repository $repository )
     {
         $this->repository = $repository;
+        parent::__construct( $viewDispatcher );
     }
 
     /**
@@ -115,16 +117,15 @@ class Controller extends AbstractController
      * @param object $model
      * @param array $params
      * @param string $action
-     * @return \HiMVC\API\MVC\Values\Response
+     * @return \HiMVC\API\MVC\Values\ResultItem
      */
-    private function display( Result $result )
+    private function getResult( $model, array $params, $action = 'read' )
     {
-        return $this->viewDispatcher->view()
         return new ResultItem( array(
             'model' => $model,
             'module' => 'content',
-            'controller' => __CLASS__,
             'action' => $action,
+            'controller' => __CLASS__,
             'params' => $params
         ) );
     }

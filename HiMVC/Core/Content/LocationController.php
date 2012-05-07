@@ -30,11 +30,13 @@ class LocationController extends AbstractController
     protected $repository;
 
     /**
+     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      * @param \eZ\Publish\API\Repository\Repository $repository
      */
-    public function __construct( Repository $repository )
+    public function __construct( ViewDispatcher $viewDispatcher, Repository $repository )
     {
         $this->repository = $repository;
+        parent::__construct( $viewDispatcher );
     }
 
     /**

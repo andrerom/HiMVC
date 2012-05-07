@@ -232,6 +232,13 @@ abstract class Request extends ValueObject
     abstract public function createChild( $uri );
 
     /**
+     * Tells if current request object is main (parent) request, or a embed request.
+     *
+     * @return bool
+     */
+    abstract public function isMain();
+
+    /**
      * Protect clone so it is only accessible via createChild()
      */
     protected function __clone()

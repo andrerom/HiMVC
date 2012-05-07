@@ -106,16 +106,17 @@ class TwigHiMVCExtension extends Twig_Extension
      *
      * @uses \HiMVC\Core\MVC\Router::dispatch()
      *
+     * @param \HiMVC\API\MVC\Values\Request $request
      * @param string $controllerIdentifier
      * @param string $action
-     * @param array $viewParams Parameters that are sent to sub "template"
+     * @param array $uriParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
-    public function route( $controllerIdentifier, $action, array $viewParams = array() )
+    public function route( Request $request, $controllerIdentifier, $action, array $uriParams = array() )
     {
         $route = $this->router->getRouteByControllerIdentifier( $controllerIdentifier, $action );
         $controller = $route->controller;
-        return call_user_func_array( array( $controller(), $action ), $viewParams );
+        return call_user_func( $controller, $request->createChild( $route->reverse( $uriParams ) ), $action, $uriParams );
     }
 
     /**
@@ -165,7 +166,7 @@ class TwigHiMVCExtension extends Twig_Extension
         }
 
         // Put them all together and get router uri based on info in result object
-        $route = $this->router->getRouteByControllerClassName( $result->controller, $result->action );
+        $route = $this->router->getRouteByControllerName( $result->controller, $result->action );
         return $host .
             $request->indexDir .
             $route->reverse( $uriParams ) .

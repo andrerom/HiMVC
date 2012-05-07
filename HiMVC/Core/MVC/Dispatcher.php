@@ -44,26 +44,11 @@ class Dispatcher
      * the result to the view.
      *
      * @param \HiMVC\API\MVC\Values\Request $request
-     * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string, hence used in templates as well
      */
-    public function dispatch( APIRequest $request, array $viewParams = null )
+    public function dispatch( APIRequest $request )
     {
         // @todo: Add filters and exceptions support (redirect and misc http errors)
-        $result = $this->router->route( $request );
-
-        // @todo: Throw if not a Response object, or do 500 internal server error redirect
-        if ( !$result instanceof Result )
-        {
-            return $result;
-        }
-
-        if ( $viewParams === null )
-        {
-            // @todo Either rename or change this to fit json / xml requests
-            return $this->viewDispatcher->layout( $request, $result );
-        }
-
-        return $this->viewDispatcher->view( $request, $result, $viewParams );
+        return $this->router->route( $request );
     }
 }

@@ -27,7 +27,7 @@ class Router
     /**
      * @var array[] Key is controller class name, value list of routes with route identifier as key
      */
-    protected $routesByControllerClass = array();
+    protected $routesByControllerName = array();
 
     /**
      * @var array[] Key is controller class name, value list of routes with route identifier as key
@@ -79,14 +79,14 @@ class Router
      * @throws \Exception
      * @return \HiMVC\API\MVC\Values\Route
      */
-    public function getRouteByControllerClassName( $className, $action )
+    public function getRouteByControllerName( $className, $action )
     {
-        if ( empty( $this->routesByControllerClass[$className] ) )
+        if ( empty( $this->routesByControllerName[$className] ) )
         {
             throw new \Exception( "No routes exists for controller: {$className}" );
         }
 
-        foreach ($this->routesByControllerClass[$className] as $route )
+        foreach ($this->routesByControllerName[$className] as $route )
         {
             if (  $key = array_search( $action, $route->methodMap, true ) )
                 return $route;
@@ -142,7 +142,7 @@ class Router
                 $this->routesByControllerIdentifier[$controllerIdentifier][$routeIdentifier] = $route;
             }
 
-            $this->routesByControllerClass[$controllerClass][$routeIdentifier] = $route;
+            $this->routesByControllerName[$controllerClass][$routeIdentifier] = $route;
         }
     }
 }
