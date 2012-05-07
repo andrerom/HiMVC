@@ -13,9 +13,9 @@ namespace HiMVC\API\MVC\Values;
 use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
     HiMVC\Core\MVC\Accept,
-    HiMVC\Core\Base\AccessMatch,
-    HiMVC\Core\Base\Module,
-    HiMVC\Core\Base\SessionArray,
+    HiMVC\Core\Common\AccessMatch,
+    HiMVC\Core\Common\Module,
+    HiMVC\Core\Common\SessionArray,
     eZ\Publish\API\Repository\Values\ValueObject;
 
 /**
@@ -27,7 +27,7 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read array $params
  * @property-read array $cookies
  * @property-read array $files
- * @property-read array|\HiMVC\Core\Base\SessionArray $session
+ * @property-read array|\HiMVC\Core\Common\SessionArray $session
  * @property-read mixed $body
  * @property-read string $wwwDir
  * @property-read string $indexDir
@@ -39,8 +39,8 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read int $port
  * @property-read string $mimeType The content type of request body, like application/x-www-form-urlencoded', default: ''
  * @property-read \HiMVC\Core\MVC\Accept $accept
- * @property-read \HiMVC\Core\Base\AccessMatch[] $access
- * @property-read \HiMVC\Core\Base\Module[] $modules
+ * @property-read \HiMVC\Core\Common\AccessMatch[] $access
+ * @property-read \HiMVC\Core\Common\Module[] $modules
  * @property-read string $authUser
  * @property-read string $authPwd
  * @property-read string $userAgent
@@ -82,17 +82,17 @@ abstract class Request extends ValueObject
     protected $files = array();
 
     /**
-     * @var array|\HiMVC\Core\Base\SessionArray
+     * @var array|\HiMVC\Core\Common\SessionArray
      */
     protected $session = array();
 
     /**
-     * @var \HiMVC\Core\Base\AccessMatch[]
+     * @var \HiMVC\Core\Common\AccessMatch[]
      */
     protected $access = array();
 
     /**
-     * @var \HiMVC\Core\Base\Module[]
+     * @var \HiMVC\Core\Common\Module[]
      */
     protected $modules = array();
 
@@ -204,14 +204,14 @@ abstract class Request extends ValueObject
     /**
      * Add a acces match to list of matches and remove uri if there is one (must be left most part)
      *
-     * @param \HiMVC\Core\Base\AccessMatch $access
+     * @param \HiMVC\Core\Common\AccessMatch $access
      */
     abstract public function appendAccessMatch( AccessMatch $access );
 
     /**
      * Add a module to list of modules
      *
-     * @param \HiMVC\Core\Base\Module $module
+     * @param \HiMVC\Core\Common\Module $module
      */
     abstract public function appendModule( Module $module );
 
@@ -221,7 +221,7 @@ abstract class Request extends ValueObject
     abstract public function setAccept( Accept $accept );
 
     /**
-     * @param \HiMVC\Core\Base\SessionArray $session
+     * @param \HiMVC\Core\Common\SessionArray $session
      */
     abstract public function setSession( SessionArray $session );
 

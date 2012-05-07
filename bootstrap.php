@@ -11,9 +11,9 @@
  */
 
 
-use HiMVC\Core\Base\ClassLoader,
-    HiMVC\Core\Base\Configuration,
-    HiMVC\Core\Base\DependencyInjectionContainer as Container;
+use HiMVC\Core\Common\ClassLoader,
+    HiMVC\Core\Common\Configuration,
+    HiMVC\Core\Common\DependencyInjectionContainer as Container;
 
 if ( !isset( $rootDir ) )
     $rootDir = __DIR__;
@@ -25,7 +25,7 @@ if ( !( $settings = include( $rootDir . '/config.php' ) ) )
 }
 
 // Setup autoloader(s)
-require __DIR__ . '/HiMVC/Core/Base/ClassLoader.php';
+require __DIR__ . '/HiMVC/Core/Common/ClassLoader.php';
 $classLoader = new ClassLoader(
     $settings['ClassLoader']['Repositories'],
     $settings['ClassLoader']['Settings']

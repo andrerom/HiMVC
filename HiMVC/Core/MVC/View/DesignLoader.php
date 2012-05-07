@@ -35,7 +35,7 @@ class DesignLoader
      *
      * Possible design locations is a combination of active modules and active designs.
      *
-     * @param \HiMVC\Core\Base\Module[] $modules
+     * @param \HiMVC\Core\Common\Module[] $modules
      * @param array $enabledDesigns
      * @param string $rootDir
      * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException If $designs or $request->modules is empty

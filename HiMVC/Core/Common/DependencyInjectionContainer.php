@@ -8,7 +8,7 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Base;
+namespace HiMVC\Core\Common;
 use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
@@ -163,7 +163,7 @@ class DependencyInjectionContainer implements Container
      * Get Module objects
      *
      * @uses get()
-     * @return \HiMVC\Core\Base\Module[]
+     * @return \HiMVC\Core\Common\Module[]
      * @todo Fix the fact that a seperate call to this function after settings are reloaded could return other modules
      *       (aka the collection is not shared)
      */

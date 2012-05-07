@@ -8,7 +8,7 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Base;
+namespace HiMVC\Core\Common;
 
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
     eZ\Publish\API\Repository\Values\ValueObject,

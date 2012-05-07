@@ -7,8 +7,8 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Base\Tests;
-use HiMVC\Core\Base\ClassLoader,
+namespace HiMVC\Core\Common\Tests;
+use HiMVC\Core\Common\ClassLoader,
     PHPUnit_Framework_TestCase;
 
 /**

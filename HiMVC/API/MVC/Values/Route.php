@@ -48,7 +48,7 @@ class Route extends ValueObject
     protected $methodMap;
 
     /**
-     * The callback function for getting the controller
+     *  A callback to execute controller
      *
      * @var Closure
      */
@@ -59,7 +59,7 @@ class Route extends ValueObject
      *
      * @param string $uri
      * @param array $methodMap
-     * @param callable $controller  A callback to execute controller
+     * @param callable $controller A callback to execute controller
      */
     public function __construct( $uri, array $methodMap, $controller )
     {

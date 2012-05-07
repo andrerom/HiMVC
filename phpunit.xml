@@ -7,8 +7,8 @@
   convertWarningsToExceptions="true"
   >
   <testsuites>
-    <testsuite name="HiMVC\Core\Base">
-      <directory>HiMVC/Core/Base/Tests</directory>
+    <testsuite name="HiMVC\Core\Common">
+      <directory>HiMVC/Core/Common/Tests</directory>
     </testsuite>
     <testsuite name="HiMVC\Core\MVC">
       <directory>HiMVC/Core/MVC/Tests</directory>

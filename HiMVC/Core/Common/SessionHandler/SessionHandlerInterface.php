@@ -8,7 +8,7 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Base\SessionHandler;
+namespace HiMVC\Core\Common\SessionHandler;
 
 /**
  * Session handler interface

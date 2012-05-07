@@ -51,7 +51,7 @@ return array(
         'Paths' => array(
              'base' => array(
                  __DIR__ . '/ezpnext/eZ/Publish/Core/settings/',
-                 __DIR__ . '/HiMVC/Core/Base/settings/',
+                 __DIR__ . '/HiMVC/Core/Common/settings/',
                  __DIR__ . '/HiMVC/Core/MVC/settings/',
              ),
              'modules' => array(

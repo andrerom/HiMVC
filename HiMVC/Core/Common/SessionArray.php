@@ -7,10 +7,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License v3
  * @version //autogentag//
  */
-namespace HiMVC\Core\Base;
+namespace HiMVC\Core\Common;
 
 use HiMVC\API\MVC\Values\Request,
-    HiMVC\Core\Base\SessionHandler\SessionHandlerInterface;
+    HiMVC\Core\Common\SessionHandler\SessionHandlerInterface;
 
 
 /**
@@ -37,7 +37,7 @@ class SessionArray implements \ArrayAccess
     /**
      * Current session handler or null.
      *
-     * @var \HiMVC\Core\Base\SessionHandler\SessionHandlerInterface
+     * @var \HiMVC\Core\Common\SessionHandler\SessionHandlerInterface
      */
     protected $handler;
 
@@ -45,7 +45,7 @@ class SessionArray implements \ArrayAccess
     /**
      * Current session handler or null.
      *
-     * @var \HiMVC\Core\Base\Event
+     * @var \HiMVC\Core\Common\Event
      */
     protected $event;
 
@@ -60,7 +60,7 @@ class SessionArray implements \ArrayAccess
      * Constructor, setup session system (but only start if session cookie is present, otherwise lazy start)
      *
      * @param \HiMVC\API\MVC\Values\Request $req
-     * @param \HiMVC\Core\Base\SessionHandler\SessionHandlerInterface $handler
+     * @param \HiMVC\Core\Common\SessionHandler\SessionHandlerInterface $handler
      * @param array $settings
      */
     function __construct( Request $req,

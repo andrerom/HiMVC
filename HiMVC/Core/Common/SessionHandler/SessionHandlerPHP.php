@@ -8,9 +8,9 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Base\SessionHandler;
+namespace HiMVC\Core\Common\SessionHandler;
 
-use HiMVC\Core\Base\SessionHandler\SessionHandlerInterface;
+use HiMVC\Core\Common\SessionHandler\SessionHandlerInterface;
 
 /**
  * Session handler PHP

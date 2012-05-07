@@ -7,18 +7,18 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Base;
+namespace HiMVC\Core\Common;
 
 /**
  * Provides PSR-0 ish Loader
  *
  * Use:
- * require 'HiMVC/Core/Base/ClassLoader.php'
- * spl_autoload_register( array( new HiMVC\Core\Base\ClassLoader(
+ * require 'HiMVC/Core/Common/ClassLoader.php'
+ * spl_autoload_register( array( new HiMVC\Core\Common\ClassLoader(
  *     array(
  *         'Vendor\\Module' => 'Vendor/Module'
  *     )[,
- *     HiMVC\Core\Base\ClassLoader::PSR_0_PEAR_COMPAT] // PSR-0 PEAR compat mode
+ *     HiMVC\Core\Common\ClassLoader::PSR_0_PEAR_COMPAT] // PSR-0 PEAR compat mode
  * ), 'load' ) );
  */
 class ClassLoader

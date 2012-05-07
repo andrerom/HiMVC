@@ -10,7 +10,7 @@
  * @uses ezcPhpGenerator To generate INI cache
  */
 
-namespace HiMVC\Core\Base;
+namespace HiMVC\Core\Common;
 use eZ\Publish\Core\Base\Configuration\Parser,
     eZ\Publish\Core\Base\Exceptions\BadConfiguration,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue,
@@ -126,7 +126,7 @@ class Configuration
                                  array $paths = array(
                                       'base' => array(
                                           'eZ/Publish/Core/settings/',
-                                          'HiMVC/Core/Base/settings/',
+                                          'HiMVC/Core/Common/settings/',
                                           'HiMVC/Core/MVC/settings/',
                                       ),
                                       'modules' => array(),
@@ -204,7 +204,7 @@ class Configuration
      * Enable/disable setting 'KeepParsedData'
      *
      * @param bool $value
-     * @return \HiMVC\Core\Base\Configuration
+     * @return \HiMVC\Core\Common\Configuration
      */
     public function enableKeepParsedData( $value )
     {
@@ -232,7 +232,7 @@ class Configuration
     /**
      * Reload cache data conditionally if path hash has changed on current instance
      *
-     * @return \HiMVC\Core\Base\Configuration
+     * @return \HiMVC\Core\Common\Configuration
      */
     public function reload()
     {
@@ -246,7 +246,7 @@ class Configuration
      *
      * @param bool|null $hasCache Lets you specify if there is a cache file, will check if null and $useCache is true
      * @param bool $useCache Will skip using cached config files (slow), when null depends on [ini]\use-cache setting
-     * @return \HiMVC\Core\Base\Configuration
+     * @return \HiMVC\Core\Common\Configuration
      */
     public function load( $hasCache = null, $useCache = null )
     {

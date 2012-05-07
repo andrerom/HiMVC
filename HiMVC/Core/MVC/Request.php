@@ -13,9 +13,9 @@ namespace HiMVC\Core\MVC;
 use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
     HiMVC\Core\MVC\Accept,
-    HiMVC\Core\Base\AccessMatch,
-    HiMVC\Core\Base\Module,
-    HiMVC\Core\Base\SessionArray,
+    HiMVC\Core\Common\AccessMatch,
+    HiMVC\Core\Common\Module,
+    HiMVC\Core\Common\SessionArray,
     HiMVC\API\MVC\Values\Request as APIRequest;
 
 /**
@@ -48,7 +48,7 @@ class Request extends APIRequest
     /**
      * Add a acces match to list of matches and remove uri if there is one (must be left most part)
      *
-     * @param \HiMVC\Core\Base\AccessMatch $access
+     * @param \HiMVC\Core\Common\AccessMatch $access
      */
     public function appendAccessMatch( AccessMatch $access )
     {
@@ -62,7 +62,7 @@ class Request extends APIRequest
     /**
      * Add a module to list of modules
      *
-     * @param \HiMVC\Core\Base\Module $module
+     * @param \HiMVC\Core\Common\Module $module
      */
     public function appendModule( Module $module )
     {
@@ -78,7 +78,7 @@ class Request extends APIRequest
     }
 
     /**
-     * @param \HiMVC\Core\Base\SessionArray $session
+     * @param \HiMVC\Core\Common\SessionArray $session
      */
     public function setSession( SessionArray $session )
     {
