@@ -58,7 +58,7 @@ class ClassLoader
      *          Default: empty array
      *      'LegacyClassMap' array|null Hash of class name to file map for legacy use, tries to load from eZ Publish
      *          if null. Defaul: null
-     *      'AllowKernelOverride' bool Defines if LegacyClassMap=null should load class map for kernel overrides or not.
+     *      'LegacyAllowKernelOverride' bool Defines if LegacyClassMap=null should load class map for kernel overrides or not.
      */
     protected $settings;
 
@@ -75,7 +75,8 @@ class ClassLoader
             'Mode' => 0,
             'LazyLoaders' => array(),
             'LegacyClassMap' => null,
-            'AllowKernelOverride' => false,
+            'LegacyAllowKernelOverride' => false,
+            'LegacyRelativeRootPath' => '',
         );
     }
 
@@ -166,23 +167,23 @@ class ClassLoader
      */
     public function getEzp4ClassesList()
     {
-        if ( file_exists( 'autoload/ezp_kernel.php' ) )
-            $ezpKernelClasses = require 'autoload/ezp_kernel.php';
+        if ( file_exists( "autoload/ezp_kernel.php" ) )
+            $ezpKernelClasses = require "autoload/ezp_kernel.php";
         else
             $ezpKernelClasses = array();
 
-        if ( file_exists( 'var/autoload/ezp_extension.php' ) )
-            $ezpExtensionClasses = require 'var/autoload/ezp_extension.php';
+        if ( file_exists( "var/autoload/ezp_extension.php" ) )
+            $ezpExtensionClasses = require "var/autoload/ezp_extension.php";
         else
             $ezpExtensionClasses = array();
 
-        if ( file_exists( 'var/autoload/ezp_tests.php' ) )
-            $ezpTestClasses = require 'var/autoload/ezp_tests.php';
+        if ( file_exists( "var/autoload/ezp_tests.php" ) )
+            $ezpTestClasses = require "var/autoload/ezp_tests.php";
         else
             $ezpTestClasses = array();
 
-        if ( $this->settings['AllowKernelOverride'] && file_exists( 'var/autoload/ezp_override.php' ) )
-            $ezpKernelOverrideClasses = require 'var/autoload/ezp_override.php';
+        if ( $this->settings["LegacyAllowKernelOverride"] && file_exists( "var/autoload/ezp_override.php" ) )
+            $ezpKernelOverrideClasses = require "var/autoload/ezp_override.php";
         else
             $ezpKernelOverrideClasses = array();
 
