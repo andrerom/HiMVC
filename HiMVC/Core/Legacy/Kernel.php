@@ -39,6 +39,7 @@ namespace HiMVC\Core\Legacy
     use eZNavigationPart;
     use ezpI18n;
     use eZSSLZone;
+    use eZStaticCache;
 
     /**
      * Provides a legacy kernel class
@@ -190,7 +191,7 @@ namespace HiMVC\Core\Legacy
 
             // @todo Inject matched siteaccess from $mainRequest instead of re matching again
             // means some deprecated matching methods will go.
-            $access = eZSiteAccess::match( eZURI::instance( $mainRequest->uri ),
+            $access = eZSiteAccess::match( eZURI::instance( $mainRequest->originalUri ),
                                   eZSys::hostname(),
                                   eZSys::serverPort(),
                                   eZSys::indexFile() );

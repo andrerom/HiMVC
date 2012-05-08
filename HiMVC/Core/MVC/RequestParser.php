@@ -116,6 +116,7 @@ class RequestParser
         // Depends on 'method' being processed already
         $this->processBody( $body, $post, $server, $data );
 
+        $data['originalUri'] = $data['uri'];
         return new Request( $data );
     }
 
