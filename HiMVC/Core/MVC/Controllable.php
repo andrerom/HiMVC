@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains: Abstract Controller
+ * Contains: Controller interface
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -11,28 +11,14 @@
 namespace HiMVC\Core\MVC;
 
 use HiMVC\API\MVC\Values\Request as APIRequest;
-use HiMVC\API\MVC\Values\Result as APIResult;
-use HiMVC\Core\MVC\View\ViewDispatcher;
-use HiMVC\Core\MVC\Controllable;
 
 /**
- * Abstract controller
+ * Controller interface
+ *
+ * This controller interface is optional, static  or closures controllers can / and should not implement this interface.
  */
-abstract class AbstractController implements Controllable
+interface Controllable
 {
-    /**
-     * @var \HiMVC\Core\MVC\View\ViewDispatcher
-     */
-    private $viewDispatcher;
-
-    /**
-     * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
-     */
-    public function __construct( ViewDispatcher $viewDispatcher )
-    {
-        $this->viewDispatcher = $viewDispatcher;
-    }
-
     /**
      * Execution point for controller actions
      *
@@ -46,16 +32,6 @@ abstract class AbstractController implements Controllable
      *
      * @return \HiMVC\API\MVC\Values\Response
      */
-    public function run( APIRequest $request, $action, array $params = array(), array $viewParams = array() )
-    {
-        $result = call_user_func_array( array( $this, $action ), $params );
-
-        if ( !$result instanceof APIResult )
-        {
-            return $result;
-        }
-
-        return $this->viewDispatcher->view( $request, $result, $viewParams );
-    }
+    public function run( APIRequest $request, $action, array $params = array(), array $viewParams = array() );
 }
 
