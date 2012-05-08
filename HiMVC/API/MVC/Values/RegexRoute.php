@@ -27,22 +27,68 @@ class RegexRoute extends Route
     /**
      * The pattern used for uri matching and to extract uri params
      *
+     * This is a regex generated based on $rootUri, $params and $optionalParams in {@see __construct()}.
+     *
      * @var string
      */
     protected $pattern;
 
     /**
+     * The uri params needed for this route to match
+     *
+     * like: array( 'id' => '\d+', 'view' => '\w+' )
+     *
+     * @var array
+     */
+    protected $params;
+
+    /**
+     * The uri params that are optional, and their default value
+     *
+     * like: array( 'view' => 'full' )
+     *
+     * @var array
+     */
+    protected $optionalParams;
+
+    /**
      * Constructor for Route
      *
-     * @param string $uri
+     * @param string $rootUri
      * @param array $methodMap
      * @param callable $controller A callback to execute controller
-     * @param string $pattern The pattern used for uri matching and to extract uri params
+     * @param array $params
+     * @param array $optionalParams
+     * @throws \Exception
      */
-    public function __construct( $uri, array $methodMap, $controller, $pattern )
+    public function __construct( $rootUri, array $methodMap, $controller, array $params, array $optionalParams = array() )
     {
-        $this->pattern = $pattern;
-        parent::__construct( $uri, $methodMap, $controller );
+        $this->params = $params;
+        $this->optionalParams = $optionalParams;
+        $this->pattern = $rootUri;
+
+        // Append params so they create a regex pattern, like: content/(?<id>\d+)(/(?<view>\w+))?
+        $optionalParamsCount = 0;
+        foreach ( $params as $paramName => $paramRegex )
+        {
+            if ( isset( $optionalParams[ $paramName ] ) )
+            {
+                $this->pattern .= '(';
+                ++$optionalParamsCount;
+            }
+            else if ( $optionalParamsCount !== 0 )
+            {
+                throw new \Exception( "Can not define a non optional argument after a optional one, pattern: {$this->pattern}" );
+            }
+            $this->pattern .= '/(?<' . $paramName . '>' . $paramRegex . ')';
+        }
+        // Finnish off regex by applying remaining optional params closing blocks ')?'
+        while ( $optionalParamsCount !== 0 )
+        {
+            $this->pattern .= ')?';
+            --$optionalParamsCount;
+        }
+        parent::__construct( $rootUri, $methodMap, $controller );
     }
 
     /**
@@ -53,8 +99,7 @@ class RegexRoute extends Route
      */
     public function match( $uri )
     {
-        $regex = str_replace( array( '{', '}' ), array( '(', ')' ), $this->pattern );
-        if ( !preg_match( "@^{$this->uri}{$regex}$@", $uri, $matches ) )
+        if ( !preg_match( "@^{$this->pattern}$@", $uri, $matches ) )
             return null;
 
         $i = 0;// Remove all indexes that has numeric keys, the once we care about have string keys
@@ -64,5 +109,38 @@ class RegexRoute extends Route
             ++$i;
         }
         return $matches;
+    }
+
+    /**
+     * Return uri that matches this Route
+     *
+     * @param array $uriParams
+     * @return string A relative uri independent of site specific parts like host and www dir.
+     */
+    public function reverse( array $uriParams )
+    {
+        $uri = $this->rootUri;
+        $tempOptionalUri = '';
+        foreach ( $uriParams as $paramName => $paramValue )
+        {
+            if ( !isset( $this->params[$paramName] ) )
+                throw new \Exception( "Param '{$paramName}' is not valid on this route: {$this->pattern}" );
+
+            if ( isset( $this->optionalParams[$paramName] ) )
+            {
+                $tempOptionalUri .= "/{$paramValue}";
+                if ( $this->optionalParams[$paramName] !== $paramValue )
+                {
+                    // If a optional part differs from default value, then append what we have so far
+                    $uri .= $tempOptionalUri;
+                    $tempOptionalUri = '';
+                }
+            }
+            else
+            {
+               $uri .= "/{$paramValue}";
+            }
+        }
+        return $uri;
     }
 }

@@ -19,7 +19,7 @@ use Closure;
  *
  * Represent a route, in this case a plain route.
  *
- * @property-read string $uri
+ * @property-read string $rootUri
  * @property-read array $methodMap
  * @property-read Closure $controller
  */
@@ -32,7 +32,7 @@ class Route extends ValueObject
      *
      * @var string
      */
-    protected $uri;
+    protected $rootUri;
 
     /**
      * The method name that maps to this route
@@ -57,13 +57,13 @@ class Route extends ValueObject
     /**
      * Constructor for Route
      *
-     * @param string $uri
+     * @param string $rootUri
      * @param array $methodMap
      * @param callable $controller A callback to execute controller
      */
-    public function __construct( $uri, array $methodMap, $controller )
+    public function __construct( $rootUri, array $methodMap, $controller )
     {
-        $this->uri = $uri;
+        $this->rootUri = $rootUri;
         $this->methodMap = $methodMap;
 
         if ( $controller instanceof Closure )
@@ -84,7 +84,7 @@ class Route extends ValueObject
      */
     public function match( $uri )
     {
-        if ( $this->uri !== $uri )
+        if ( $this->rootUri !== $uri )
             return null;
         return array();
     }
@@ -97,7 +97,7 @@ class Route extends ValueObject
      */
     public function reverse( array $uriParams )
     {
-        $uri = $this->uri;
+        $uri = $this->rootUri;
         foreach ( $uriParams as $paramValue )
         {
             if ( $paramValue === null || $paramValue === false )

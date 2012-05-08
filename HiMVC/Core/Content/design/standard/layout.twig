@@ -9,7 +9,7 @@
 <section id="page">
     <header>
         <!-- @todo This view should be cached pr request (the current one) -->
-        {{ route( request, 'ContentLocation:controller', 'read', [ 2, 'header' ], { 'main_result': result } ) }}
+        {{ route( request, 'ContentLocation:controller', 'read', { 'id': 2, 'view': 'header' }, { 'main_result': result } ) }}
     </header>
     <article>
         {{ view( request, result ) }}

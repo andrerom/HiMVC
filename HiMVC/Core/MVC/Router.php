@@ -53,7 +53,8 @@ class Router
         $uri = $request->uri;
         foreach ( $this->routes as $route )
         {
-            if ( $route->uri !== $uri && $route->uri !== '' && strpos( $uri, $route->uri ) !== 0 )
+            $rootUri = $route->rootUri;
+            if ( $rootUri !== $uri && $rootUri !== '' && strpos( $uri, $rootUri ) !== 0 )
                 continue;// No root uri match
 
             if ( isset( $route->methodMap[$request->method] ) )
