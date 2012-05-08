@@ -40,7 +40,8 @@ class Router
      */
     public function __construct( array $routes )
     {
-        $this->routes = $routes;
+        // Reverse the list as the last item has first priority
+        $this->routes = array_reverse( $routes );
     }
 
     /**
