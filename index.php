@@ -13,10 +13,11 @@
 
 
 // Make sure we are on php 5.3 and validate request_order if not in cli mode
-if ( version_compare( PHP_VERSION, '5.3' ) < 0 )
+if ( version_compare( PHP_VERSION, '5.3.2' ) < 0 )
 {
+    // 5.3.2: Ubuntu 10.4 LTS, 5.3.3: RHEL 6
     echo '<h1>HiMVC does not like your PHP version: ' . PHP_VERSION . '</h1>';
-    echo '<p>PHP 5.3.0 or higher is required!</p>';
+    echo '<p>PHP 5.3.2 or higher is required!</p>';
     exit;
 }
 
