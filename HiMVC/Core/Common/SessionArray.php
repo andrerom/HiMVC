@@ -32,7 +32,7 @@ class SessionArray implements \ArrayAccess
      *
      * @var boolean
      */
-    protected $hasSessionCookie;
+    protected $hasSessionCookie = false;
 
     /**
      * Current session handler or null.
@@ -40,21 +40,6 @@ class SessionArray implements \ArrayAccess
      * @var \HiMVC\Core\Common\SessionHandler\SessionHandlerInterface
      */
     protected $handler;
-
-
-    /**
-     * Current session handler or null.
-     *
-     * @var \HiMVC\Core\Common\Event
-     */
-    protected $event;
-
-    /**
-     * Event listener id, for use when detaching shutdown event
-     *
-     * @var int
-     */
-    protected $eventId;
 
     /**
      * Constructor, setup session system (but only start if session cookie is present, otherwise lazy start)
@@ -108,6 +93,28 @@ class SessionArray implements \ArrayAccess
         {
             $this->start();
         }
+    }
+
+    /**
+     * If session has started or not.
+     *
+     * @access protected Only exposed for legacy eZSession needs
+     * @return bool
+     */
+    public function hasStarted()
+    {
+        return $this->hasStarted;
+    }
+
+    /**
+     * If session has started or not.
+     *
+     * @access protected Only exposed for legacy eZSession needs
+     * @return bool
+     */
+    public function hasSessionCookie()
+    {
+        return $this->hasSessionCookie;
     }
 
     /**
@@ -179,6 +186,19 @@ class SessionArray implements \ArrayAccess
         session_destroy();
         $this->hasStarted = false;
         return true;
+    }
+
+    /**
+     * Session gc (garbageCollector) handler
+     *
+     * @see http://php.net/sessionhandlerinterface.gc
+     *
+     * @param int $maxLifeTime In seconds
+     * @return bool The return value (usually true on success, false on failure).
+     */
+    public function gc( $maxLifeTime )
+    {
+        return $this->handler->gc( $maxLifeTime );
     }
 
     /**
