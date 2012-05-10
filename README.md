@@ -22,10 +22,11 @@ HiMVC relies and extends classes in ezp-next, so here is how you can setup the c
 
 For testing Hello World:
 
-* $ php index.php
+* $ php index.php http://exmpl.cm/hello
 
 
 For testing twig generated ouput using ezp-next Public API Content object:
+(make sure the content id is one that has a simple class like folder, blog or blog post)
 
 * $ php index.php http://exmpl.cm/content/1
 
@@ -44,11 +45,10 @@ The code has some parts that can be used as is, and some parts that should be gi
 
 #Todo?
 * Add Response objects
-* Change default values of optional params to be part of route
-* Provide query params as last params to actions
-  Or introduce abstract class Controller with a ->run( $request, $action, array $params ) so controller can decide
 * Define where Authentication should be done (pre controller action filter?) and how to pass on user id from session / do basic auth
+  Can be done like in MVCTools but by using Event class for filters.
 * Define how cache hints should be part of the system, including vary by logic
+  Can be done like in MVCTools with Result params with additional info regrading cache, cookies++
 * ------- " -------  View Cache should be done ( pre + post controller action filter?)
 * Add interfaces and unit tests for code that is considered mature (ready)
 * @todo's
@@ -56,7 +56,9 @@ The code has some parts that can be used as is, and some parts that should be gi
 Things that should be reconsidered:
 
 * How the RequestParser works including json/xml addapters
-* If request param (GET parmeters) should be validated by controller before view cache is checked
+* Consider changing the SiteAccess matching to work more like the Router / Route logic and hence be more flexible
+* Module loading needs a change to sync how path to module is define with the definition of the module class
+* If request param (GET parmeters) should be validated by controller before view cache is checked?
 * (...)
 
 #History?
