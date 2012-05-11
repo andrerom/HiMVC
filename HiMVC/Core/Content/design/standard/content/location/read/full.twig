@@ -1,7 +1,7 @@
-{{ dispatch( request.createChild( 'content/' ~ result.model.contentInfo.id ) ) }}
+{{ render( request, 'Content:controller', 'read', { 'id': result.model.contentInfo.id, 'view': 'full' } ) }}
 
 
 
 <section class="ezp-content-location-children">
-{{ dispatch( request.createChild( 'content/locations/' ~ result.model.id ) ) }}
+{{ render( request, 'ContentLocation:controller', 'children', { 'id': result.model.id, 'view': 'line' } ) }}
 </section>

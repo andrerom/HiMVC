@@ -6,5 +6,5 @@
     if params.main_result.model.path is defined and result.model.id == params.main_result.model.id %} class="current"{%
     endif %}>{{ result.model.contentInfo.name }}</a>
 
-    {{ route( request, 'ContentLocation:controller', 'children', { 'id': result.model.id, 'view': 'nav_item' }, { 'main_result': params.main_result } ) }}
+    {{ render( request, 'ContentLocation:controller', 'children', { 'id': result.model.id, 'view': 'nav_item' }, { 'main_result': params.main_result } ) }}
 </nav>

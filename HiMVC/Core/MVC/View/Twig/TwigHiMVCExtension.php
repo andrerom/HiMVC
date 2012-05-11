@@ -28,11 +28,6 @@ use Twig_Function_Method;
 class TwigHiMVCExtension extends Twig_Extension
 {
     /**
-     * @var \HiMVC\Core\MVC\Dispatcher
-     */
-    protected $dispatcher;
-
-    /**
      * @var \HiMVC\Core\MVC\Router
      */
     protected $router;
@@ -48,14 +43,12 @@ class TwigHiMVCExtension extends Twig_Extension
     protected $designLoader;
 
     /**
-     * @param \HiMVC\Core\MVC\Dispatcher $dispatcher
      * @param \HiMVC\Core\MVC\Router $router
      * @param \HiMVC\Core\MVC\View\ViewDispatcher $viewDispatcher
      * @param \HiMVC\Core\MVC\View\DesignLoader $designLoader
      */
-    public function __construct( Dispatcher $dispatcher, Router $router, ViewDispatcher $viewDispatcher, DesignLoader $designLoader )
+    public function __construct( Router $router, ViewDispatcher $viewDispatcher, DesignLoader $designLoader )
     {
-        $this->dispatcher = $dispatcher;
         $this->router = $router;
         $this->viewDispatcher = $viewDispatcher;
         $this->designLoader = $designLoader;
@@ -69,8 +62,8 @@ class TwigHiMVCExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'dispatch' => new Twig_Function_Method( $this, 'dispatch', array( 'is_safe' => array( 'html' ) ) ),
             'route' => new Twig_Function_Method( $this, 'route', array( 'is_safe' => array( 'html' ) ) ),
+            'render' => new Twig_Function_Method( $this, 'render', array( 'is_safe' => array( 'html' ) ) ),
             'view' => new Twig_Function_Method( $this, 'view', array( 'is_safe' => array( 'html' ) ) ),
             'link' => new Twig_Function_Method( $this, 'link' ),
             'design' => new Twig_Function_Method( $this, 'design' )
@@ -95,9 +88,9 @@ class TwigHiMVCExtension extends Twig_Extension
      * @param \HiMVC\API\MVC\Values\Request $request
      * @return Response An object that can be casted to string
      */
-    public function dispatch( Request $request )
+    public function route( Request $request )
     {
-        return $this->dispatcher->dispatch( $request );
+        return $this->router->route( $request );
     }
 
     /**
@@ -113,7 +106,7 @@ class TwigHiMVCExtension extends Twig_Extension
      *
      * @return Response An object that can be casted to string
      */
-    public function route( Request $request, $controllerIdentifier, $action, array $uriParams = array(), array $viewParams = array() )
+    public function render( Request $request, $controllerIdentifier, $action, array $uriParams = array(), array $viewParams = array() )
     {
         $route = $this->router->getRouteByControllerIdentifier( $controllerIdentifier, $action );
         $controller = $route->controller;
