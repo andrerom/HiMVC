@@ -21,10 +21,6 @@ if ( version_compare( PHP_VERSION, '5.3.2' ) < 0 )
     exit;
 }
 
-// Temporary, only for getting more accurate timeing during dev
-if ( !isset( $_SERVER['REQUEST_TIME_FLOAT'] ) )
-    $_SERVER['REQUEST_TIME_FLOAT'] = microtime( true );
-
 /**
  * Get ServiceContainer
  * @var \HiMVC\API\Container $container
@@ -42,7 +38,5 @@ register_shutdown_function(
     }
 );
 
-$request = $container->getRequest();
-echo $container->getDispatcher()->dispatch( $request ) . "\n";
-
-//echo "ms: " .  ( (int) ( ( microtime( true) - $request->microTime ) * 10000 ) ) / 10 . "\n";
+// "Execute" Request
+echo $container->getDispatcher()->dispatch( $container->getRequest() ) . "\n";

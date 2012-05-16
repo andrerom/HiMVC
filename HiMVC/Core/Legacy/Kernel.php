@@ -182,7 +182,8 @@ namespace HiMVC\Core\Legacy
             $GLOBALS['eZGlobalRequestURI'] = eZSys::serverVariable( 'REQUEST_URI' );
 
             // Initialize basic settings, such as vhless dirs and separators
-            eZSys::init( 'index.php', $mainRequest->indexDir === $mainRequest->wwwDir );
+            $forceVhostMode = $mainRequest->indexDir === $mainRequest->wwwDir;
+            eZSys::init( 'index.php', $forceVhostMode );
 
 
             // Check for extension
@@ -421,8 +422,6 @@ namespace HiMVC\Core\Legacy
                     }
                 }
 
-                $http = eZHTTPTool::instance();
-
                 $displayMissingModule = false;
                 $oldURI = $uri;
 
@@ -629,35 +628,6 @@ namespace HiMVC\Core\Legacy
                 }
             }
 
-
-            /**
-             * Ouput an is_logged_in cookie when users are logged in for use by http cache soulutions.
-             *
-             * @deprecated As of 4.5, since 4.4 added lazy session support (init on use)
-             */
-            if ( $ini->variable( "SiteAccessSettings", "CheckValidity" ) !== 'true' )
-            {
-                $currentUser = eZUser::currentUser();
-
-                $wwwDir = eZSys::wwwDir();
-                // On host based site accesses this can be empty, causing the cookie to be set for the current dir,
-                // but we want it to be set for the whole eZ publish site
-                $cookiePath = $wwwDir != '' ? $wwwDir : '/';
-
-                if ( $currentUser->isLoggedIn() )
-                {
-                    // Only set the cookie if it doesnt exist. This way we are not constantly sending the set request in the headers.
-                    if ( !isset( $_COOKIE['is_logged_in'] ) || $_COOKIE['is_logged_in'] != 'true' )
-                    {
-                        setcookie( 'is_logged_in', 'true', 0, $cookiePath );
-                    }
-                }
-                else if ( isset( $_COOKIE['is_logged_in'] ) )
-                {
-                    setcookie( 'is_logged_in', false, 0, $cookiePath );
-                }
-            }
-
             if ( $module->exitStatus() == eZModule::STATUS_REDIRECT )
             {
                 $GLOBALS['eZRedirection'] = true;
@@ -726,7 +696,7 @@ namespace HiMVC\Core\Legacy
                     $redirectURI .= $moduleRedirectUri;
                 }
 
-                eZStaticCache::executeActions();
+                eZStaticCache::executeActions();// @todo: Remove?
 
                 eZDB::checkTransactionCounter();
 
@@ -897,7 +867,6 @@ namespace HiMVC\Core\Legacy
                 if ( $siteBasics['user-object-required'] )
                 {
                     $currentUser = eZUser::currentUser();
-
                     $tpl->setVariable( "current_user", $currentUser );
                     $tpl->setVariable( "anonymous_user_id", $ini->variable( 'UserSettings', 'AnonymousUserID' ) );
                 }
@@ -936,8 +905,8 @@ namespace HiMVC\Core\Legacy
 
                     // Fetch the navigation part
                 }
-                $navigationPart = eZNavigationPart::fetchPartByIdentifier( $navigationPartString );
 
+                $navigationPart = eZNavigationPart::fetchPartByIdentifier( $navigationPartString );
                 $tpl->setVariable( 'navigation_part', $navigationPart );
                 $tpl->setVariable( 'uri_string', $uri->uriString() );
                 if ( isset( $moduleResult['requested_uri_string'] ) )
