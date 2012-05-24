@@ -11,17 +11,15 @@
 namespace HiMVC\API\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
-use HiMVC\API\MVC\Values\Request;
 use Closure;
 
 /**
  * Route object
  *
  * Represent a route, in this case a plain route.
+ * Properties defined here is used directly by Router and should be considered as api.
  *
- * @property-read string $rootUri
- * @property-read array $methodMap
- * @property-read Closure $controller
+ * Note: Use of ValueObject is purly to make sure property name typoes triggers exceptions.
  */
 class Route extends ValueObject
 {
@@ -32,7 +30,7 @@ class Route extends ValueObject
      *
      * @var string
      */
-    protected $rootUri;
+    public $rootUri;
 
     /**
      * The method name that maps to this route
@@ -45,14 +43,14 @@ class Route extends ValueObject
      *
      * @var array
      */
-    protected $methodMap;
+    public $methodMap;
 
     /**
-     *  A callback to execute controller
+     * A callback to execute controller
      *
      * @var Closure
      */
-    protected $controller;
+    public $controller;
 
     /**
      * Constructor for Route
