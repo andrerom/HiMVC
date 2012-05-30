@@ -141,13 +141,6 @@ class TwigHiMVCExtension extends Twig_Extension
      */
     public function link( Request $request, Result $result, array $params = array(), $hostName = false )
     {
-        // Append host name if asked for
-        $host = '';
-        if ( $hostName )
-        {
-            $host = $request->scheme . '://'  . $request->host;
-        }
-
         // Put $params that exists in $result->params in resulting $uriParams, and rest as $query params
         $query = '';
         $uriParams = $result->params;
@@ -161,8 +154,8 @@ class TwigHiMVCExtension extends Twig_Extension
 
         // Put them all together and get router uri based on info in result object
         $route = $this->router->getRouteByControllerName( $result->controller, $result->action );
-        return $host .
-            $request->indexDir .
+        return
+            $request->reverse( $hostName, true, false ) .
             $route->reverse( $uriParams ) .
             $query;
     }

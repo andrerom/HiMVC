@@ -18,13 +18,13 @@ use HiMVC\Core\Common\ClassLoader,
 if ( !isset( $rootDir ) )
     $rootDir = __DIR__;
 
-// Read config.php
+// 1. Read config.php
 if ( !( $settings = include( $rootDir . '/config.php' ) ) )
 {
     die( 'Could not find config.php, please copy config.php-DEVELOPMENT to config.php and customize to your needs!' );
 }
 
-// Setup autoloader(s)
+// 2. Setup autoloader(s)
 require __DIR__ . '/HiMVC/Core/Common/ClassLoader.php';
 $classLoader = new ClassLoader(
     $settings['ClassLoader']['Repositories'],
@@ -32,7 +32,7 @@ $classLoader = new ClassLoader(
 );
 spl_autoload_register( array( $classLoader, 'load' ) );
 
-// Setup configuration
+// 3. Setup configuration
 $configuration = new Configuration(
     'service',
     $settings['Configuration']['Parsers'],
@@ -43,7 +43,7 @@ $configuration
     ->enableKeepParsedData( true )// Avoid re parsing files several times during bootstrap
     ->load();
 
-// Setup Container
+// 4. Setup Container
 $container = new Container(
     $configuration->getAll(),
     array(
@@ -58,20 +58,29 @@ $container = new Container(
     )
 );
 
-// Get Request and update configuration for access
+// 5. Get Request and update configuration for access
 $accessPaths = array();
 $accessRelativePaths = array();
 $request = $container->getRequest();
-foreach ( $request->access as $accessMatch )
+/**
+ * @var \HiMVC\Core\Common\AccessMatcher $accessMatcher
+ */
+$accessMatcher = $container->get( 'accessMatcher' );
+foreach ( $accessMatcher->match( $request ) as $accessMatch )
 {
     $accessRelativePaths[] = $accessRelativePath = "settings/access/{$accessMatch->type}/{$accessMatch->name}/";
     $accessPaths[] = $rootDir . '/' . $accessRelativePath;
+    $request->appendAccessMatch( $accessMatch );
 }
 $configuration->setDirs( $accessPaths, 'access' );
 $container->setSettings( $configuration->reload()->getAll() );
 
 
-// Setup modules
+// 6. Setup sessions now that access is setup
+$request->setSession( $container->get( 'session' ) );
+
+
+// 7. Setup modules
 $modulePaths = array();
 $moduleAccessPaths = array();
 foreach ( $container->getModules() as $module )
@@ -92,5 +101,5 @@ $container->setSettings(
         ->getAll()
 );
 
-// Return ready configured container
+// 8. Return ready configured container
 return $container;

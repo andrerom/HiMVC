@@ -13,7 +13,7 @@ namespace HiMVC\API\MVC\Values;
 use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
     HiMVC\Core\MVC\Accept,
-    HiMVC\Core\Common\AccessMatch,
+    HiMVC\API\MVC\Values\AccessMatch,
     HiMVC\Core\Common\Module,
     HiMVC\Core\Common\SessionArray,
     eZ\Publish\API\Repository\Values\ValueObject;
@@ -39,7 +39,7 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read int $port
  * @property-read string $mimeType The content type of request body, like application/x-www-form-urlencoded', default: ''
  * @property-read \HiMVC\Core\MVC\Accept $accept
- * @property-read \HiMVC\Core\Common\AccessMatch[] $access
+ * @property-read \HiMVC\API\MVC\Values\AccessMatch[] $access
  * @property-read \HiMVC\Core\Common\Module[] $modules
  * @property-read string $authUser
  * @property-read string $authPwd
@@ -87,7 +87,7 @@ abstract class Request extends ValueObject
     protected $session = array();
 
     /**
-     * @var \HiMVC\Core\Common\AccessMatch[]
+     * @var \HiMVC\API\MVC\Values\AccessMatch[]
      */
     protected $access = array();
 
@@ -108,6 +108,7 @@ abstract class Request extends ValueObject
 
     /**
      * @var string Same as $wwwDir, but with the index.php or similar index file IF currently part of url
+     *             Must start and end in a '/'
      */
     protected $indexDir = '/';
 
@@ -204,7 +205,7 @@ abstract class Request extends ValueObject
     /**
      * Add a acces match to list of matches and remove uri if there is one (must be left most part)
      *
-     * @param \HiMVC\Core\Common\AccessMatch $access
+     * @param \HiMVC\API\MVC\Values\AccessMatch $access
      */
     abstract public function appendAccessMatch( AccessMatch $access );
 
@@ -230,6 +231,18 @@ abstract class Request extends ValueObject
      * @return \HiMVC\API\MVC\Values\Request
      */
     abstract public function createChild( $uri );
+
+    /**
+     * Return <schema://><domain>[:<port>]/<access-uri>/<uri>
+     *
+     * @param bool $host
+     * @param bool $accessUri
+     * @param bool $uri
+     * @param bool $portIfStandard If false port is omitted if standard port for current schema
+     *
+     * @return string
+     */
+    abstract public function reverse( $host = false, $accessUri = true, $uri = true, $portIfStandard = false );
 
     /**
      * Tells if current request object is main (parent) request, or a embed request.
