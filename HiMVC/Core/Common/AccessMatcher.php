@@ -34,7 +34,7 @@ class AccessMatcher
      *
      * @param \HiMVC\API\MVC\Values\AccessMatch[][] $matches {@see $matches}
      */
-    public function __construct( array $matches )
+    public function __construct( array $matches = array() )
     {
         $this->matches = $matches;
     }
