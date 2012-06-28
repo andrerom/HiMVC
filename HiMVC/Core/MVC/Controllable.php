@@ -30,7 +30,7 @@ interface Controllable
      * @param array $params
      * @param array $viewParams Params to send to template (used for sending params from parent template to child)
      *
-     * @return \HiMVC\API\MVC\Values\Response
+     * @return \HiMVC\Core\MVC\Values\Response
      */
     public function run( APIRequest $request, $action, array $params = array(), array $viewParams = array() );
 }

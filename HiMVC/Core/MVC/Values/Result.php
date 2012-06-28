@@ -8,7 +8,7 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
 
@@ -106,7 +106,7 @@ abstract class Result extends ValueObject
      * @param array $params
      *
      * @throws \Exception
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function with( array $params )
     {

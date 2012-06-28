@@ -15,7 +15,7 @@ use HiMVC\Core\MVC\Router;
 use HiMVC\Core\MVC\View\ViewDispatcher;
 use HiMVC\Core\MVC\View\DesignLoader;
 use HiMVC\Core\MVC\Values\Request;
-use HiMVC\API\MVC\Values\Result;
+use HiMVC\Core\MVC\Values\Result;
 use Twig_Extension;
 use Twig_Environment;
 use Twig_Function_Method;
@@ -119,7 +119,7 @@ class TwigHiMVCExtension extends Twig_Extension
      * @uses \HiMVC\Core\MVC\View\ViewDispatcher::view()
      *
      * @param \HiMVC\Core\MVC\Values\Request $request
-     * @param \HiMVC\API\MVC\Values\Result $result
+     * @param \HiMVC\Core\MVC\Values\Result $result
      * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
@@ -134,7 +134,7 @@ class TwigHiMVCExtension extends Twig_Extension
      * @uses \HiMVC\Core\MVC\Router::reverse()
      *
      * @param \HiMVC\Core\MVC\Values\Request $request
-     * @param \HiMVC\API\MVC\Values\Result $result
+     * @param \HiMVC\Core\MVC\Values\Result $result
      * @param array $params
      * @param bool $hostName
      * @return string URI to Result object with or with out hostname

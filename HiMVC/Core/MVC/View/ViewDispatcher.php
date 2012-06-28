@@ -11,8 +11,8 @@
 namespace HiMVC\Core\MVC\View;
 
 use HiMVC\Core\MVC\Values\Request;
-use HiMVC\API\MVC\Values\Result;
-use HiMVC\API\MVC\Values\ResultItem;
+use HiMVC\Core\MVC\Values\Result;
+use HiMVC\Core\MVC\Values\ResultItem;
 
 /**
  * ViewDispatcher
@@ -58,7 +58,7 @@ class ViewDispatcher
      *
      * @uses viewSource()
      * @param \HiMVC\Core\MVC\Values\Request $request
-     * @param \HiMVC\API\MVC\Values\Result $result
+     * @param \HiMVC\Core\MVC\Values\Result $result
      * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
      */
@@ -72,7 +72,7 @@ class ViewDispatcher
     /**
      * @param string $source
      * @param \HiMVC\Core\MVC\Values\Request $request
-     * @param \HiMVC\API\MVC\Values\Result $result
+     * @param \HiMVC\Core\MVC\Values\Result $result
      * @param array $viewParams Parameters that are sent to sub "template
      * @return string
      * @throws \Exception

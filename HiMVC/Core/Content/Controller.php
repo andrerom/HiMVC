@@ -12,8 +12,8 @@ namespace HiMVC\Core\Content;
 use HiMVC\Core\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\ResultItem,
-    HiMVC\API\MVC\Values\ResultList,
+    HiMVC\Core\MVC\Values\ResultItem,
+    HiMVC\Core\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
 
@@ -42,7 +42,7 @@ class Controller extends AbstractController
     /**
      * Add new item in collection ( ie POST /content/ )
      *
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function create()
     {
@@ -54,7 +54,7 @@ class Controller extends AbstractController
      *
      * @param mixed $id
      * @param string $view
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function read( $id, $view = 'full' )
     {
@@ -66,7 +66,7 @@ class Controller extends AbstractController
      * Update item in collection ( ie PUT /content/{id} )
      *
      * @param mixed $id
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function update( $id )
     {
@@ -78,7 +78,7 @@ class Controller extends AbstractController
      * Or 'Cancel order'
      *
      * @param mixed $id
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function delete( $id )
     {
@@ -89,7 +89,7 @@ class Controller extends AbstractController
      * List items in collection ( ie GET /content/ )
      *
      * @todo This should probably not list items by location, but just list of content sorted by creation
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function index()
     {
@@ -116,7 +116,7 @@ class Controller extends AbstractController
      * @param object $model
      * @param array $params
      * @param string $action
-     * @return \HiMVC\API\MVC\Values\ResultItem
+     * @return \HiMVC\Core\MVC\Values\ResultItem
      */
     private function getResult( $model, array $params, $action = 'read' )
     {
