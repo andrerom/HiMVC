@@ -12,8 +12,8 @@ namespace HiMVC\API\MVC\Values;
 
 use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    HiMVC\Core\MVC\Accept,
-    HiMVC\API\MVC\Values\AccessMatch,
+    HiMVC\Core\MVC\Values\Accept,
+    HiMVC\Core\MVC\Values\AccessMatch,
     HiMVC\Core\Common\Module,
     HiMVC\Core\Common\SessionArray,
     eZ\Publish\API\Repository\Values\ValueObject;
@@ -38,8 +38,8 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read string $host
  * @property-read int $port
  * @property-read string $mimeType The content type of request body, like application/x-www-form-urlencoded', default: ''
- * @property-read \HiMVC\Core\MVC\Accept $accept
- * @property-read \HiMVC\API\MVC\Values\AccessMatch[] $access
+ * @property-read \HiMVC\Core\MVC\Values\Accept $accept
+ * @property-read \HiMVC\Core\MVC\Values\AccessMatch[] $access
  * @property-read \HiMVC\Core\Common\Module[] $modules
  * @property-read string $authUser
  * @property-read string $authPwd
@@ -54,7 +54,7 @@ abstract class Request extends ValueObject
     /*
      * @var string The uri string, must not start or end in a '/'
      */
-    protected $uri = '';
+    public $uri = '';
 
     /**
      * @var array Array version of $uri
@@ -69,124 +69,124 @@ abstract class Request extends ValueObject
     /**
      * @var array GET params
      */
-    protected $params = array();
+    public $params = array();
 
     /**
      * @var array COOKIE params
      */
-    protected $cookies = array();
+    public $cookies = array();
 
     /**
      * @var array Upload files
      */
-    protected $files = array();
+    public $files = array();
 
     /**
      * @var array|\HiMVC\Core\Common\SessionArray
      */
-    protected $session = array();
+    public $session = array();
 
     /**
-     * @var \HiMVC\API\MVC\Values\AccessMatch[]
+     * @var \HiMVC\Core\MVC\Values\AccessMatch[]
      */
-    protected $access = array();
+    public $access = array();
 
     /**
      * @var \HiMVC\Core\Common\Module[]
      */
-    protected $modules = array();
+    public $modules = array();
 
     /**
      * @var mixed Request body
      */
-    protected $body = '';
+    public $body = '';
 
     /**
      * @var string The dir the install is placed in relative to hostname, must start and end in a '/'
      */
-    protected $wwwDir = '/';
+    public $wwwDir = '/';
 
     /**
      * @var string Same as $wwwDir, but with the index.php or similar index file IF currently part of url
      *             Must start and end in a '/'
      */
-    protected $indexDir = '/';
+    public $indexDir = '/';
 
     /**
      * @var string HTTP method: GET, HEAD, POST, PUT, DELETE, ...
      */
-    protected $method = 'GET';
+    public $method = 'GET';
 
     /**
      * @var int If request asks for If-Modified-Since to get a full result, otherwise a not-modifed result
      */
-    protected $ifModifiedSince = 0;
+    public $ifModifiedSince = 0;
 
     /**
      * @var string If-None-Match=Etag, alternative If-Modified-Since where etag is matched to see if content has been modified
      */
-    protected $IfNoneMatch = '';
+    public $IfNoneMatch = '';
 
     /**
      * @var string
      * @todo: rename and make it parse the value to something that can be used generally
      */
-    protected $cacheControl = 'max-age=0';
+    public $cacheControl = 'max-age=0';
 
     /**
      * @var string
      */
-    protected $scheme = 'http';
+    public $scheme = 'http';
 
     /**
      * @var string
      */
-    protected $host = 'localhost';
+    public $host = 'localhost';
 
     /**
      * @var int
      */
-    protected $port = 80;
+    public $port = 80;
 
     /**
      * @var string Aka CONTENT_TYPE
      */
-    protected $mimeType = '';
+    public $mimeType = '';
 
     /**
-     * @var \HiMVC\Core\MVC\Accept
+     * @var \HiMVC\Core\MVC\Values\Accept
      */
-    protected $accept;
-
-    /**
-     * @var string
-     */
-    protected $authUser = '';
+    public $accept;
 
     /**
      * @var string
      */
-    protected $authPwd = '';
+    public $authUser = '';
 
     /**
      * @var string
      */
-    protected $userAgent = '';
+    public $authPwd = '';
 
     /**
      * @var string
      */
-    protected $referrer = '';
+    public $userAgent = '';
+
+    /**
+     * @var string
+     */
+    public $referrer = '';
 
     /**
      * @var float Time the request was created
      */
-    protected $microTime = 0.0;
+    public $microTime = 0.0;
 
     /**
      * @var array The raw $_SERVER variable, this is not part of the public request api but exposed for specifc needs
      */
-    protected $raw = array();
+    public $raw = array();
 
     /**
      * @var \HiMVC\API\MVC\Values\Request[] List of child requests within this request
@@ -201,30 +201,6 @@ abstract class Request extends ValueObject
      * @var \eZ\Publish\Core\Base\Exceptions\Httpable|null
      */
     private $exception = null;
-
-    /**
-     * Add a acces match to list of matches and remove uri if there is one (must be left most part)
-     *
-     * @param \HiMVC\API\MVC\Values\AccessMatch $access
-     */
-    abstract public function appendAccessMatch( AccessMatch $access );
-
-    /**
-     * Add a module to list of modules
-     *
-     * @param \HiMVC\Core\Common\Module $module
-     */
-    abstract public function appendModule( Module $module );
-
-    /**
-     * @param \HiMVC\Core\MVC\Accept $accept
-     */
-    abstract public function setAccept( Accept $accept );
-
-    /**
-     * @param \HiMVC\Core\Common\SessionArray $session
-     */
-    abstract public function setSession( SessionArray $session );
 
     /**
      * @param string $uri

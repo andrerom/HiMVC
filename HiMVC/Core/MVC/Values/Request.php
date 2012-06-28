@@ -8,12 +8,12 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\MVC;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    HiMVC\Core\MVC\Accept,
-    HiMVC\API\MVC\Values\AccessMatch,
+    HiMVC\Core\MVC\Values\Accept,
+    HiMVC\Core\MVC\Values\AccessMatch,
     HiMVC\Core\Common\Module,
     HiMVC\Core\Common\SessionArray,
     HiMVC\API\MVC\Values\Request as APIRequest;
@@ -46,48 +46,8 @@ class Request extends APIRequest
     }
 
     /**
-     * Add a acces match to list of matches and remove uri if there is one (must be left most part)
-     *
-     * @param \HiMVC\API\MVC\Values\AccessMatch $access
-     */
-    public function appendAccessMatch( AccessMatch $access )
-    {
-        $this->access[] = $access;
-        if ( $access->uri )
-        {
-            $this->__set( 'uri', ltrim( $this->uri, $access->uri ) );
-        }
-    }
-
-    /**
-     * Add a module to list of modules
-     *
-     * @param \HiMVC\Core\Common\Module $module
-     */
-    public function appendModule( Module $module )
-    {
-        $this->modules[] = $module;
-    }
-
-    /**
-     * @param \HiMVC\Core\MVC\Accept $accept
-     */
-    public function setAccept( Accept $accept )
-    {
-        $this->accept = $accept;
-    }
-
-    /**
-     * @param \HiMVC\Core\Common\SessionArray $session
-     */
-    public function setSession( SessionArray $session )
-    {
-        $this->session = $session;
-    }
-
-    /**
      * @param string $uri
-     * @return \HiMVC\Core\MVC\Request
+     * @return \HiMVC\Core\MVC\Values\Request
      */
     public function createChild( $uri )
     {

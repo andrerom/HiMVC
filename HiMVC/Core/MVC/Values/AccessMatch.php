@@ -1,6 +1,6 @@
 <?php
 /**
- * API\MVC\Values\AccessMatch class
+ * Core\MVC\Values\AccessMatch class
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -8,10 +8,10 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
-use HiMVC\API\MVC\Values\Request;
+use HiMVC\API\MVC\Values\Request as APIRequest;
 
 /**
  * AccessMatch object
@@ -97,7 +97,7 @@ class AccessMatch extends ValueObject
      * @param \HiMVC\API\MVC\Values\Request $request
      * @return bool
      */
-    public function match( Request $request )
+    public function match( APIRequest $request )
     {
         if ( !empty( $this->uri ) && "{$request->uri}/" !== $this->uri && stripos( $request->uri, $this->uri ) !== 0  )
             return false;

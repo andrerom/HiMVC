@@ -10,8 +10,8 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\Core\MVC\Request,
-    HiMVC\Core\MVC\Accept,
+use HiMVC\Core\MVC\Values\Request,
+    HiMVC\Core\MVC\Values\Accept,
     HiMVC\Core\MVC\RequestParser,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 

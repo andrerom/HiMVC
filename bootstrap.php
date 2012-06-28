@@ -63,21 +63,21 @@ $accessPaths = array();
 $accessRelativePaths = array();
 $request = $container->getRequest();
 /**
- * @var \HiMVC\Core\Common\AccessMatcher $accessMatcher
+ * @var \HiMVC\Core\MVC\AccessMatcher $accessMatcher
  */
 $accessMatcher = $container->get( 'accessMatcher' );
 foreach ( $accessMatcher->match( $request ) as $accessMatch )
 {
     $accessRelativePaths[] = $accessRelativePath = "settings/access/{$accessMatch->type}/{$accessMatch->name}/";
     $accessPaths[] = $rootDir . '/' . $accessRelativePath;
-    $request->appendAccessMatch( $accessMatch );
+    $request->access[] = $accessMatch;
 }
 $configuration->setDirs( $accessPaths, 'access' );
 $container->setSettings( $configuration->reload()->getAll() );
 
 
 // 6. Setup sessions now that access is setup
-$request->setSession( $container->get( 'session' ) );
+$request->session = $container->get( 'session' );
 
 
 // 7. Setup modules
@@ -85,7 +85,7 @@ $modulePaths = array();
 $moduleAccessPaths = array();
 foreach ( $container->getModules() as $module )
 {
-    $request->appendModule( $module );
+    $request->modules[] = $module;
     $modulePaths[] = "{$rootDir}/{$module->path}/settings/";
     foreach ( $accessRelativePaths as $accessRelativePath )
     {

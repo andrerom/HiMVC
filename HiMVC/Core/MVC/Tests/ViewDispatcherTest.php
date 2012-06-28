@@ -12,7 +12,7 @@ namespace HiMVC\Core\MVC\Tests;
 
 use HiMVC\Core\MVC\View\ViewDispatcher;
 use HiMVC\API\MVC\Values\ResultItem;
-use HiMVC\Core\MVC\Request;
+use HiMVC\Core\MVC\Values\Request;
 use PHPUnit_Framework_TestCase;
 
 /**

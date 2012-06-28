@@ -8,12 +8,11 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Common;
+namespace HiMVC\Core\MVC;
 
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    eZ\Publish\API\Repository\Values\ValueObject,
-    HiMVC\API\MVC\Values\Request,
-    HiMVC\API\MVC\Values\AccessMatch;
+    HiMVC\API\MVC\Values\Request as APIRequest,
+    HiMVC\Core\MVC\Values\AccessMatch;
 
 /**
  * AccessMatcher class
@@ -25,14 +24,14 @@ class AccessMatcher
     /**
      * List of AccessMatch keyed by type
      *
-     * @var \HiMVC\API\MVC\Values\AccessMatch[][]
+     * @var \HiMVC\Core\MVC\Values\AccessMatch[][]
      */
     public $matches;
 
     /**
      * Constructor
      *
-     * @param \HiMVC\API\MVC\Values\AccessMatch[][] $matches {@see $matches}
+     * @param \HiMVC\Core\MVC\Values\AccessMatch[][] $matches {@see $matches}
      */
     public function __construct( array $matches = array() )
     {
@@ -42,13 +41,14 @@ class AccessMatcher
     /**
      * Match access type on request and return a access match object
      *
+     *
+     * @param \HiMVC\API\MVC\Values\Request $request
+     *
      * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException If not match rules applies in $matchRules and
      *                                                                   no default match is provided.
-     * @param Request $request
-     *
-     * @return \HiMVC\API\MVC\Values\AccessMatch[]
+     * @return \HiMVC\Core\MVC\Values\AccessMatch[]
      */
-    public function match( Request $request )
+    public function match( APIRequest $request )
     {
         $accessMatches = array();
         foreach ( $this->matches as $typeKey => $matches )

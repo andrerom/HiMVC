@@ -8,10 +8,10 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\Common\Tests;
-use HiMVC\API\MVC\Values\AccessMatch;
-use HiMVC\Core\Common\AccessMatcher;
-use HiMVC\Core\MVC\Request;
+namespace HiMVC\Core\MVC\Tests;
+use HiMVC\Core\MVC\Values\AccessMatch;
+use HiMVC\Core\MVC\AccessMatcher;
+use HiMVC\Core\MVC\Values\Request;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -22,8 +22,8 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
-     * @covers \HiMVC\API\MVC\Values\AccessMatch::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\Values\AccessMatch::match
      */
     public function testMatch()
     {
@@ -36,8 +36,8 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
-     * @covers \HiMVC\API\MVC\Values\AccessMatch::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\Values\AccessMatch::match
      */
     public function testMatchDefault()
     {
@@ -51,8 +51,8 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
-     * @covers \HiMVC\API\MVC\Values\AccessMatch::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\Values\AccessMatch::match
      * @expectedException eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
      */
     public function testMatchMissingDefault()
@@ -66,7 +66,7 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
      * @expectedException eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
      */
     public function testMatchWrongMatchStructure()
@@ -80,7 +80,7 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
      * @expectedException eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
      */
     public function testMatchWrongMatchStructure2()
@@ -94,7 +94,7 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
      * @expectedException eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
      */
     public function testMatchWrongMatchStructure3()
@@ -108,7 +108,7 @@ class AccessMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * Test AccessMatcher::match
      *
-     * @covers \HiMVC\Core\Common\AccessMatcher::match
+     * @covers \HiMVC\Core\MVC\AccessMatcher::match
      * @expectedException eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
      */
     public function testMatchWrongMatchStructure4()

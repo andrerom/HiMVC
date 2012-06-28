@@ -8,7 +8,7 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\Core\MVC;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
 

@@ -10,8 +10,8 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\Core\MVC\Request,
-    HiMVC\Core\MVC\Accept,
+use HiMVC\Core\MVC\Values\Request,
+    HiMVC\Core\MVC\Values\Accept,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 
 /**
@@ -151,7 +151,7 @@ class RequestParser
      * Create Accept object based on _SERVER hash
      *
      * @param array $server
-     * @return \HiMVC\Core\MVC\Accept
+     * @return \HiMVC\Core\MVC\Values\Accept
      */
      public function processAcceptHeaders( array $server )
     {
