@@ -85,7 +85,7 @@ class AccessMatch extends ValueObject
             $this->uri = $matches['uri'];
 
         if ( isset( $matches['hosts'] ) )
-            $this->hosts = (array)$matches['hosts'];
+            $this->hosts = array_flip( (array)$matches['hosts'] );
 
         if ( isset( $matches['port'] ) )
             $this->port = (int)$matches['port'];
@@ -102,7 +102,7 @@ class AccessMatch extends ValueObject
         if ( !empty( $this->uri ) && "{$request->uri}/" !== $this->uri && stripos( $request->uri, $this->uri ) !== 0  )
             return false;
 
-        if ( !empty( $this->hosts ) && !in_array( $request->host, $this->hosts, true ) )
+        if ( !empty( $this->hosts ) && !isset( $this->hosts[$request->host] ) )
             return false;
 
         if ( !empty( $this->port ) && $request->port !== $this->port  )
