@@ -171,7 +171,7 @@ class RequestParser
 
             $parts = explode( ',', $server[$map[$i]] );
             $priorities = array();
-            for ($y = 0; isset( $parts[$y] ); $y++)
+            for ($y = 0; isset( $parts[$y] ); ++$y)
             {
                 // @todo consider caring about priority, but these are usually in order anyway
                 $priPos = strpos( $parts[$y], ';q=' );

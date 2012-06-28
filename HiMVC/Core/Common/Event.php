@@ -77,7 +77,7 @@ class Event
                 "Listener must be callable, got \$listener: {$listener}, for \$name: '$name'"
             );
 
-        $id = self::$listenerIdNumber++;
+        $id = ++self::$listenerIdNumber;
         $this->listeners[$name][$id] = $listener;
         return $id;
     }
