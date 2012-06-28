@@ -105,7 +105,7 @@ abstract class Result extends ValueObject
     /**
      * @param array $params
      *
-     * @throws \Excpetion
+     * @throws \Exception
      * @return \HiMVC\API\MVC\Values\Result
      */
     public function with( array $params )
@@ -116,7 +116,7 @@ abstract class Result extends ValueObject
             if ( isset( $clone->params[$key] ) )
                 $clone->params[$key] = $value;
             else
-                throw new \Excpetion( "Could not find provided param: {$key}", __METHOD__ );
+                throw new \Exception( "Could not find provided param: {$key}", __METHOD__ );
         }
         return $clone;
     }
