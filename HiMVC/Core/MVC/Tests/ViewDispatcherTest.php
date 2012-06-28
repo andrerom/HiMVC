@@ -31,7 +31,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     protected $viewMock2;
 
     /**
-     * @var \HiMVC\API\MVC\Values\Request $request
+     * @var \HiMVC\Core\MVC\Values\Request $request
      */
     protected $request;
 

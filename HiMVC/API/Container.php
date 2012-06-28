@@ -28,7 +28,7 @@ interface Container
     /**
      * Get Request object
      *
-     * @return \HiMVC\API\MVC\Values\Request
+     * @return \HiMVC\Core\MVC\Values\Request
      */
     public function getRequest();
 

@@ -11,7 +11,7 @@
 namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
-use HiMVC\API\MVC\Values\Request as APIRequest;
+use HiMVC\Core\MVC\Values\Request as APIRequest;
 
 /**
  * AccessMatch object
@@ -94,7 +94,7 @@ class AccessMatch extends ValueObject
     /**
      * Match Request based on rules
      *
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @return bool
      */
     public function match( APIRequest $request )

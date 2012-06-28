@@ -10,7 +10,7 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\API\MVC\Values\Request as APIRequest;
+use HiMVC\Core\MVC\Values\Request as APIRequest;
 use HiMVC\Core\MVC\Router;
 
 /**
@@ -43,7 +43,7 @@ class Dispatcher
      * Dispatches the request using the information from the router and paasing
      * the result to the view.
      *
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @return Response An object that can be casted to string, hence used in templates as well
      */
     public function dispatch( APIRequest $request )

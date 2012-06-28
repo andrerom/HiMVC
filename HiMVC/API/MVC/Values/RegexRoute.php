@@ -11,7 +11,7 @@
 namespace HiMVC\API\MVC\Values;
 
 use HiMVC\API\MVC\Values\Route;
-use HiMVC\API\MVC\Values\Request;
+use HiMVC\Core\MVC\Values\Request;
 use Closure;
 
 /**

@@ -10,7 +10,7 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\API\MVC\Values\Request as APIRequest;
+use HiMVC\Core\MVC\Values\Request as APIRequest;
 use HiMVC\API\MVC\Values\Result as APIResult;
 use HiMVC\Core\MVC\View\ViewDispatcher;
 use HiMVC\Core\MVC\Controllable;
@@ -39,7 +39,7 @@ abstract class AbstractController implements Controllable
      * Note: As this calls $action directly, make sure private functions are marked as private and not
      * protected so they can not be exposed directly by mistakes in routes.
      *
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @param string $action
      * @param array $params
      * @param array $viewParams Params to send to template (used for sending params from parent template to child)

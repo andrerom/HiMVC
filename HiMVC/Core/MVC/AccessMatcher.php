@@ -11,7 +11,7 @@
 namespace HiMVC\Core\MVC;
 
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    HiMVC\API\MVC\Values\Request as APIRequest,
+    HiMVC\Core\MVC\Values\Request as APIRequest,
     HiMVC\Core\MVC\Values\AccessMatch;
 
 /**
@@ -42,7 +42,7 @@ class AccessMatcher
      * Match access type on request and return a access match object
      *
      *
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      *
      * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException If not match rules applies in $matchRules and
      *                                                                   no default match is provided.

@@ -10,7 +10,7 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\API\MVC\Values\Request as APIRequest;
+use HiMVC\Core\MVC\Values\Request as APIRequest;
 use HiMVC\API\MVC\Values\Result as APIResult;
 use eZ\Publish\Core\Base\Exceptions\Httpable;
 
@@ -45,7 +45,7 @@ class Router
     }
 
     /**
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @throws \Exception
      * @return \HiMVC\API\MVC\Values\Result
      */

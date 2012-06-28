@@ -39,7 +39,7 @@ class RequestParserCLI extends RequestParser
      * @param string $body
      * @param string $indexFile
      * @param array $settings
-     * @return \HiMVC\API\MVC\Values\Request
+     * @return \HiMVC\Core\MVC\Values\Request
      */
     public function process(
             array $server,

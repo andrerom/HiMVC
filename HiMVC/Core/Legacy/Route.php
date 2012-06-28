@@ -11,7 +11,7 @@
 namespace HiMVC\Core\Legacy;
 
 use HiMVC\API\MVC\Values\Route as APIRoute;
-use HiMVC\API\MVC\Values\Request;
+use HiMVC\Core\MVC\Values\Request;
 use Closure;
 
 /**

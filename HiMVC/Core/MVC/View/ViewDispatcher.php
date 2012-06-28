@@ -10,7 +10,7 @@
 
 namespace HiMVC\Core\MVC\View;
 
-use HiMVC\API\MVC\Values\Request;
+use HiMVC\Core\MVC\Values\Request;
 use HiMVC\API\MVC\Values\Result;
 use HiMVC\API\MVC\Values\ResultItem;
 
@@ -57,7 +57,7 @@ class ViewDispatcher
      * <defaultViewSuffix> is key of first item in $viewHandlers passed to __construct()
      *
      * @uses viewSource()
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
      * @param array $viewParams Parameters that are sent to sub "template"
      * @return Response An object that can be casted to string
@@ -71,7 +71,7 @@ class ViewDispatcher
 
     /**
      * @param string $source
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @param \HiMVC\API\MVC\Values\Result $result
      * @param array $viewParams Parameters that are sent to sub "template
      * @return string
