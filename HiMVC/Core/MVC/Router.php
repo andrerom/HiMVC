@@ -10,8 +10,8 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\API\MVC\Values\Request as APIRequest;
-use HiMVC\API\MVC\Values\Result as APIResult;
+use HiMVC\Core\MVC\Values\Request as APIRequest;
+use HiMVC\Core\MVC\Values\Result as APIResult;
 use eZ\Publish\Core\Base\Exceptions\Httpable;
 
 /**
@@ -20,7 +20,7 @@ use eZ\Publish\Core\Base\Exceptions\Httpable;
 class Router
 {
     /**
-     * @var \HiMVC\API\MVC\Values\Route[]
+     * @var \HiMVC\Core\MVC\Values\Route[]
      */
     protected $routes;
 
@@ -36,7 +36,7 @@ class Router
 
 
     /**
-     * @param \HiMVC\API\MVC\Values\Route[] $routes
+     * @param \HiMVC\Core\MVC\Values\Route[] $routes
      */
     public function __construct( array $routes )
     {
@@ -45,9 +45,9 @@ class Router
     }
 
     /**
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @throws \Exception
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function route( APIRequest $request )
     {
@@ -79,7 +79,7 @@ class Router
      * @param $className
      * @param $action
      * @throws \Exception
-     * @return \HiMVC\API\MVC\Values\Route
+     * @return \HiMVC\Core\MVC\Values\Route
      */
     public function getRouteByControllerName( $className, $action )
     {
@@ -100,7 +100,7 @@ class Router
      * @param $identifier
      * @param $action
      * @throws \Exception
-     * @return \HiMVC\API\MVC\Values\Route
+     * @return \HiMVC\Core\MVC\Values\Route
      */
     public function getRouteByControllerIdentifier( $identifier, $action )
     {

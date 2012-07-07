@@ -8,14 +8,14 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
-use HiMVC\API\MVC\Values\Result;
+use HiMVC\Core\MVC\Values\Result;
 
 /**
  * Result List object
  *
- * @see \HiMVC\API\MVC\Values\Result
+ * @see \HiMVC\Core\MVC\Values\Result
  *
  * @property-read ResultItem[] $items The model objects for the result
  * @property-read int $count Count of total count in the collection of items

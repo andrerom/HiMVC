@@ -18,7 +18,7 @@ class HelloController
     /**
      * A Hello World action.
      *
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     static public function world()
     {

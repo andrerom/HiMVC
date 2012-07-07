@@ -10,8 +10,8 @@
 
 namespace HiMVC\Core\MVC;
 
-use HiMVC\Core\MVC\Request,
-    HiMVC\Core\MVC\Accept,
+use HiMVC\Core\MVC\Values\Request,
+    HiMVC\Core\MVC\Values\Accept,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 
 /**
@@ -81,7 +81,7 @@ class RequestParser
      * @param string $body
      * @param string $indexFile
      * @param array $settings
-     * @return \HiMVC\API\MVC\Values\Request
+     * @return \HiMVC\Core\MVC\Values\Request
      */
     public function process(
             array $server,
@@ -151,7 +151,7 @@ class RequestParser
      * Create Accept object based on _SERVER hash
      *
      * @param array $server
-     * @return \HiMVC\Core\MVC\Accept
+     * @return \HiMVC\Core\MVC\Values\Accept
      */
      public function processAcceptHeaders( array $server )
     {
@@ -171,7 +171,7 @@ class RequestParser
 
             $parts = explode( ',', $server[$map[$i]] );
             $priorities = array();
-            for ($y = 0; isset( $parts[$y] ); $y++)
+            for ($y = 0; isset( $parts[$y] ); ++$y)
             {
                 // @todo consider caring about priority, but these are usually in order anyway
                 $priPos = strpos( $parts[$y], ';q=' );

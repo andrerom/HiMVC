@@ -10,7 +10,7 @@
 namespace HiMVC\Core\Legacy
 {
 
-    use HiMVC\API\MVC\Values\Request as APIRequest;
+    use HiMVC\Core\MVC\Values\Request as APIRequest;
     use HiMVC\Core\MVC\Controllable;
 
     use eZDebug;
@@ -56,7 +56,7 @@ namespace HiMVC\Core\Legacy
         private $isBooted = false;
 
         /**
-         * @var \HiMVC\API\MVC\Values\Request
+         * @var \HiMVC\Core\MVC\Values\Request
          */
         private $mainRequest;
 
@@ -66,7 +66,7 @@ namespace HiMVC\Core\Legacy
         private $legacyObjectConverters;
 
         /**
-         * @param \HiMVC\API\MVC\Values\Request $mainRequest
+         * @param \HiMVC\Core\MVC\Values\Request $mainRequest
          * @param array $legacyObjectConverters
          */
         public function __construct( APIRequest $mainRequest, array $legacyObjectConverters = array() )
@@ -78,7 +78,7 @@ namespace HiMVC\Core\Legacy
         /**
          * Boot up old kernel
          *
-         * @param \HiMVC\API\MVC\Values\Request $mainRequest
+         * @param \HiMVC\Core\MVC\Values\Request $mainRequest
          */
         protected function boot( APIRequest $mainRequest )
         {
@@ -226,12 +226,12 @@ namespace HiMVC\Core\Legacy
          * Note: As this calls $action directly, make sure private functions are marked as private and not
          * protected so they can not be exposed directly by mistakes in routes.
          *
-         * @param \HiMVC\API\MVC\Values\Request $request
+         * @param \HiMVC\Core\MVC\Values\Request $request
          * @param string $action
          * @param array $params
          * @param array $viewParams Params to send to template (used for sending params from parent template to child)
          *
-         * @return \HiMVC\API\MVC\Values\Response
+         * @return \HiMVC\Core\MVC\Values\Response
          */
         public function run( APIRequest $request, $action, array $params = array(), array $viewParams = array() )
         {

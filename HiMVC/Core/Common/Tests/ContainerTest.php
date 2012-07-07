@@ -526,7 +526,7 @@ class ExtendedTestCheck
         $key = 0;
         foreach ( $extendedTests as $extendedTestName => $extendedTest )
         {
-            $key++;
+            ++$key;
             if ( !$extendedTest instanceof ExtendedTest )
                 throw new \Exception( "Values in \$extendedTests must extend ExtendedTest" );
             else if ( $extendedTestName !== "ExtendedTest{$key}" )
@@ -548,7 +548,7 @@ class ExtendedTestLacyCheck
         $key = 0;
         foreach ( $extendedTests as $extendedTestName => $extendedTest )
         {
-            $key++;
+            ++$key;
             if ( !is_callable( $extendedTest ) )
                 throw new \Exception( "Values in \$extendedTests must be callable" );
 

@@ -9,11 +9,11 @@
  */
 
 namespace HiMVC\Core\Content;
-use HiMVC\API\MVC\Values\Request,
+use HiMVC\Core\MVC\Values\Request,
     HiMVC\Core\MVC\View\ViewDispatcher,
     eZ\Publish\API\Repository\Repository,
-    HiMVC\API\MVC\Values\ResultItem,
-    HiMVC\API\MVC\Values\ResultList,
+    HiMVC\Core\MVC\Values\ResultItem,
+    HiMVC\Core\MVC\Values\ResultList,
     eZ\Publish\API\Repository\Values\Content\Query,
     eZ\Publish\API\Repository\Values\Content\Query\Criterion\ParentLocationId;
 
@@ -42,7 +42,7 @@ class LocationController extends AbstractController
     /**
      * Add new item in collection ( ie POST /content/locations/ )
      *
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function create()
     {
@@ -54,7 +54,7 @@ class LocationController extends AbstractController
      *
      * @param mixed $id
      * @param string $view
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function read( $id, $view = 'full' )
     {
@@ -66,7 +66,7 @@ class LocationController extends AbstractController
      * Update item in collection ( ie PUT /content/location/{id} )
      *
      * @param mixed $id
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function update( $id )
     {
@@ -78,7 +78,7 @@ class LocationController extends AbstractController
      * Or 'Cancel order'
      *
      * @param mixed $id
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function delete( $id )
     {
@@ -88,7 +88,7 @@ class LocationController extends AbstractController
     /**
      * List items in collection ( ie GET /content/location/ )
      *
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function index()
     {
@@ -101,7 +101,7 @@ class LocationController extends AbstractController
      * @param mixed $parentId
      * @param int $offset
      * @param int $limit
-     * @return \HiMVC\API\MVC\Values\Result
+     * @return \HiMVC\Core\MVC\Values\Result
      *
      * @todo Add global (injected) setting to specify max limits
      */
@@ -131,7 +131,7 @@ class LocationController extends AbstractController
      * @param object $model
      * @param array $params
      * @param string $action
-     * @return \HiMVC\API\MVC\Values\ResultItem
+     * @return \HiMVC\Core\MVC\Values\ResultItem
      */
     private function getResult( $model, array $params, $action = 'read' )
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * API\MVC\Values\AccessMatch class
+ * Core\MVC\Values\AccessMatch class
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
@@ -8,10 +8,10 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
-use HiMVC\API\MVC\Values\Request;
+use HiMVC\Core\MVC\Values\Request as APIRequest;
 
 /**
  * AccessMatch object
@@ -85,7 +85,7 @@ class AccessMatch extends ValueObject
             $this->uri = $matches['uri'];
 
         if ( isset( $matches['hosts'] ) )
-            $this->hosts = (array)$matches['hosts'];
+            $this->hosts = array_flip( (array)$matches['hosts'] );
 
         if ( isset( $matches['port'] ) )
             $this->port = (int)$matches['port'];
@@ -94,15 +94,15 @@ class AccessMatch extends ValueObject
     /**
      * Match Request based on rules
      *
-     * @param \HiMVC\API\MVC\Values\Request $request
+     * @param \HiMVC\Core\MVC\Values\Request $request
      * @return bool
      */
-    public function match( Request $request )
+    public function match( APIRequest $request )
     {
         if ( !empty( $this->uri ) && "{$request->uri}/" !== $this->uri && stripos( $request->uri, $this->uri ) !== 0  )
             return false;
 
-        if ( !empty( $this->hosts ) && !in_array( $request->host, $this->hosts, true ) )
+        if ( !empty( $this->hosts ) && !isset( $this->hosts[$request->host] ) )
             return false;
 
         if ( !empty( $this->port ) && $request->port !== $this->port  )

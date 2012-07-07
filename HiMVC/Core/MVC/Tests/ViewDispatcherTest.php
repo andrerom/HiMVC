@@ -11,8 +11,8 @@
 namespace HiMVC\Core\MVC\Tests;
 
 use HiMVC\Core\MVC\View\ViewDispatcher;
-use HiMVC\API\MVC\Values\ResultItem;
-use HiMVC\Core\MVC\Request;
+use HiMVC\Core\MVC\Values\ResultItem;
+use HiMVC\Core\MVC\Values\Request;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -31,7 +31,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
     protected $viewMock2;
 
     /**
-     * @var \HiMVC\API\MVC\Values\Request $request
+     * @var \HiMVC\Core\MVC\Values\Request $request
      */
     protected $request;
 
@@ -196,7 +196,7 @@ class ViewDispatcherTest extends PHPUnit_Framework_TestCase
      * @param array $params
      * @param string $action
      * @param string $controller
-     * @return \HiMVC\API\MVC\Values\ResultItem
+     * @return \HiMVC\Core\MVC\Values\ResultItem
      */
     protected function getResultItem( $model, array $params = array(), $action = 'read', $controller = __CLASS__ )
     {

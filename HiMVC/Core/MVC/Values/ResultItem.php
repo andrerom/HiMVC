@@ -8,14 +8,14 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
-use HiMVC\API\MVC\Values\Result;
+use HiMVC\Core\MVC\Values\Result;
 
 /**
  * Result Item object
  *
- * @see \HiMVC\API\MVC\Values\Result
+ * @see \HiMVC\Core\MVC\Values\Result
  *
  * @property-read object $model
  */

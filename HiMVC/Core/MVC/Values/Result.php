@@ -8,7 +8,7 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
 
@@ -105,8 +105,8 @@ abstract class Result extends ValueObject
     /**
      * @param array $params
      *
-     * @throws \Excpetion
-     * @return \HiMVC\API\MVC\Values\Result
+     * @throws \Exception
+     * @return \HiMVC\Core\MVC\Values\Result
      */
     public function with( array $params )
     {
@@ -116,7 +116,7 @@ abstract class Result extends ValueObject
             if ( isset( $clone->params[$key] ) )
                 $clone->params[$key] = $value;
             else
-                throw new \Excpetion( "Could not find provided param: {$key}", __METHOD__ );
+                throw new \Exception( "Could not find provided param: {$key}", __METHOD__ );
         }
         return $clone;
     }

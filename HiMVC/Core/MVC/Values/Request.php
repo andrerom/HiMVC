@@ -8,12 +8,12 @@
  * @version //autogentag//
  */
 
-namespace HiMVC\API\MVC\Values;
+namespace HiMVC\Core\MVC\Values;
 
 use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
     eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    HiMVC\Core\MVC\Accept,
-    HiMVC\API\MVC\Values\AccessMatch,
+    HiMVC\Core\MVC\Values\Accept,
+    HiMVC\Core\MVC\Values\AccessMatch,
     HiMVC\Core\Common\Module,
     HiMVC\Core\Common\SessionArray,
     eZ\Publish\API\Repository\Values\ValueObject;
@@ -38,8 +38,8 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read string $host
  * @property-read int $port
  * @property-read string $mimeType The content type of request body, like application/x-www-form-urlencoded', default: ''
- * @property-read \HiMVC\Core\MVC\Accept $accept
- * @property-read \HiMVC\API\MVC\Values\AccessMatch[] $access
+ * @property-read \HiMVC\Core\MVC\Values\Accept $accept
+ * @property-read \HiMVC\Core\MVC\Values\AccessMatch[] $access
  * @property-read \HiMVC\Core\Common\Module[] $modules
  * @property-read string $authUser
  * @property-read string $authPwd
@@ -47,14 +47,14 @@ use eZ\Publish\Core\Base\Exceptions\Httpable as HttpableException,
  * @property-read string $referrer
  * @property-read float $microTime
  * @property-read array $raw
- * @property-read \HiMVC\API\MVC\Values\Request[] $children
+ * @property-read \HiMVC\Core\MVC\Values\Request[] $children
  */
-abstract class Request extends ValueObject
+class Request extends ValueObject
 {
     /*
      * @var string The uri string, must not start or end in a '/'
      */
-    protected $uri = '';
+    public $uri = '';
 
     /**
      * @var array Array version of $uri
@@ -69,127 +69,127 @@ abstract class Request extends ValueObject
     /**
      * @var array GET params
      */
-    protected $params = array();
+    public $params = array();
 
     /**
      * @var array COOKIE params
      */
-    protected $cookies = array();
+    public $cookies = array();
 
     /**
      * @var array Upload files
      */
-    protected $files = array();
+    public $files = array();
 
     /**
      * @var array|\HiMVC\Core\Common\SessionArray
      */
-    protected $session = array();
+    public $session = array();
 
     /**
-     * @var \HiMVC\API\MVC\Values\AccessMatch[]
+     * @var \HiMVC\Core\MVC\Values\AccessMatch[]
      */
-    protected $access = array();
+    public $access = array();
 
     /**
      * @var \HiMVC\Core\Common\Module[]
      */
-    protected $modules = array();
+    public $modules = array();
 
     /**
      * @var mixed Request body
      */
-    protected $body = '';
+    public $body = '';
 
     /**
      * @var string The dir the install is placed in relative to hostname, must start and end in a '/'
      */
-    protected $wwwDir = '/';
+    public $wwwDir = '/';
 
     /**
      * @var string Same as $wwwDir, but with the index.php or similar index file IF currently part of url
      *             Must start and end in a '/'
      */
-    protected $indexDir = '/';
+    public $indexDir = '/';
 
     /**
      * @var string HTTP method: GET, HEAD, POST, PUT, DELETE, ...
      */
-    protected $method = 'GET';
+    public $method = 'GET';
 
     /**
      * @var int If request asks for If-Modified-Since to get a full result, otherwise a not-modifed result
      */
-    protected $ifModifiedSince = 0;
+    public $ifModifiedSince = 0;
 
     /**
      * @var string If-None-Match=Etag, alternative If-Modified-Since where etag is matched to see if content has been modified
      */
-    protected $IfNoneMatch = '';
+    public $IfNoneMatch = '';
 
     /**
      * @var string
      * @todo: rename and make it parse the value to something that can be used generally
      */
-    protected $cacheControl = 'max-age=0';
+    public $cacheControl = 'max-age=0';
 
     /**
      * @var string
      */
-    protected $scheme = 'http';
+    public $scheme = 'http';
 
     /**
      * @var string
      */
-    protected $host = 'localhost';
+    public $host = 'localhost';
 
     /**
      * @var int
      */
-    protected $port = 80;
+    public $port = 80;
 
     /**
      * @var string Aka CONTENT_TYPE
      */
-    protected $mimeType = '';
+    public $mimeType = '';
 
     /**
-     * @var \HiMVC\Core\MVC\Accept
+     * @var \HiMVC\Core\MVC\Values\Accept
      */
-    protected $accept;
-
-    /**
-     * @var string
-     */
-    protected $authUser = '';
+    public $accept;
 
     /**
      * @var string
      */
-    protected $authPwd = '';
+    public $authUser = '';
 
     /**
      * @var string
      */
-    protected $userAgent = '';
+    public $authPwd = '';
 
     /**
      * @var string
      */
-    protected $referrer = '';
+    public $userAgent = '';
+
+    /**
+     * @var string
+     */
+    public $referrer = '';
 
     /**
      * @var float Time the request was created
      */
-    protected $microTime = 0.0;
+    public $microTime = 0.0;
 
     /**
      * @var array The raw $_SERVER variable, this is not part of the public request api but exposed for specifc needs
      */
-    protected $raw = array();
+    public $raw = array();
 
     /**
-     * @var \HiMVC\API\MVC\Values\Request[] List of child requests within this request
+     * @var \HiMVC\Core\MVC\Values\Request[] List of child requests within this request
      */
     protected $children = array();
 
@@ -203,53 +203,116 @@ abstract class Request extends ValueObject
     private $exception = null;
 
     /**
-     * Add a acces match to list of matches and remove uri if there is one (must be left most part)
+     * @var bool
+     */
+    private $isMain = true;
+
+    /**
+     * Make sure uriArray has value or generate it from uri string if not
      *
-     * @param \HiMVC\API\MVC\Values\AccessMatch $access
+     * @uses \eZ\Publish\API\Repository\Values\ValueObject::__get()
+     * @param string $name
+     * @return mixed
      */
-    abstract public function appendAccessMatch( AccessMatch $access );
+    public function __get( $name )
+    {
+        if ( $name === 'uriArray' && $this->uriArray === null )
+        {
+            return $this->uriArray = self::arrayByUri( $this->uri );
+        }
 
-    /**
-     * Add a module to list of modules
-     *
-     * @param \HiMVC\Core\Common\Module $module
-     */
-    abstract public function appendModule( Module $module );
-
-    /**
-     * @param \HiMVC\Core\MVC\Accept $accept
-     */
-    abstract public function setAccept( Accept $accept );
-
-    /**
-     * @param \HiMVC\Core\Common\SessionArray $session
-     */
-    abstract public function setSession( SessionArray $session );
+        return parent::__get( $name );
+    }
 
     /**
      * @param string $uri
-     * @return \HiMVC\API\MVC\Values\Request
+     * @return \HiMVC\Core\MVC\Values\Request
      */
-    abstract public function createChild( $uri );
+    public function createChild( $uri )
+    {
+        $child = clone $this;
+        $child->uri = $uri;
+        $child->originalUri = $uri;
+        $child->uriArray = null;
+        $child->isMain = false;
+        $this->children[] = $child;
+        return $child;
+    }
 
     /**
-     * Return <schema://><domain>[:<port>]/<access-uri>/<uri>
+     * Return [<schema://><domain>[:<port>]]<indexDir><access-uri>[<uri>]
      *
      * @param bool $host
      * @param bool $accessUri
      * @param bool $uri
      * @param bool $portIfStandard If false port is omitted if standard port for current schema
+     *                             Only affects returned result if $host is true
      *
      * @return string
      */
-    abstract public function reverse( $host = false, $accessUri = true, $uri = true, $portIfStandard = false );
+    public function reverse( $host = false, $accessUri = true, $uri = true, $portIfStandard = false )
+    {
+        $reverse = '';
+
+        // Append host name
+        if ( $host )
+        {
+            $reverse = $this->scheme . '://'  . $this->host;
+
+            if ( $portIfStandard && $this->scheme === 'http' && $this->port === 82 );
+            else if ( $portIfStandard  && $this->scheme === 'https' && $this->port === 443 );
+            else
+                $reverse .= ':' . $this->port;
+        }
+
+        // Add indexDir to root
+        $reverse .= $this->indexDir;
+
+        // Add access uri
+        if ( $accessUri )
+        {
+            foreach( $this->access as $match )
+                $reverse .= $match->reverse();
+        }
+
+        // Return with request uri
+        if ( $uri )
+            return $reverse . $this->uri;
+
+        // Return without request uri
+        return $reverse;
+    }
 
     /**
      * Tells if current request object is main (parent) request, or a embed request.
      *
      * @return bool
      */
-    abstract public function isMain();
+    public function isMain()
+    {
+        return $this->isMain;
+    }
+
+    /**
+     * Generates a uri array by uri string
+     *
+     * @param string $uri
+     * @return array
+     */
+     private static function arrayByUri( $uri )
+     {
+         if ( isset( $uri[1] ) )
+         {
+             if ( strrpos( $uri, '/' ) > 0 )
+                 return explode( '/', trim( $uri, '/' ) );
+             return array( ltrim( $uri, '/' ) );
+         }
+         else if ( isset( $uri[0] ) && $uri[0] !== '/' )
+         {
+             return array( $uri[0] );
+         }
+         return array();
+     }
 
     /**
      * Protect clone so it is only accessible via createChild()
