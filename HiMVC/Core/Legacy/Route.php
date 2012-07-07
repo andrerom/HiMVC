@@ -1,6 +1,6 @@
 <?php
 /**
- * API\MVC\Values\RegexRoute class
+ * HiMVC\Core\Legacy\Route class
  *
  * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
