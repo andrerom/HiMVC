@@ -2,19 +2,20 @@
 /**
  * Service Container class
  *
- * @copyright Copyright (C) 1999-2012 eZ Systems AS. All rights reserved.
+ * @copyright Copyright (C) 1999-2013 eZ Systems AS. All rights reserved.
  * @copyright Copyright (C) 2009-2012 github.com/andrerom. All rights reserved.
  * @license http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License v3
  * @version //autogentag//
  */
 
 namespace HiMVC\Core\Common;
-use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
-    eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue,
-    eZ\Publish\Core\Base\Exceptions\InvalidArgumentException,
-    eZ\Publish\Core\Base\Exceptions\MissingClass,
-    HiMVC\API\Container,
-    ReflectionClass;
+
+use eZ\Publish\Core\Base\Exceptions\BadConfiguration;
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue;
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
+use eZ\Publish\Core\Base\Exceptions\MissingClass;
+use HiMVC\API\Container;
+use ReflectionClass;
 
 /**
  * Service container class
@@ -43,14 +44,14 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  *
  * Usage:
  *
- *     $sc = new eZ\Publish\Core\Base\ServiceContainer( $configManager->getConfiguration('service')->getAll() );
+ *     $sc = new eZ\Publish\Core\Base\ServiceContainer( $configManager->getConfiguration( 'service' )->getAll() );
  *     $sc->getRepository->getContentService()...;
  *
  * Or overriding $dependencies (in unit tests):
  * ( $dependencies keys should have same value as service.ini "arguments" values explained bellow )
  *
  *     $sc = new eZ\Publish\Core\Base\ServiceContainer(
- *         $configManager->getConfiguration('service')->getAll(),
+ *         $configManager->getConfiguration( 'service' )->getAll(),
  *         array(
  *             '@persistence_handler' => new \eZ\Publish\Core\Persistence\InMemory\Handler()
  *         )
@@ -61,12 +62,17 @@ use eZ\Publish\Core\Base\Exceptions\BadConfiguration,
  *
  *     [repository]
  *     class=eZ\Publish\Core\Base\Repository
- *     arguments[persistence_handler]=@inmemory_persistence_handler
+ *     arguments[persistence_handler]=@persistence_handler_inmemory
  *
- *     [inmemory_persistence_handler]
+ *     [persistence_handler_inmemory]
  *     class=eZ\Publish\Core\Persistence\InMemory\Handler
  *
  *     # @see \eZ\Publish\Core\settings\service.ini For more options and examples.
+ *
+ * "arguments" values in service.ini can start with either @ in case of other services being dependency, $ if a
+ * predefined global variable is to be used ( currently: $_SERVER, $_REQUEST, $_COOKIE, $_FILES )
+ * or plain scalar if that is to be given directly as argument value.
+ * If the argument value starts with %, then it is a lazy loaded service provided as a callback (closure).
  */
 class DependencyInjectionContainer implements Container
 {
@@ -78,6 +84,13 @@ class DependencyInjectionContainer implements Container
     private $dependencies;
 
     /**
+     * Array of optional settings overrides
+     *
+     * @var array[]
+     */
+    private $settings;
+
+    /**
      * Construct object with optional configuration overrides
      *
      * @param array $settings Services settings
@@ -85,15 +98,29 @@ class DependencyInjectionContainer implements Container
      */
     public function __construct( array $settings, array $dependencies = array() )
     {
-        $this->dependencies = $dependencies + array(
+        // Set parameters as $dependencies, globals and settings parameters
+        $parameters = array(
             '$_SERVER' => $_SERVER,
-            '$_POST' => $_POST,
-            '$_GET' => $_GET,
+            '$_REQUEST' => $_REQUEST,
             '$_COOKIE' => $_COOKIE,
             '$_FILES' => $_FILES,
-            '$body' => file_get_contents( "php://input" ),
-            '$settings' => $settings,
+            '$_POST' => $_POST,
+            '$_GET' => $_GET,
+            '$body' => file_get_contents( "php://input" )
         );
+
+        if ( !empty( $settings['parameters'] ) )
+        {
+            foreach ( $settings['parameters'] as $parameterKey => $parameter )
+            {
+                $parameters['$' . $parameterKey ] = $parameter;
+            }
+            unset( $settings['parameters'] );
+        }
+
+        // Set properties
+        $this->settings = $settings;
+        $this->dependencies = $dependencies + $parameters;
     }
 
     /**
@@ -101,17 +128,22 @@ class DependencyInjectionContainer implements Container
      */
     public function setSettings( array $settings )
     {
-        $this->dependencies['$settings'] = $settings;
+        $this->settings = $settings;
     }
 
     /**
-     * Get Repository object
+     * Service function to get Repository object
+     *
+     * Alias with type hints for $repo->get( 'repository' );
      *
      * @uses get()
+     *
      * @return \eZ\Publish\API\Repository\Repository
      */
     public function getRepository()
     {
+        if ( isset( $this->dependencies['@repository'] ) )
+            return $this->dependencies['@repository'];
         return $this->get( 'repository' );
     }
 
@@ -181,8 +213,10 @@ class DependencyInjectionContainer implements Container
      * Get a variable dependency
      *
      * @param string $variable
+     *
+     * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
+     *
      * @return mixed
-     * @throws InvalidArgumentException
      */
     public function getVariable( $variable )
     {
@@ -213,27 +247,32 @@ class DependencyInjectionContainer implements Container
      * Get service by name
      *
      * @uses lookupArguments()
-     * @throws BadConfiguration
-     * @throws MissingClass
+     * @throws \eZ\Publish\Core\Base\Exceptions\BadConfiguration
+     * @throws \eZ\Publish\Core\Base\Exceptions\MissingClass
      * @param string $serviceName
+     *
      * @return object
      */
     public function get( $serviceName )
     {
-        $serviceKey = "@{$serviceName}";
-
-        // Return directly if it already exists
-        if ( isset( $this->dependencies[$serviceKey] ) )
+        // If you have endless loop here; Congrats, you have recursive aliases!
+        do
         {
-            return $this->dependencies[$serviceKey];
-        }
+            // Return directly if it already exists
+            if ( isset( $this->dependencies["@{$serviceName}"] ) )
+                return $this->dependencies["@{$serviceName}"];
 
-        if ( empty( $this->dependencies['$settings'][$serviceName] ) )// Validate settings
-        {
-            throw new BadConfiguration( "service\\[{$serviceName}]", "no settings exist for '{$serviceName}'" );
-        }
+            // Validate settings
+            if ( empty( $this->settings[$serviceName] ) )
+                throw new BadConfiguration( "service\\[{$serviceName}]", "no settings exist for '{$serviceName}'" );
 
-        $settings = $this->dependencies['$settings'][$serviceName] + array( 'shared' => true );
+            $origServiceName = $serviceName;
+            if ( isset( $this->settings[$serviceName]['alias'] ) )
+                $serviceName = $this->settings[$serviceName]['alias'];
+        }
+        while ( $origServiceName !== $serviceName );
+
+        $settings = $this->settings[$serviceName] + array( 'shared' => true );
         if ( empty( $settings['class'] ) )
         {
             throw new BadConfiguration( "service\\[{$serviceName}]\\class", 'class setting is not defined' );
@@ -250,7 +289,7 @@ class DependencyInjectionContainer implements Container
             if ( !empty( $settings['PreFilters'] ) )
             {
                 $arguments = $this->filter(
-                    $this->recursivlyLookupArguments( $settings['PreFilters'] ),
+                    $this->recursivelyLookupArguments( $settings['PreFilters'] ),
                     $arguments
                 );
             }
@@ -279,15 +318,15 @@ class DependencyInjectionContainer implements Container
         else
         {
             $reflectionObj = new ReflectionClass( $settings['class'] );
-            $serviceObject =  $reflectionObj->newInstanceArgs( $arguments );
+            $serviceObject = $reflectionObj->newInstanceArgs( $arguments );
         }
 
         if ( $settings['shared'] )
-            $this->dependencies[$serviceKey] = $serviceObject;
+            $this->dependencies["@{$serviceName}"] = $serviceObject;
 
-        if ( !empty( $settings['MethodInjection'] ) )
+        if ( !empty( $settings['method'] ) )
         {
-            $list = $this->recursivlyLookupArguments( $settings['MethodInjection'] );
+            $list = $this->recursivelyLookupArguments( $settings['method'] );
             foreach ( $list as $methodName => $arguments )
             {
                 foreach ( $arguments as $argumentKey => $argumentValue )
@@ -298,7 +337,7 @@ class DependencyInjectionContainer implements Container
         if ( !empty( $settings['PostListeners'] ) )
         {
             $this->notify(
-                $this->recursivlyLookupArguments( $settings['PostListeners'] ),
+                $this->recursivelyLookupArguments( $settings['PostListeners'] ),
                 $serviceObject
             );
         }
@@ -313,18 +352,19 @@ class DependencyInjectionContainer implements Container
      * 2. Exists loop when it encounters optional non existing service dependencies
      *
      * @uses getServiceArgument()
-     * @uses recursivlyLookupArguments()
+     * @uses recursivelyLookupArguments()
      * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException If undefined variable is used.
      * @param array $arguments
-     * @param bool $recursivly
+     * @param boolean $recursively
+     *
      * @return array
      */
-    protected function lookupArguments( array $arguments, $recursivly = false )
+    protected function lookupArguments( array $arguments, $recursively = false )
     {
         $builtArguments = array();
         foreach ( $arguments as $argument )
         {
-            if ( isset( $argument[0] ) && ( $argument[0] === '$' || $argument[0] === '@'  || $argument[0] === '%' ) )
+            if ( isset( $argument[0] ) && ( $argument[0] === '$' || $argument[0] === '@' || $argument[0] === '%' ) )
             {
                 $serviceObject = $this->getServiceArgument( $argument );
                 if ( $argument[1] === '?' && $serviceObject === null )
@@ -332,11 +372,12 @@ class DependencyInjectionContainer implements Container
 
                 $builtArguments[] = $serviceObject;
             }
-            else if ( $recursivly && is_array( $argument ) )
+            else if ( $recursively && is_array( $argument ) )
             {
-                $builtArguments[] = $this->recursivlyLookupArguments( $argument );
+                $builtArguments[] = $this->recursivelyLookupArguments( $argument );
             }
-            else // Scalar values
+            // Scalar values
+            else
             {
                 $builtArguments[] = $argument;
             }
@@ -351,17 +392,18 @@ class DependencyInjectionContainer implements Container
      * 2. Does not exit loop on optional non existing service dependencies
      *
      * @uses getServiceArgument()
-     * @uses recursivlyLookupArguments()
+     * @uses recursivelyLookupArguments()
      * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException If undefined variable is used.
      * @param array $arguments
+     *
      * @return array
      */
-    protected function recursivlyLookupArguments( array $arguments )
+    protected function recursivelyLookupArguments( array $arguments )
     {
         $builtArguments = array();
         foreach ( $arguments as $key => $argument )
         {
-            if ( isset( $argument[0] ) && ( $argument[0] === '$' || $argument[0] === '@'  || $argument[0] === '%' ) )
+            if ( isset( $argument[0] ) && ( $argument[0] === '$' || $argument[0] === '@' || $argument[0] === '%' ) )
             {
                 $serviceObject = $this->getServiceArgument( $argument );
                 if ( $argument[1] !== '?' || $serviceObject !== null )
@@ -369,9 +411,10 @@ class DependencyInjectionContainer implements Container
             }
             else if ( is_array( $argument ) )
             {
-                $builtArguments[$key] = $this->recursivlyLookupArguments( $argument );
+                $builtArguments[$key] = $this->recursivelyLookupArguments( $argument );
             }
-            else // Scalar values
+            // Scalar values
+            else
             {
                 $builtArguments[$key] = $argument;
             }
@@ -381,54 +424,66 @@ class DependencyInjectionContainer implements Container
 
     /**
      * @uses getListOfExtendedServices()
-     * @uses recursivlyLookupArguments()
-     * @param $argument
-     * @return array|closure|mixed|object|null Null on non existing optional dependencies
+     * @uses recursivelyLookupArguments()
+     * @param string $argument
+     *
      * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue
+     *
+     * @return array|\Closure|mixed|object|null Null on non existing optional dependencies
      */
     protected function getServiceArgument( $argument )
     {
         $function = '';
         $serviceContainer = $this;
-        if ( stripos( $argument, '::' ) !== false )// callback
+        // callback
+        if ( stripos( $argument, '::' ) !== false )
             list( $argument, $function  ) = explode( '::', $argument );
 
-        if ( ( $argument[0] === '%' || $argument[0] === '@' ) && $argument[1] === ':' )// expand extended services
+        // expand extended services
+        if ( ( $argument[0] === '%' || $argument[0] === '@' ) && $argument[1] === ':' )
         {
-            return $this->recursivlyLookupArguments( $this->getListOfExtendedServices( $argument, $function ) );
+            return $this->recursivelyLookupArguments( $this->getListOfExtendedServices( $argument, $function ) );
         }
-        elseif ( $argument[0] === '%' )// lazy loaded services
+        // lazy loaded services
+        else if ( $argument[0] === '%' )
         {
             // Optional dependency handling
-            if ( $argument[1] === '?' && !isset( $this->dependencies['settings'][substr( $argument, 2 )] ) )
+            if ( $argument[1] === '?' && !isset( $this->settings[substr( $argument, 2 )] ) )
                 return null;
 
             if ( $function !== '' )
-                return function() use ( $serviceContainer, $argument, $function ){
+                return function () use ( $serviceContainer, $argument, $function )
+                {
                     $serviceObject = $serviceContainer->get( ltrim( $argument, '%' ) );
                     return call_user_func_array( array( $serviceObject, $function ), func_get_args() );
                 };
             else
-                return function() use ( $serviceContainer, $argument ){
+                return function () use ( $serviceContainer, $argument )
+                {
                     return $serviceContainer->get( ltrim( $argument, '%' ) );
                 };
         }
-        else if ( isset( $this->dependencies[ $argument ] ) )// Existing dependencies (@Service / $Variable)
+        // Existing dependencies (@Service / $Variable)
+        else if ( isset( $this->dependencies[ $argument ] ) )
         {
             $serviceObject = $this->dependencies[ $argument ];
         }
-        else if ( $argument[0] === '$' )// Undefined variables will trow an exception
+        // Undefined variables will trow an exception
+        else if ( $argument[0] === '$' )
         {
             // Optional dependency handling
             if ( $argument[1] === '?' )
                 return null;
+            else if ( $argument === '$settings' )
+                return $this->settings;
 
             throw new InvalidArgumentValue( "\$arguments", $argument );
         }
-        else// Try to load a @service dependency
+        // Try to load a @service dependency
+        else
         {
             // Optional dependency handling
-            if ( $argument[1] === '?' && !isset( $this->dependencies['settings'][substr( $argument, 2 )] ) )
+            if ( $argument[1] === '?' && !isset( $this->settings[substr( $argument, 2 )] ) )
                 return null;
 
             $serviceObject = $this->get( ltrim( $argument, '@' ) );
@@ -443,6 +498,7 @@ class DependencyInjectionContainer implements Container
     /**
      * @param string $parent Eg: %:controller
      * @param string $function Optional function string
+     *
      * @return array
      */
     protected function getListOfExtendedServices( $parent, $function = '' )
@@ -453,9 +509,10 @@ class DependencyInjectionContainer implements Container
         if ( $function !== '' )
             $function = '::' . $function;
 
-        foreach ( $this->dependencies['$settings'] as $service => $settings )
+        foreach ( $this->settings as $service => $settings )
         {
             if ( stripos( $service, $parent ) !== false &&
+                 !empty( $settings['class'] ) &&
                  preg_match( "/^(?P<prefix>[\w:]+){$parent}$/", $service, $match ) )
             {
                 $services[$match['prefix']] = $prefix . $match['prefix'] . $parent . $function;

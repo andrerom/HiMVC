@@ -1,3 +1,3 @@
 [submodule "ezpnext"]
 	path = ezpnext
-	url = git://github.com/ezsystems/ezp-next.git
+	url = git://github.com/ezsystems/ezpublish-kernel.git
