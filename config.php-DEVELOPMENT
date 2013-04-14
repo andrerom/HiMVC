@@ -29,11 +29,11 @@ return array(
             'Mode' => 1,
             // Hash of lazy loaded functions to register autoloaders lazily
             'LazyLoaders' => array(
-                'ezc' => function( $className ){
+                /*'ezc' => function( $className ){
                     require 'ezc/Base/base.php';
                     spl_autoload_register( array( 'ezcBase', 'autoload' ) );
                     return true;
-                },
+                },*/
                 'Twig_' => function( $className ){
                     require 'Twig/Autoloader.php';
                     Twig_Autoloader::register();
@@ -86,4 +86,17 @@ return array(
             'CacheDir' => __DIR__ . '/var/cache/',
         ),
     ),
+    'service' => array(
+        'parameters' => array(
+            // The installation directory
+            'install_dir' => __DIR__,
+
+            // The Legacy Kernel installation directory, detect legacy location
+            'legacy_dir' => (
+                is_dir( './ezpublish_legacy' ) ?
+                getcwd() . '/ezpublish_legacy' :
+                __DIR__ . '/vendor/ezsystems/ezpublish-legacy'
+            ),
+        )
+    )
 );
