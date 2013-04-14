@@ -119,7 +119,7 @@ class LocationController extends AbstractController
 
         return new ResultList( array(
             'items' => $items,
-            'count' => $location->childCount,
+            'count' => $children->totalCount,
             'module' => 'content/location',
             'action' => 'list',
             'controller' => __CLASS__,
