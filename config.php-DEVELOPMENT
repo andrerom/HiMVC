@@ -29,11 +29,11 @@ return array(
             'Mode' => 1,
             // Hash of lazy loaded functions to register autoloaders lazily
             'LazyLoaders' => array(
-                /*'ezc' => function( $className ){
+                'ezc' => function( $className ){
                     require 'ezc/Base/base.php';
                     spl_autoload_register( array( 'ezcBase', 'autoload' ) );
                     return true;
-                },*/
+                },
                 'Twig_' => function( $className ){
                     require 'Twig/Autoloader.php';
                     Twig_Autoloader::register();

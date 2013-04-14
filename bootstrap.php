@@ -50,7 +50,11 @@ $configuration
 // Bootstrap eZ Publish legacy kernel if configured
 if ( !empty( $settings['service']['parameters']['legacy_dir'] ) )
 {
-    require_once $settings['service']['parameters']['legacy_dir'] . '/autoload.php';
+    if ( !defined( 'EZCBASE_ENABLED' ) )
+    {
+        define( 'EZCBASE_ENABLED', false );
+        require_once $settings['service']['parameters']['legacy_dir'] . '/autoload.php';
+    }
 
     // Define $legacyKernelHandler to whatever you need before loading this bootstrap file.
     // CLI handler is used by defaut, but you must use \ezpKernelWeb if not in CLI context (i.e. REST server)
