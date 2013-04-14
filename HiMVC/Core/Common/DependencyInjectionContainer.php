@@ -15,6 +15,7 @@ use eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
 use eZ\Publish\Core\Base\Exceptions\MissingClass;
 use HiMVC\API\Container;
+use HiMVC\Core\Common\DependencyInjection\ArrayObject;
 use ReflectionClass;
 
 /**
@@ -204,7 +205,7 @@ class DependencyInjectionContainer implements Container
         $modules = array();
         foreach ( $this->getListOfExtendedServices( '@:module' ) as $modulePrefix => $moduleName )
         {
-            $modules[$modulePrefix] = $this->get( ltrim( $moduleName, '@' ) );
+            $modules[$modulePrefix] = $this->get( $moduleName );
         }
         return $modules;
     }
@@ -439,10 +440,15 @@ class DependencyInjectionContainer implements Container
         if ( stripos( $argument, '::' ) !== false )
             list( $argument, $function  ) = explode( '::', $argument );
 
-        // expand extended services
-        if ( ( $argument[0] === '%' || $argument[0] === '@' ) && $argument[1] === ':' )
+        // expand lazy extended services
+        if ( $argument[0] === '%' && $argument[1] === ':' && $function === '' )
         {
-            return $this->recursivelyLookupArguments( $this->getListOfExtendedServices( $argument, $function ) );
+            return new ArrayObject( $this, $this->getListOfExtendedServices( $argument ) );
+        }
+        // expand extended services and callbacks
+        else if ( ( $argument[0] === '@' || $argument[0] === '%' ) && $argument[1] === ':' )
+        {
+            return $this->recursivelyLookupArguments( $this->getListOfExtendedServices( $argument, $function, $argument[0] ) );
         }
         // lazy loaded services
         else if ( $argument[0] === '%' )
@@ -501,9 +507,8 @@ class DependencyInjectionContainer implements Container
      *
      * @return array
      */
-    protected function getListOfExtendedServices( $parent, $function = '' )
+    protected function getListOfExtendedServices( $parent, $function = '', $prefix = '' )
     {
-        $prefix = $parent[0];
         $parent = ltrim( $parent, '@%' );// Keep starting ':' on parent for easier matching bellow
         $services = array();
         if ( $function !== '' )
