@@ -540,7 +540,7 @@ class ExtendedTestCheck
 class ExtendedTestLacyCheck
 {
     public $count;
-    public function __construct( array $extendedTests, $test = null )
+    public function __construct( $extendedTests, $test = null )
     {
         if ( empty( $extendedTests ) )
             throw new \Exception( "Empty argument \$extendedTests" );
@@ -549,10 +549,11 @@ class ExtendedTestLacyCheck
         foreach ( $extendedTests as $extendedTestName => $extendedTest )
         {
             ++$key;
-            if ( !is_callable( $extendedTest ) )
-                throw new \Exception( "Values in \$extendedTests must be callable" );
+            if ( is_callable( $extendedTest ) )
+            {
+                $extendedTest = $extendedTest( $test );
+            }
 
-            $extendedTest = $extendedTest( $test );
             if ( !$extendedTest instanceof ExtendedTest )
                 throw new \Exception( "Values in \$extendedTests must extend ExtendedTest" );
             else if ( $extendedTestName !== "ExtendedTest{$key}" )
