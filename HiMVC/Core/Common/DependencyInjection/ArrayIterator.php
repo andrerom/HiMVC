@@ -39,6 +39,8 @@ class ArrayIterator extends splArrayIterator
     public function offsetGet( $index )
     {
         $value = parent::offsetGet( $index );
+        // If value is string, load service and replace the value
+         // @todo Maybe just get it from ArrayObject to avoid service being loaded in iterator and in object
         if ( is_string( $value ) === true )
         {
             self::offsetSet( $index, ( $value = $this->arrayObject[$index] ) );
@@ -53,6 +55,8 @@ class ArrayIterator extends splArrayIterator
     public function current()
     {
         $value = parent::current();
+        // If value is string, load service and replace the value
+        // @todo Maybe just get it from ArrayObject to avoid service being loaded in iterator and in object
         if ( is_string( $value ) === true )
         {
             $index = self::key();

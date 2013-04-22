@@ -15,7 +15,7 @@ use HiMVC\Core\Common\DependencyInjection\ArrayIterator;
 use ArrayObject as splArrayObject;
 
 /**
- * Array Object class, used by DependencyInjectionContainer for lazy loaded collections.
+ * Array Object class, used by DependencyInjectionContainer for lazy loaded collection of services.
  */
 class ArrayObject extends splArrayObject
 {
@@ -26,7 +26,7 @@ class ArrayObject extends splArrayObject
 
     /**
      * @param \HiMVC\Core\Common\DependencyInjectionContainer $container
-     * @param array $serviceIds
+     * @param array $serviceIds Map where key is identifier, and value is service id.
      */
     public function __construct( DependencyInjectionContainer $container, array $serviceIds )
     {
@@ -41,6 +41,7 @@ class ArrayObject extends splArrayObject
     public function offsetGet( $index )
     {
         $value = parent::offsetGet( $index );
+        // If value is string, load service and replace the value
         if ( is_string( $value ) === true )
         {
             self::offsetSet( $index, ( $value = $this->container->get( $value ) ) );
